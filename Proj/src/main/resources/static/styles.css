@@ -1,0 +1,79 @@
+/* Global Styles */
+
+:root {
+	--orange: #FFC300;
+	--grey: rgb(174, 174, 174);
+	--black: #1a1a1a; 
+	--font: 16px;
+	--darkGrey: #666;
+
+	
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--black);
+    color: var(--grey);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+h2 {
+    color: #f0f0f0; /* Lighter grey text for headers */
+    text-align: center;
+    padding-top: 50px;
+}
+
+/* Form */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #2a2a2a; /* Darker grey background for the form */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Form elements */
+label {
+    color: #d0d0d0; /* Slightly lighter grey for labels */
+    font-size: 14px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #333; /* Darker grey for input fields */
+    color: #e0e0e0; /* Light text in input fields */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--orange); /* Medium grey for the button */
+	font-size: var(--font);
+    color: var(--black);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	font-weight: bold;
+}
+
+button:hover {
+    background-color: #666; /* Lighter grey on hover */
+}
+
+/* General Styling */
+a {
+    color: #bbb; /* Light grey for links */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #fff; /* White color for links on hover */
+}
+
