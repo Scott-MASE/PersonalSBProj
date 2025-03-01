@@ -3,24 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- Link to the CSS file -->
-    <link rel="stylesheet" href="styles.css"> <!-- Adjust path if necessary -->
+    <title>HiveNotes - Login</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/login" method="post">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div>
+    <!-- Decorative Beehives -->
+    <div class="beehive beehive-left"></div>
+    <div class="beehive beehive-right"></div>
+
+    <!-- Login Section -->
+    <main class="login-container">
+        <h2>Welcome to HiveNotes</h2>
+        <p class="login-subtext">Enter a Hive of Information!</p>
+        
+        <form action="/login" method="post">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
             <button type="submit">Login</button>
-        </div>
-    </form>
+
+            <p class="signup-link">New to HiveNotes? <a href="/register">Create an account</a></p>
+        </form>
+    </main>
 </body>
 </html>

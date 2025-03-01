@@ -1,8 +1,3 @@
-window.onload = function() {
-    // Function to load content dynamically
-    loadLoginPage();
-};
-
 function loadLoginPage() {
     fetch('content/login.html')
         .then(response => response.text())
@@ -13,3 +8,7 @@ function loadLoginPage() {
             console.error('Error loading the login page:', error);
         });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+	loadLoginPage();
+});
