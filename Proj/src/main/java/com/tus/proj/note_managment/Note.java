@@ -14,6 +14,7 @@ public class Note {
 
     private String title;
     private String content;
+    private String tag;
 
     @Enumerated(EnumType.STRING) 
     private Priority priority;
