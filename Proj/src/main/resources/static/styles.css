@@ -7,6 +7,8 @@
     --darkGrey: #666;
 }
 
+
+
 body {
     font-family: Arial, sans-serif;
     background-color: var(--black);
@@ -17,6 +19,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+/*	cursor: url('/images/icons8-queen-bee-48.png') 16 16, auto; */
 }
 
 /* Header */
@@ -48,9 +51,11 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center; /* Centers both label and input */
-    width: 100%;
+	max-width: 500px; /* Make input fields wider */
+	width: 100%;
     margin-bottom: 15px;
 }
+
 
 .input-group label {
     font-size: 22px; /* Increased font size */
@@ -132,7 +137,12 @@ button:hover {
 
 /* Center Content Adjustments */
 .login-container {
-    margin: 0 240px; /* Adjusted for wider beehives */
-    z-index: 1;
-    text-align: center;
+    max-width: 600px; /* Increase width */
+    width: 90%; /* Make it responsive */
+    margin: 0 auto; /* Center the container */
+    padding: 40px; /* Add padding */
+    background-color: #2a2a2a; /* Ensure background color */
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
 }
+

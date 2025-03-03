@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiveNotes - Register</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
+</head>
+<body>
+    <!-- Decorative Beehives -->
+    <div class="beehive beehive-left"></div>
+    <div class="beehive beehive-right"></div>
+
+    <!-- Registration Section -->
+	<main class="login-container">
+	    <h2>Join HiveNotes</h2>
+	    <p class="login-subtext">Enter a Hive of Information!</p>
+	    
+		<form id="register-form"> <!-- ✅ No action or method -->
+		    <div class="input-group">
+		        <label for="username">Username</label>
+		        <input type="text" id="username" name="username" required placeholder="Enter your username">
+		    </div>
+
+		    <div class="input-group">
+		        <label for="password">Password</label>
+		        <input type="password" id="password" name="password" required placeholder="Enter your password">
+		    </div>
+
+		    <div class="input-group">
+		        <label for="confirm-password">Confirm Password</label>
+		        <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password">
+		    </div>
+
+		    <button type="submit">Register</button>
+		</form>
+	</main>
+	<script src="/javascript/registration.js"></script>
+
+</body>
+</html>
