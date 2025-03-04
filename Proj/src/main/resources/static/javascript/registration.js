@@ -38,7 +38,7 @@ $(document).ready(function () {
             }),
             success: function (response) {
                 alert("Registration successful! Redirecting to login...");
-                window.location.href = "/login"; // ✅ Redirect on success
+                loadPage("content/login.html", "javascript/login.js");
             },
             error: function (xhr) {
                 console.error("Error response:", xhr.responseText);
@@ -46,4 +46,8 @@ $(document).ready(function () {
             }
         });
     });
+	
+	$("#reg-to-log").off("click").on("click", function (event) {
+		console.log("huh");
+		});
 });

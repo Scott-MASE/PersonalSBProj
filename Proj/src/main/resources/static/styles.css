@@ -138,7 +138,7 @@ button:hover {
 /* Center Content Adjustments */
 .login-container {
     max-width: 600px; /* Increase width */
-    width: 90%; /* Make it responsive */
+    width: 100%; /* Make it responsive */
     margin: 0 auto; /* Center the container */
     padding: 40px; /* Add padding */
     background-color: #2a2a2a; /* Ensure background color */
