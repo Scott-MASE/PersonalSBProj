@@ -15,7 +15,7 @@
     <main class="login-container">
         <h2>Welcome to HiveNotes</h2>
         <p class="login-subtext">Enter a Hive of Information!</p>
-        
+		<form id="registration-form" action="/register" method="post">
         <div action="/login" method="post">
             <div class="input-group">
                 <label for="username">Username</label>
@@ -29,8 +29,10 @@
 
             <button id="login-btn">Login</button>
 
-            <p class="signup-link">New to HiveNotes? <a href="/content/register">Create an account</a></p>
+            <p class="signup-link">New to HiveNotes? <a href="#" id="reg-link">Create an account</a></p>
+
         </div>
+		</form>
     </main>
 	<script src="/javascript/login.js"></script>
 
