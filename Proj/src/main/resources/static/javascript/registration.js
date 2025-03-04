@@ -1,6 +1,8 @@
 $(document).ready(function () {
-    $("#register-form").submit(function (event) {
+    $("#register-btn").off("click").on("click", function (event) {
         event.preventDefault(); // ✅ Prevents default form submission
+		
+		console.log("LOADING");
 
         let username = $("#username").val().trim();
         let password = $("#password").val();

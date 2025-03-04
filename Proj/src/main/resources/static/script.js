@@ -3,13 +3,11 @@ window.onload = function() {
     loadLoginPage();
 };
 
-function loadLoginPage() {
-    fetch('content/login.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('app').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading the login page:', error);
-        });
-}
+$(document).ready(function () {
+
+	if (!isLoggedIn) {
+		// Force user to login if not authenticated
+		$("#dynamic-content").load("content/login.html");
+
+
+};
