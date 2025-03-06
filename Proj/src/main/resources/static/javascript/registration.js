@@ -37,7 +37,6 @@ $(document).ready(function () {
                 role: "USER"
             }),
             success: function (response) {
-                alert("Registration successful! Redirecting to login...");
                 loadPage("content/login.html", "javascript/login.js");
             },
             error: function (xhr) {
