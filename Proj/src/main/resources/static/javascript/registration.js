@@ -37,7 +37,8 @@ $(document).ready(function () {
                 role: "USER"
             }),
             success: function (response) {
-                loadPage("content/login.html", "javascript/login.js");
+				console.log(response)
+                loadPage(loginh, loginj);
             },
             error: function (xhr) {
                 console.error("Error response:", xhr.responseText);
@@ -47,7 +48,7 @@ $(document).ready(function () {
     });
 	
 	$('#log-link').off('click').on('click', function(e) {
-	    e.preventDefault(); // Prevent the default behavior of the link
-	    loadPage("content/login.html", "javascript/login.js");
+	    e.preventDefault(); 
+	    loadPage(loginh, loginj);
 	});
 });

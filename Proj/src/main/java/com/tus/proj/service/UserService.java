@@ -1,9 +1,10 @@
-package com.tus.proj.user_managment;
+package com.tus.proj.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tus.proj.service.JwtService;
+import com.tus.proj.user_managment.User;
+import com.tus.proj.user_managment.UserRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -5,7 +5,7 @@ $(document).ready(function() {
 	
 	$('#reg-link').off('click').on('click', function(e) {
 	    e.preventDefault(); // Prevent the default behavior of the link
-	    loadPage("content/registration.html", "javascript/registration.js");
+	    loadPage(registrationh, registrationj);
 	});
 	
 	$('#login-form').off('submit').on('submit', function(e) {
@@ -24,7 +24,7 @@ $(document).ready(function() {
 	        },
 	        success: function(response) {
 	            if (response.message === "Success") {
-	                loadPage("content/registration.html", "javascript/registration.js");
+	                loadPage(dashboardh, dashboardj);
 	            } else {
 	                alert(response.message); 
 	            }

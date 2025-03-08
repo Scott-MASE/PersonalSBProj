@@ -1,3 +1,13 @@
+const loginh = "content/login.html";
+const loginj = "javascript/login.js";
+
+const dashboardh = "content/dashboard.html";
+const dashboardj = "javascript/dashboard.js";
+
+const registrationh = "content/registration.html";
+const registrationj = "javascript/registration.js";
+
+
 function loadScript(src, callback) {
     var script = document.createElement('script');
     script.src = src;
@@ -30,10 +40,8 @@ function loadPage(page, jsFile) {
 $(document).ready(function() {
 
 
-	loadPage("content/login.html", "javascript/login.js");
+	loadPage(dashboardh, dashboardj);
+//	loadPage(registrationh, registrationj);
+//	loadPage(loginh, loginj);
 
-
-	$("#switch-to-registration").on("click", function() {
-		loadPage("content/registration.html", "javascript/registration.js");
-	});
 });
