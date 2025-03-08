@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your stylesheet -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Three Divs</title>
     <style>
-        .sidebar {
-            width: 200px;
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
-            background-color: #2a2a2a;
-            padding: 20px;
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding: 20px; /* Margin between divs and edges of screen */
+            box-sizing: border-box; /* Include padding in the height calculation */
+        }
+
+        .section {
+            height: 30%; /* Set the divs to take up 30% of the screen height */
+            margin: 10px 0; /* Margin between the divs */
+            background-color: black; /* Set divs' background to black */
+            color: white; /* Text color for contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">Sidebar</div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="container">
+        <div class="section">Top Section</div>
+        <div class="section">Middle Section</div>
+        <div class="section">Bottom Section</div>
+    </div>
 </body>
 </html>

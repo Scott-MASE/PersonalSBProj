@@ -1,95 +1,92 @@
 package com.tus.proj.user_managment;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-	private static final Logger logger = Logger.getLogger(UserController.class.getName());
+    private final UserService userService;
+    private final UserRepository userRepository;
 
-	private final UserService userService;
-	private final UserRepository userRepository;
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
 
-	public UserController(UserService userService, UserRepository userRepository) {
-		this.userService = userService;
-		this.userRepository = userRepository;
-	}
+    @PostMapping("/register")
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
+        // Validate username
+        if (request.getUsername().length() < 2) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 2 characters long.");
+        }
 
-	@PostMapping("/register") // ✅ Must match frontend AJAX request URL
-	public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
+        // Validate password
+        if (!isValidPassword(request.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must meet security requirements.");
+        }
 
-		// Validate username
-		if (request.getUsername().length() < 2) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 2 characters long.");
-		}
+        // Check if username exists
+        if (userService.findUserByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is already taken.");
+        }
 
-		// Validate password
-		if (!isValidPassword(request.getPassword())) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must meet security requirements.");
-		}
+        // Save user
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setRole(UserRole.USER); // Set role to USER
 
-		// Check if username exists
-		if (userService.findUserByUsername(request.getUsername()).isPresent()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is already taken.");
-		}
+        User createdUser = userService.saveUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
 
-		// Save user
-		User user = new User();
-		user.setUsername(request.getUsername());
-		user.setPassword(request.getPassword());
-		user.setRole(UserRole.USER); // ✅ Ensure role is set
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginValidation(@RequestParam String username,
+            @RequestParam String password) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
 
-		User createdUser = userService.saveUser(user);
-		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-	}
+        Map<String, String> response = new HashMap<>();
 
-	@PostMapping("/login")
-	public ResponseEntity<Map<String, String>> loginValidation(@RequestParam String username, @RequestParam String password) {
-	    Optional<User> userq = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getPassword().equals(password)) {
+                // Generate JWT Token
+                String token = userService.generateJwtToken(user);
 
-	    Map<String, String> response = new HashMap<>();
-	    
-	    if (userq.isPresent()) {
-	        User user = userq.get();
-	        if (user.getPassword().equals(password)) {
-	            // Success response
-	            response.put("message", "Success");
-	            return ResponseEntity.ok(response);
-	        } else {
-	            // Invalid password response
-	            response.put("message", "Invalid password");
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-	        }
-	    } else {
-	        // User not found response
-	        response.put("message", "User not found");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	    }
-	}
+                response.put("message", "Success");
+                response.put("token", token);  // Include token in response
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("message", "Invalid password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } else {
+            response.put("message", "User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 
+    private boolean isValidPassword(String password) {
+        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[*@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
+    }
 
-	private boolean isValidPassword(String password) {
-		return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[*@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
-	}
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 
-	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		return new ResponseEntity<>(users, HttpStatus.OK);
-	}
-
-	@DeleteMapping("delete/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-		boolean deleted = userService.deleteUser(id);
-		return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-	}
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        boolean deleted = userService.deleteUser(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
 }

@@ -25,7 +25,6 @@ public class Note {
     @JoinColumn(name = "user_id", nullable = false) 
     private User user;
 
-    // Constructors
     public Note() {}
 
     public Note(String title, String content, Priority priority, LocalDateTime deadline, User user) {
@@ -36,7 +35,6 @@ public class Note {
         this.user = user;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }

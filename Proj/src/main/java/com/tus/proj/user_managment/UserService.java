@@ -3,6 +3,8 @@ package com.tus.proj.user_managment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tus.proj.service.JwtService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,10 +12,12 @@ import java.util.Optional;
 public class UserService {
     
     private final UserRepository userRepository;
+    private final JwtService jwtService;  // Inject JwtUtil
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;  // Initialize JwtUtil
     }
 
     public Optional<User> findUserByUsername(String username) {
@@ -36,6 +40,24 @@ public class UserService {
 	    }
 	    return false; // User not found
 	}
+	
+	public Optional<User> authenticate(String userName, String password) {
+	    Optional<User> userOptional = userRepository.findByUsername(userName);
+
+	    if (userOptional.isPresent()) {
+	        User user = userOptional.get();
+
+	        if (user.getPassword().equals(password)) {
+	            return Optional.of(user); 
+	        }
+	    }
+
+	    return Optional.empty();  
+	}
+	
+    public String generateJwtToken(User user) {
+        return jwtService.generateToken(user.getUsername(), user.getRole());
+    }
 
 }
 

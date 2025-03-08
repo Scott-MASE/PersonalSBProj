@@ -1,6 +1,12 @@
 package com.tus.proj.user_managment;
 
 import jakarta.persistence.*;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.tus.proj.note_managment.Note;
@@ -8,7 +14,7 @@ import com.tus.proj.note_managment.Note;
 
 @Entity
 @Table(name = "users") // Renamed to avoid conflicts with reserved keywords
-public class User {
+public class User implements UserDetails{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -31,6 +37,13 @@ public class User {
         this.password = password;
         this.role = role;
     }
+    
+    @Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(role);
+		return authorities;
+	}
 
     // Getters and Setters
     public int getId() {
