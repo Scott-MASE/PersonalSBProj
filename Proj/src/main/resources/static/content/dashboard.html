@@ -18,11 +18,40 @@
     <title>Three Divs</title>
 </head>
 <body>
+	<!-- Bootstrap Modal -->
+	<div class="modal fade" id="createNoteModal" tabindex="-1" aria-labelledby="createNoteModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="createNoteModalLabel">Create Note</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <form>
+	          <div class="mb-3">
+	            <label for="noteTitle" class="form-label">Title</label>
+	            <input type="text" class="form-control" id="noteTitle" placeholder="Enter note title">
+	          </div>
+	          <div class="mb-3">
+	            <label for="noteContent" class="form-label">Content</label>
+	            <textarea class="form-control" id="noteContent" rows="3" placeholder="Enter note content"></textarea>
+	          </div>
+	          <button type="submit" class="btn btn-primary">Save Note</button>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
 	
 
 
 	<div class="sidebar"></div>
-	<div class="topbar"><h3>HiveNotes</h3></div> 
+	<div class="topbar">
+	<!--<h3>HiveNotes</h3>-->	
+		<button class="btn btn-primary" id="create-note"><i class="bi bi-plus"></i> Add Note</button>
+		
+	</div> 
 	<div class="scrollview"> 
 		<div class="top-scroll">
 				
