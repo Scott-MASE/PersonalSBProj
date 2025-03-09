@@ -23,7 +23,7 @@ $(document).ready(function() {
 	$('#create-note').off('click').on('click', function(e) {
 	    e.preventDefault(); // Prevent default behavior
 	    console.log("Opening modal...");
-	    $('#editNoteModal').modal('show'); // Open Bootstrap modal
+	    $('#createNoteModal').modal('show'); // Open Bootstrap modal
 	});
 	
 	$('#noteForm').off('submit').on('submit', function(event) {
@@ -33,10 +33,10 @@ $(document).ready(function() {
 //		let userId = localStorage.getItem("userId");
 //		console.log(userId)
 		
-		if (!userId) {
-		    alert("User is not logged in.");
-		    return;  // If user ID is not found, stop the submission
-		}
+//		if (!userId) {
+//		    alert("User is not logged in.");
+//		    return;  // If user ID is not found, stop the submission
+//		}
 
 	    // Extract form data
 	    let noteData = {
@@ -45,11 +45,7 @@ $(document).ready(function() {
 	        tag: $("#noteTag").val().trim(),
 	        priority: $("#notePriority").val(),
 	        deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-	        user: {
-	            id: userId, // Replace with actual logged-in user ID
-	            username: "testUser",
-	            role: "USER"
-	        }
+	        user: "1"
 	    };
 
 	    // Send AJAX request
@@ -68,6 +64,7 @@ $(document).ready(function() {
 
 	            // Reset form
 	            $("#noteForm")[0].reset();
+				findAllNotes();
 	        },
 	        error: function (xhr, status, error) {
 	            console.error("Error:", error);
