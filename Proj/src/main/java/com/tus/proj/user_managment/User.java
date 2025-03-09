@@ -1,33 +1,32 @@
 package com.tus.proj.user_managment;
 
 import jakarta.persistence.*;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.tus.proj.note_managment.Note;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.tus.proj.note_managment.Note;
-
-
 @Entity
-@Table(name = "users") // Renamed to avoid conflicts with reserved keywords
-public class User implements UserDetails{
-    
+@Table(name = "users")
+public class User implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    private int id; 
-    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String username;
     private String password;
 
-    @Enumerated(EnumType.STRING) // Stores role as a string in the database
-    private UserRole role; // New field for user role
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
-    private List<Note> notes; // One user has many notes
+    // You can still keep this if you want to access user's notes in some parts of your code
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Note> notes;
 
     // Constructors
     public User() {}
@@ -37,13 +36,13 @@ public class User implements UserDetails{
         this.password = password;
         this.role = role;
     }
-    
+
     @Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(role);
-		return authorities;
-	}
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(role);
+        return authorities;
+    }
 
     // Getters and Setters
     public int getId() {

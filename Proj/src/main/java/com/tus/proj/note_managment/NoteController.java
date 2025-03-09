@@ -43,9 +43,7 @@ public class NoteController {
         if (noteRequest.getTitle() == null || noteRequest.getTitle().isEmpty()) {
             return ResponseEntity.badRequest().body("Title is required");
         }
-        if (noteRequest.getUser() == null) {
-            return ResponseEntity.badRequest().body("User is required");
-        }
+
 
         Note note = new Note(
             noteRequest.getTitle(),
@@ -61,7 +59,7 @@ public class NoteController {
     }
 
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Note>> getAllNotes() {
         List<Note> notes = noteService.getAllNotes();
         return ResponseEntity.ok(notes);
@@ -83,7 +81,7 @@ public class NoteController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateNote(@PathVariable int id, @RequestBody CreateNoteRequest noteRequest) {
+    public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody CreateNoteRequest noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
@@ -112,5 +110,24 @@ public class NoteController {
 
         noteService.deleteNote(id);
         return ResponseEntity.ok("Note deleted successfully");
+    }
+    
+    @PutMapping("/{id}/content")
+    public ResponseEntity<?> updateNoteContent(@PathVariable int id, @RequestBody String newContent) {
+        Optional<Note> existingNote = noteService.getNoteById(id);
+        if (existingNote.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+        }
+
+        Note note = existingNote.get();
+
+        // Remove extra quotes if they exist (to fix old data)
+        if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
+            newContent = newContent.substring(1, newContent.length() - 1);
+        }
+
+        note.setContent(newContent);
+        Note savedNote = noteService.updateNote(id, note);
+        return ResponseEntity.ok(savedNote);
     }
 }

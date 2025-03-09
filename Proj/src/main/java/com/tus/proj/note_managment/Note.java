@@ -2,7 +2,7 @@ package com.tus.proj.note_managment;
 
 import java.time.LocalDateTime;
 
-import com.tus.proj.user_managment.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,8 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,24 +24,23 @@ public class Note {
     private String content;
     private String tag;
 
-    @Enumerated(EnumType.STRING) 
+    @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    private LocalDateTime deadline; 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime deadline;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) 
-    private User user;
+    private int userId;  // Changed from User to userId as an integer
 
     public Note() {}
 
-    public Note(String title, String content, Priority priority, LocalDateTime deadline, User user, String tag) {
+    public Note(String title, String content, Priority priority, LocalDateTime deadline, int userId, String tag) {
         this.title = title;
         this.content = content;
         this.priority = priority;
         this.deadline = deadline;
+        this.userId = userId;
         this.tag = tag;
-        this.user = user;
     }
 
     public int getId() {
@@ -86,19 +83,19 @@ public class Note {
         this.deadline = deadline;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;  // Getter for userId
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;  // Setter for userId
     }
 
-	public String getTag() {
-		return tag;
-	}
+    public String getTag() {
+        return tag;
+    }
 
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 }

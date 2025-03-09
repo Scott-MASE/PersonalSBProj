@@ -9,11 +9,7 @@ const registrationj = "javascript/registration.js";
 
 
 function loadScript(src, callback) {
-    var script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    script.onload = callback;
-    document.head.appendChild(script);
+console.log("huh");
 }
 
 function unloadScript(src) {

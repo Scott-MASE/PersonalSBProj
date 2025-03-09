@@ -12,7 +12,7 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     
     List<Note> findByPriority(Priority priority);
 
-    List<Note> findByUser(User user);
+    List<Note> findByUserId(int userId);
     
     List<Note> findByTag(String tag);
 }

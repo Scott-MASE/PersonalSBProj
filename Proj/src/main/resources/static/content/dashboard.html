@@ -12,11 +12,10 @@
 	            background-color: #282828;
 	        }
 	    </style>
-	    <title>Three Divs</title>
 	</head>
 
 <body>
-	<!-- Bootstrap Modal -->
+	<!-- Bootstrap Modal for creating notes -->
 	<div class="modal fade" id="createNoteModal" tabindex="-1" aria-labelledby="createNoteModalLabel" aria-hidden="true">
 	    <div class="modal-dialog modal-dialog-centered">
 	        <div class="modal-content custom-modal">
@@ -52,6 +51,28 @@
 	        </div>
 	    </div>
 	</div>
+	
+	<!-- Bootstrap Modal for Editing Note -->
+	<div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-centered">
+	        <div class="modal-content custom-modal">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="editNoteTitle">Note Title</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
+	            <div class="modal-body">
+	                <form id="editNoteForm">
+	                    <div class="input-group">
+	                        <label for="editNoteContent">Content</label>
+	                        <textarea id="editNoteContent" rows="6" placeholder="Edit note content"></textarea>
+	                    </div>
+	                    <button type="submit" class="btn btn-primary w-100 mt-3">Save</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
 
 
 	
@@ -63,121 +84,13 @@
 		<div class="bee-graphic-r"></div>
 
 		<h3>HiveNotes</h3>	
-		<h4 id="username">hullo</h4>
+		<h4 id="username">Scott</h4>
 		<button class="btn btn-primary" id="create-note"><i class="bi bi-plus"></i> Add Note</button>
 		
 	</div> 
 
 		<div class="scrollview">
 			
-		    <button class="note-tile-btn">
-		        <div class="note-tile">
-		            <p class="note-title">Note 1</p>
-		            <p class="note-tags">Tags: <span>Work, Urgent</span></p>
-		            <p class="note-priority">Priority: <span>High</span></p>
-		            <p class="note-deadline">Deadline:<br><span>2025-03-10</span></p>
-		        </div>
-		    </button>
-
-		    <button class="note-tile-btn">
-		        <div class="note-tile">
-		            <p class="note-title">Note 2</p>
-		            <p class="note-tags">Tags: <span>Personal</span></p>
-		            <p class="note-priority">Priority: <span>Medium</span></p>
-		            <p class="note-deadline">Deadline:<br><span>2025-03-15</span></p>
-		        </div>
-		    </button>
-
-		    <button class="note-tile-btn">
-		        <div class="note-tile">
-		            <p class="note-title">Note 3</p>
-		            <p class="note-tags">Tags: <span>Meeting</span></p>
-		            <p class="note-priority">Priority: <span>Low</span></p>
-		            <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-		        </div>
-		    </button>
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 4</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 5</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-			
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 6</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-			
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 7</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 8</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 9</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 10</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 11</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
-			<button class="note-tile-btn">
-			    <div class="note-tile">
-			        <p class="note-title">Note 12</p>
-			        <p class="note-tags">Tags: <span>Meeting</span></p>
-			        <p class="note-priority">Priority: <span>Low</span></p>
-			        <p class="note-deadline">Deadline:<br><span>2025-03-20</span></p>
-			    </div>
-			</button>
-
 
 
 
