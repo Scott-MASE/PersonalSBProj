@@ -2,6 +2,7 @@ package com.tus.proj.user_managment;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.tus.proj.service.UserService;
@@ -91,5 +92,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         boolean deleted = userService.deleteUser(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+    @GetMapping("username")
+    public ResponseEntity<String> getCurrentUsername(Authentication authentication) {
+        // Get the currently logged-in user's username from the authentication object
+        String username = authentication.getName(); // Extracts the username from the SecurityContext
+
+        return ResponseEntity.ok(username);
     }
 }

@@ -40,8 +40,8 @@ function loadPage(page, jsFile) {
 $(document).ready(function() {
 
 
-//	loadPage(dashboardh, dashboardj);
+	loadPage(dashboardh, dashboardj);
 //	loadPage(registrationh, registrationj);
-	loadPage(loginh, loginj);
+//	loadPage(loginh, loginj);
 
 });

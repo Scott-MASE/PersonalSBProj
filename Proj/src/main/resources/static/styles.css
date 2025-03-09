@@ -211,12 +211,20 @@ button:hover {
 }
 
 .scrollview {
-	position: fixed;
-	bottom: 0;
-	width: 85vw; 
-	height: 90vh;
-	right: 0;
-	background-color: var(--darkestGrey);
+    position: fixed;
+    bottom: 0;
+    width: 85vw;
+    height: 90vh;
+    right: 0;
+    background-color: var(--darkestGrey);
+    
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping to next row */
+    gap: 25px; /* Spacing between tiles */
+    padding: 15px;
+    overflow-y: auto; /* Enables vertical scrolling if needed */
+    align-content: flex-start; /* Ensures rows are filled from the top */
+    justify-content: flex-start; /* Aligns items to the left */
 }
 
 .top-scroll{
@@ -308,6 +316,125 @@ button:hover {
 	color: var(--orange);
 	font-size: 36px;
 }
+
+#create-note {
+    position: relative;
+    top: 30%;
+    left: 10%;
+    transform: translate(-50%, -50%); /* Perfect centering */
+    width: 15vw;
+    background-color: var(--black);  /* Set button background to black */
+    color: var(--orange);  /* Set text color to orange */
+    border: none;  /* Optional: removes the border */
+    padding: 10px 20px;  /* Optional: padding for better button size */
+    font-size: 16px;  /* Optional: increase font size */
+    border-radius: 5px;  /* Optional: rounded corners */
+    text-align: center;  /* Optional: align text properly */
+}
+
+#create-note:hover {
+    background-color: #333;  /* Darker shade of black on hover */
+    color: #ff6600;  /* Darker orange on hover */
+}
+
+h4 {
+	position: absolute;
+	top: 50%;
+	right: 0%;
+	transform: translate(-50%, -50%); /* Perfect centering */
+	font-size: 40px;
+	color: var(--black);
+}
+
+.note-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers text vertically */
+    align-items: center; /* Centers text horizontally */
+    text-align: center;
+    
+    width: 250px;
+    height: 250px;
+    background-image: url('/images/hex.png'); /* Background image */
+    background-size: 125%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--darkestGrey);
+    border-radius: 10px;
+    padding: 25px;
+    color: var(--grey);
+
+}
+
+.note-title {
+	font-weight: bold;
+    font-size: 20px;
+    color: var(--black);
+    margin-bottom: 10px;
+	text-align: center; /* Centers the text horizontally */
+	
+}
+
+.note-tags, 
+.note-priority, 
+.note-deadline {
+    font-size: var(--font);
+    color: var(--black);
+    margin: 10px 0;
+	text-align: center;
+}
+
+.note-tags span, 
+.note-priority span, 
+.note-deadline span {
+    font-weight: bold;
+    color: var(--black);
+}
+
+
+.note-tile-btn {
+    all: unset; /* Removes default button styling */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+	margin-right: 40px;
+    width: 250px; /* Matches note-tile width */
+}
+
+.note-deadline span {
+    display: block; /* Forces the date onto a new line */
+    font-weight: bold;
+    color: var(--black);
+}
+
+.bee-graphic-r {
+	position: absolute;
+	top: -1vh;
+	left: 30vw;
+    background-image: url('/images/bee.png');
+    background-size: contain; /* or cover, depending on your preference */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100px; /* Set a height for the element */
+    width: 100px;  /* Set a width for the element */
+}
+
+.bee-graphic-l {
+    position: absolute;
+    top: -1vh;
+    right: 30vw;
+    background-image: url('/images/bee.png');
+    background-size: contain; /* or cover, depending on your preference */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100px; /* Set a height for the element */
+    width: 100px;  /* Set a width for the element */
+    transform: scaleX(-1); /* This will mirror the image horizontally */
+}
+
+	
+
+
 
 
 

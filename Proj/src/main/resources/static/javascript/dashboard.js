@@ -1,5 +1,17 @@
 $(document).ready(function() {
 	
+	$.ajax({
+	    type: "GET",
+	    url: "/api/users/username",  // Your endpoint to fetch the username
+	    success: function(response) {
+	        // Update the <h4> with the username
+	        $('#username').text(response);
+	    },
+	    error: function(xhr, status, error) {
+			console.error("Error fetching username: ", error);
+			$('#username').text("Guest"); // Display "Guest" if not authenticated
+	    }
+	});
 
 	
 	
@@ -13,8 +25,8 @@ $(document).ready(function() {
 	    event.preventDefault(); // Prevent default form submission
 		console.log("creating")
 		
-		let userId = localStorage.getItem("userId");
-		console.log(userId)
+//		let userId = localStorage.getItem("userId");
+//		console.log(userId)
 		
 		if (!userId) {
 		    alert("User is not logged in.");
@@ -29,7 +41,7 @@ $(document).ready(function() {
 	        priority: $("#notePriority").val(),
 	        deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
 	        user: {
-	            id: 1, // Replace with actual logged-in user ID
+	            id: userId, // Replace with actual logged-in user ID
 	            username: "testUser",
 	            role: "USER"
 	        }
