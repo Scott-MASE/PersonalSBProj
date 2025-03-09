@@ -51,11 +51,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginValidation(@RequestParam String username,
-            @RequestParam String password) {
+    public ResponseEntity<LoginResponse> loginValidation(@RequestParam String username,
+                                                         @RequestParam String password) {
         Optional<User> userOptional = userRepository.findByUsername(username);
-
-        Map<String, String> response = new HashMap<>();
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -63,16 +61,19 @@ public class UserController {
                 // Generate JWT Token
                 String token = userService.generateJwtToken(user);
 
-                response.put("message", "Success");
-                response.put("token", token);  // Include token in response
-                return ResponseEntity.ok(response);
+                // Create LoginResponse with message and userId
+                LoginResponse loginResponse = new LoginResponse("Success", user.getId());
+
+                return ResponseEntity.ok(loginResponse);
             } else {
-                response.put("message", "Invalid password");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                // Invalid password
+                LoginResponse loginResponse = new LoginResponse("Invalid password", null);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
             }
         } else {
-            response.put("message", "User not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            // User not found
+            LoginResponse loginResponse = new LoginResponse("User not found", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
         }
     }
 

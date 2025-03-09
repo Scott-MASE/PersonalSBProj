@@ -10,10 +10,9 @@ $(document).ready(function() {
 	
 	$('#login-form').off('submit').on('submit', function(e) {
 	    e.preventDefault(); 
-	    
+
 	    var username = $('#username').val();
 	    var password = $('#password').val();
-
 
 	    $.ajax({
 	        url: '/api/users/login',
@@ -24,6 +23,10 @@ $(document).ready(function() {
 	        },
 	        success: function(response) {
 	            if (response.message === "Success") {
+	                // Store the user ID in localStorage or a global variable
+	                localStorage.setItem("userId", response.userId);
+
+	                // Navigate to the dashboard
 	                loadPage(dashboardh, dashboardj);
 	            } else {
 	                alert(response.message); 

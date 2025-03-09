@@ -1,9 +1,13 @@
 package com.tus.proj.note_managment;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.tus.proj.service.NoteService;
+import com.tus.proj.user_managment.User;
+import com.tus.proj.user_managment.UserRole;
 
 import org.springframework.http.HttpStatus;
 
@@ -23,6 +27,19 @@ public class NoteController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createNote(@RequestBody CreateNoteRequest noteRequest) {
+    	
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentication error.");
+//        }
+        
+//        User loggedInUser = (User) authentication.getPrincipal();  // Safely cast
+
+        // Check if the logged-in user has the 'USER' role
+//        if (loggedInUser.getRole() != UserRole.USER) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to create notes.");
+//        }
+        
         if (noteRequest.getTitle() == null || noteRequest.getTitle().isEmpty()) {
             return ResponseEntity.badRequest().body("Title is required");
         }

@@ -61,13 +61,40 @@ form {
 }
 
 /* Form elements */
-.input-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-	max-width: 500px; 
-	width: 100%;
-    margin-bottom: 15px;
+/* Style the select dropdown to match input fields */
+.input-group select {
+    width: 95%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    appearance: none; /* Removes default system styling */
+    cursor: pointer;
+}
+
+/* Add a dropdown arrow icon */
+.input-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+}
+
+/* Ensure consistency when hovering or focusing */
+.input-group select:hover,
+.input-group select:focus {
+    border-color: var(--orange);
+    outline: none;
+}
+
+/* Style dropdown options */
+.input-group select option {
+    background-color: #2a2a2a;
+    color: var(--grey);
+    padding: 10px;
 }
 
 
@@ -214,5 +241,75 @@ button:hover {
     left: 0;
     top: 6.25vh;
 }
+
+.custom-modal {
+	width: 550px; /* Adjust width for better spacing */
+	max-width: 90%; /* Ensure responsiveness */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+    padding: 20px;
+}
+
+#noteForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.custom-modal .modal-header {
+    border-bottom: 1px solid var(--darkGrey);
+}
+
+.custom-modal .btn-close {
+    filter: invert(1);
+}
+
+.input-group textarea {
+    width: 95%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    resize: none;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.modal-title{
+	color: var(--orange);
+	font-size: 36px;
+}
+
+
+
 
 
