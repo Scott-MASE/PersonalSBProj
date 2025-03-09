@@ -97,7 +97,7 @@ $(document).ready(function() {
 	        let htmlStr = '<button class="note-tile-btn" data-note-id="' + note.id + '" data-note-title="' + note.title + '" data-note-content="' + note.content + '">';
 	        htmlStr += '<div class="note-tile">';
 	        htmlStr += '<p class="note-title">' + note.title + '</p>';
-	        htmlStr += '<p class="note-tags">Tags: <span>' + note.tag + '</span></p>';
+	        htmlStr += '<p class="note-tags">Tag: <span>' + note.tag + '</span></p>';
 	        htmlStr += '<p class="note-priority">Priority: <span>' + note.priority + '</span></p>';
 	        htmlStr += '<p class="note-deadline">Deadline:<br><span>' + note.deadline + '</span></p>';
 	        htmlStr += '</div>';

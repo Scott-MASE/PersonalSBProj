@@ -8,9 +8,7 @@ const registrationh = "content/registration.html";
 const registrationj = "javascript/registration.js";
 
 
-function loadScript(src, callback) {
-console.log("huh");
-}
+
 
 function unloadScript(src) {
     $("script[src='" + src + "']").remove();
@@ -22,11 +20,6 @@ function loadPage(page, jsFile) {
             $("script[src='" + jsFile + "']").remove();
         }
 
-        if (jsFile) {
-            loadScript(jsFile, function() {
-                console.log(jsFile + " has been loaded.");
-            });
-        }
 
     });
 }

@@ -11,6 +11,7 @@ import com.tus.proj.user_managment.UserRole;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,8 @@ public class NoteController {
     @GetMapping("/getAll")
     public ResponseEntity<List<Note>> getAllNotes() {
         List<Note> notes = noteService.getAllNotes();
+        Collections.reverse(notes);
+
         return ResponseEntity.ok(notes);
     }
 
