@@ -112,20 +112,52 @@ $(document).ready(function() {
 
 	});
 	
+	$(document).on("click", ".bi-trash-fill.trash-icon", function() {
+	    let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
+
+	    let noteId = $noteTileBtn.data("note-id");
+	    let noteTitle = $noteTileBtn.data("note-title");
+	    $("#deleteNoteModalLabel").text("Delete " + noteTitle + "?");
+	    $("#deleteNoteModal").data("note-id", noteId);
+	    $("#deleteNoteModal").modal("show");
+	});
+
+	$("#confirmDelete").on("click", function() {
+
+	    let noteId = $("#deleteNoteModal").data("note-id");
+
+
+	    $.ajax({
+	        type: "DELETE",
+	        url: "/api/notes/" + noteId +"/delete",  
+	        success: function(response) {
+	            
+	            let modalElement = $("#deleteNoteModal");
+	            let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
+	            modalInstance.hide();
+
+
+	            findAllNotes();  
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error:", error);
+	            alert("Failed to delete note.");
+	        }
+	    });
+	});
+
+	
 	$(document).on("click", ".bi-gear-fill.cog-icon", function() {
-	    // Find the closest .note-tile-btn from the clicked cog icon
 	    let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
 	    
-	    // Retrieve data from the closest .note-tile-btn
 	    let noteId = $noteTileBtn.data("note-id");
 	    let noteTitle = $noteTileBtn.data("note-title");
 	    let noteTag = $noteTileBtn.data("note-tag");
 	    let notePriority = $noteTileBtn.data("note-priority");
 	    let noteDeadline = $noteTileBtn.data("note-deadline");
 
-	    // Populate the modal with the existing note data
-	    $("#noteTitle").val(noteTitle);  // Set title in the input field
-	    $("#noteTag").val(noteTag);  // Set tag in the input field
+	    $("#noteTitle").val(noteTitle);  
+	    $("#noteTag").val(noteTag);  
 	    $("#notePriority").val(notePriority);  // Set priority in the select field
 	    $("#noteDeadline").val(noteDeadline);  // Set deadline in the input field
 
@@ -159,12 +191,11 @@ $(document).ready(function() {
 	
 	var renderNotes = function(data) {
 	    console.log("populating notes");
-	    $('.scrollview').empty(); // Clear the existing notes
+	    $('.scrollview').empty(); 
 
 	    $.each(data, function(index, note) {
-	        let htmlStr = '<div class="note-tile-container">';  // Container for each note tile
+	        let htmlStr = '<div class="note-tile-container">'; 
 	        
-	        // Add the button with data-* attributes populated by note data
 	        htmlStr += '<button class="note-tile-btn" data-note-id="' + note.id + '" data-note-title="' + note.title + '" data-note-content="' + note.content + '" data-note-tag="' + note.tag + '" data-note-priority="' + note.priority + '" data-note-deadline="' + note.deadline + '">';
 	        
 	        htmlStr += '<div class="note-tile">';
@@ -175,41 +206,40 @@ $(document).ready(function() {
 	        htmlStr += '</div>';
 	        htmlStr += '</button>';
 
-	        // Add the cog icon with unique ID
 	        htmlStr += '<i id="cog-btn-' + note.id + '" class="bi bi-gear-fill cog-icon"></i>';
+			htmlStr += '<i id="trash-btn-' + note.id + '" class="bi bi-trash-fill trash-icon"></i>';
 	        
 	        htmlStr += '</div>';
 	        
-	        $('.scrollview').append(htmlStr);  // Append to scrollview
+	        $('.scrollview').append(htmlStr);  
 	    });
 	};
 
 	
 	$(document).on("click", ".bi-gear-fill.cog-icon", function() {
-	    // Find the closest .note-tile-btn from the clicked cog icon
+
 	    let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
 	    
-	    // Retrieve data from the closest .note-tile-btn
+
 	    let noteId = $noteTileBtn.data("note-id");
 	    let noteTitle = $noteTileBtn.data("note-title");
 	    let noteTag = $noteTileBtn.data("note-tag");
 	    let notePriority = $noteTileBtn.data("note-priority");
 	    let noteDeadline = $noteTileBtn.data("note-deadline");
 
-	    // Populate the modal with the existing note data
-	    $("#noteTitle").val(noteTitle);  // Set title in the input field
-	    $("#noteTag").val(noteTag);  // Set tag in the input field
-	    $("#notePriority").val(notePriority);  // Set priority in the select field
-	    $("#noteDeadline").val(noteDeadline);  // Set deadline in the input field
 
-	    // Update the modal title and button text
+	    $("#noteTitle").val(noteTitle);  
+	    $("#noteTag").val(noteTag);  
+	    $("#notePriority").val(notePriority);  
+	    $("#noteDeadline").val(noteDeadline);  
+
+
 	    $("#createNoteModalLabel").text("Edit Note");
 	    $("#save-or-create").text("Save");
 
-	    // Store the noteId in the form data for later use when saving
 	    $("#noteForm").data("note-id", noteId);
 
-	    // Open the modal
+
 	    $("#createNoteModal").modal("show");
 	});
 

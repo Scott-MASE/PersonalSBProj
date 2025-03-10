@@ -451,6 +451,21 @@ h4 {
 	z-index: 10;
 }
 
+.bi-trash-fill {
+    position: absolute;
+    top: 2vh;
+    left: 1vw;
+    width: 5px;
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-block;
+	cursor: pointer;
+	z-index: 10;
+}
+
 .note-tile-container {
     position: relative; /* Makes this the reference for absolute positioning */
     width: 250px;

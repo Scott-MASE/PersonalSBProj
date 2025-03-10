@@ -105,7 +105,7 @@ public class NoteController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteNote(@PathVariable int id) {
         Optional<Note> note = noteService.getNoteById(id);
         if (note.isEmpty()) {
