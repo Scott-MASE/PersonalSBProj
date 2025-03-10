@@ -83,23 +83,24 @@ public class NoteController {
 
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/meta")
     public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody CreateNoteRequest noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
         }
+        System.out.println("note found");
+        
+        Note note = existingNote.get();
+        
+        note.setDeadline(noteRequest.getDeadline());
+        note.setPriority(noteRequest.getPriority());
+        note.setTag(noteRequest.getTag());
+        note.setTitle(noteRequest.getTitle());
+        
+       
 
-        Note updatedNote = new Note(
-            noteRequest.getTitle(),
-            noteRequest.getContent(),
-            noteRequest.getPriority(),
-            noteRequest.getDeadline(),
-            noteRequest.getUser(),
-            noteRequest.getTag()
-        );
-
-        Note savedNote = noteService.updateNote(id, updatedNote);
+        Note savedNote = noteService.updateNote(id, note);
         return ResponseEntity.ok(savedNote);
     }
 

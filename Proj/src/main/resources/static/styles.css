@@ -352,6 +352,7 @@ h4 {
     justify-content: center; /* Centers text vertically */
     align-items: center; /* Centers text horizontally */
     text-align: center;
+	position: relative;
     
     width: 250px;
     height: 250px;
@@ -432,7 +433,32 @@ h4 {
     transform: scaleX(-1); /* This will mirror the image horizontally */
 }
 
+
 	
+/* Keep the icon styling the same */
+.bi-gear-fill {
+    position: absolute;
+    top: 2vh;
+    right: 2vw;
+    width: 5px;
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-block;
+	cursor: pointer;
+	z-index: 10;
+}
+
+.note-tile-container {
+    position: relative; /* Makes this the reference for absolute positioning */
+    width: 250px;
+    height: 250px;
+}
+
+
+
 
 
 
