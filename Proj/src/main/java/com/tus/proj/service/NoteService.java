@@ -2,6 +2,8 @@ package com.tus.proj.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,31 @@ public class NoteService {
 		this.noteRepository = noteRepository;
 	}
 	
+	public List<Note> getNotesByTagListAndUserId(List<String> tags, int id) {
+	    List<Note> allNotes = new ArrayList<>();
+	    List<Note> userNotes = new ArrayList<>();
+	    
+	    for (String tag : tags) {
+	        List<Note> notes = noteRepository.findByTag(tag);
+	        
+	        allNotes.addAll(notes);
+	    }
+	    
+	    for(Note note: allNotes) {
+	    	if(note.getUserId() == id) {
+	    		userNotes.add(note);
+	    	}
+	    }
+	    
+	    return userNotes;
+	}
+	
+	public List<String> getAllUniqueTagsByUserId(int id){
+		return noteRepository.findDistinctTagsByUserId(1);
+		
+	}
+
+	
 	// Create or update a note
 	public Note saveNote(Note note) {
 		return noteRepository.save(note);
@@ -26,6 +53,10 @@ public class NoteService {
 	// Retrieve all notes
 	public List<Note> getAllNotes() {
 		return noteRepository.findAll();
+	}
+	
+	public List<Note> getAllNotesByUserId(int id){
+		return noteRepository.findByUserId(id);
 	}
 	
 	// Retrieve a single note by ID

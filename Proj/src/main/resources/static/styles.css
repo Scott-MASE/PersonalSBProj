@@ -189,15 +189,28 @@ button:hover {
 }
 
 .sidebar {
-	position: fixed;
-	top: 0;
-	width: 15vw; 
-	height: 100vh;
-	background-size: contain;
-	background-repeat: repeat-y;
-	background-position: center;
-	left: 0;
-	background-color: var(--black);
+    position: fixed;
+    top: 10vh;
+    width: 20vw;
+    height: 100vh;
+    background-size: contain;
+    background-repeat: repeat-y;
+    background-position: center;
+    left: 0;
+    background-color: var(--black);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-scrollview {
+    flex-grow: 1;
+	position: relative;
+    overflow-y: auto;
+	top:10vh;
+    padding: 20px; /* Increase padding for visibility */
+    max-height: 60vh;
+    background-color: var(--darkestGrey); /* Add contrast */
+    border: 2px solid var(--orange); /* Optional: Helps see the div */
 }
 
 .topbar {
@@ -213,7 +226,7 @@ button:hover {
 .scrollview {
     position: fixed;
     bottom: 0;
-    width: 85vw;
+    width: 80vw;
     height: 90vh;
     right: 0;
     background-color: var(--darkestGrey);
@@ -471,6 +484,64 @@ h4 {
     width: 250px;
     height: 250px;
 }
+
+#logout-button {
+    position: absolute;
+    bottom: 12vh;
+    left: 2vw;
+	width: 80%;
+}
+
+.custom-checkbox {
+	position: relative;
+    display: flex;
+	margin-bottom: 5px;
+    align-items: center;
+    font-size: 18px;
+    color: var(--orange);
+    cursor: pointer;
+}
+
+.custom-checkbox input {
+    display: none; /* Hide default checkbox */
+}
+
+.custom-checkbox .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--orange);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input:checked + .checkmark {
+    background-color: var(--orange);
+    border-color: var(--orange);
+}
+
+.custom-checkbox .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid var(--black);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-checkbox input:checked + .checkmark::after {
+    opacity: 1;
+}
+
+
+
 
 
 

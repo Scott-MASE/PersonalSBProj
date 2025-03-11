@@ -1,7 +1,19 @@
 $(document).ready(function() {
 	
+	
 	var rootURL = "http://localhost:9092";
+	
+	$("#username").text(username);  
+	console.log(username);
+	console.log(logged_userId);
 
+
+		
+	$('#logout-button').off('click').on('click', function() {
+		console.log("logging out");
+		username = "Guest";
+		loadPage(loginh, loginj);
+		});
 	
 
 
@@ -41,7 +53,7 @@ $(document).ready(function() {
 			    tag: $("#noteTag").val().trim(),
 			    priority: $("#notePriority").val(),
 			    deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-			    user: "1"
+			    user: logged_userId
 			};
 
 			// Send AJAX request
@@ -61,6 +73,7 @@ $(document).ready(function() {
 			        // Reset form
 			        $("#noteForm")[0].reset();
 					findAllNotes();
+					findAllTags();
 			    },
 			    error: function (xhr, status, error) {
 			        console.error("Error:", error);
@@ -99,6 +112,7 @@ $(document).ready(function() {
 			            // Optionally, reset form fields or update the UI with the new note data
 			            $("#noteForm")[0].reset();
 			            findAllNotes();  // Optionally refresh the notes list
+						findAllTags();
 			        },
 			        error: function(xhr, status, error) {
 			            console.error("Error:", error);
@@ -138,6 +152,7 @@ $(document).ready(function() {
 
 
 	            findAllNotes();  
+				findAllTags();
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("Error:", error);
@@ -171,15 +186,36 @@ $(document).ready(function() {
 	    // Open the modal
 	    $("#createNoteModal").modal("show");
 	});
+	
+	var findAllTags = function(){
+		console.log("Finding all tags");
+		$.ajax({
+			type: 'GET',
+			url: 'api/notes/getTags',
+			dataType: 'json',
+			success: function(data){
+				renderTags(data);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		})
+	}
 
 	
 	var findAllNotes = function() {
 		console.log("Find all notes");
 		$.ajax({
 			type: 'GET',
-			url: "api/notes/getAll",
+			url: "api/notes/" +logged_userId+"/getAll",
 			dataType: 'json',
-			success: renderNotes,
+			success: function(data) {
+			    
+			    renderNotes(data);
+				
+				
+			  
+			},
 			error: function(xhr, status, error) {
 				$(".details").remove();
 				console.log("failed")
@@ -188,6 +224,62 @@ $(document).ready(function() {
 
 		})
 	};
+	
+	var renderTags = function(data){
+		$('.sidebar-scrollview').empty(); 
+		console.log("tags");
+		$('.sidebar-scrollview').append('<h2>Filter</h2>');
+		$.each(data, function(index, note) {
+			console.log(note)
+		let htmlStr = '<label class="custom-checkbox">';
+		htmlStr += '<input type="checkbox" checked>';
+		htmlStr += '<span class="checkmark"></span>'
+		htmlStr += note
+		htmlStr += '</label>'
+		
+		$('.sidebar-scrollview').append(htmlStr);
+		});
+	};
+	
+	$('.sidebar-scrollview').on('change', "input[type='checkbox']", function () {
+	    // Get all checked checkboxes
+	    const checkedValues = $('.sidebar-scrollview input[type="checkbox"]:checked')
+	        .map(function() {
+	            return $(this).parent().text().trim();  // Extract tag text
+	        })
+	        .get();
+
+	    console.log("Checked Tags:", checkedValues);
+
+	    // Ensure at least one tag is selected before making a request
+	    if (checkedValues.length === 0) {
+	        console.log("No tags selected.");
+	        $('.scrollview').empty(); // Clear notes if nothing is selected
+	        return;
+	    }
+
+	    // Make an AJAX request to fetch notes for the selected tags
+	    $.ajax({
+	        url: `http://localhost:9092/api/notes/getTags/${checkedValues.join(',')}`,  // Pass tags in the URL
+	        method: 'GET',
+//	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        success: function (notes) {
+	            console.log("Notes received:", notes);
+
+	            if (!notes || notes.length === 0) {
+	                showAlert("No notes found for selected tags.", "warning");
+	                $('.scrollview').empty(); // Clear existing notes
+	                return;
+	            }
+
+	            // Pass data to renderNotes function
+	            renderNotes(notes);
+	        },
+	        error: function (xhr) {
+	            console.error("Error fetching notes:", xhr.responseText);
+	        }
+	    });
+	});
 	
 	var renderNotes = function(data) {
 	    console.log("populating notes");
@@ -213,6 +305,7 @@ $(document).ready(function() {
 	        
 	        $('.scrollview').append(htmlStr);  
 	    });
+		
 	};
 
 	
@@ -288,6 +381,7 @@ $(document).ready(function() {
 	});
 
 	findAllNotes();
+	findAllTags();
 
 	
 });

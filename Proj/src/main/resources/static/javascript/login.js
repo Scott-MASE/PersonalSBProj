@@ -1,3 +1,5 @@
+
+
 $(document).ready(function() {
 
 	
@@ -23,8 +25,14 @@ $(document).ready(function() {
 	        },
 	        success: function(response) {
 	            if (response.message === "Success") {
-	                // Store the user ID in localStorage or a global variable
+	                // Set logged_userId to the authenticated user's ID
+	                logged_userId = response.userId;
+					username = response.username;
+
+	                // Store the user ID in localStorage for persistence
 	                localStorage.setItem("userId", response.userId);
+					localStorage.setItem("username", response.username);
+					console.log(username);
 
 	                // Navigate to the dashboard
 	                loadPage(dashboardh, dashboardj);
@@ -37,6 +45,15 @@ $(document).ready(function() {
 	        }
 	    });
 	});
+	
+	let storedUserId = localStorage.getItem("userId");
+	if (storedUserId) {
+	    logged_userId = parseInt(storedUserId, 10);
+	}
+	let storedUsername = localStorage.getItem("username");
+	if (storedUsername) {
+		username = storedUsername;
+	}
 
 	
 	

@@ -29,17 +29,6 @@ public class NoteController {
     @PostMapping("/create")
     public ResponseEntity<?> createNote(@RequestBody CreateNoteRequest noteRequest) {
     	
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentication error.");
-//        }
-        
-//        User loggedInUser = (User) authentication.getPrincipal();  // Safely cast
-
-        // Check if the logged-in user has the 'USER' role
-//        if (loggedInUser.getRole() != UserRole.USER) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to create notes.");
-//        }
         
         if (noteRequest.getTitle() == null || noteRequest.getTitle().isEmpty()) {
             return ResponseEntity.badRequest().body("Title is required");
@@ -63,6 +52,14 @@ public class NoteController {
     @GetMapping("/getAll")
     public ResponseEntity<List<Note>> getAllNotes() {
         List<Note> notes = noteService.getAllNotes();
+        Collections.reverse(notes);
+
+        return ResponseEntity.ok(notes);
+    }
+    
+    @GetMapping("/{id}/getAll")
+    public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int id) {
+        List<Note> notes = noteService.getAllNotesByUserId(id);
         Collections.reverse(notes);
 
         return ResponseEntity.ok(notes);
@@ -134,4 +131,39 @@ public class NoteController {
         Note savedNote = noteService.updateNote(id, note);
         return ResponseEntity.ok(savedNote);
     }
+    
+    @GetMapping("/getTags")
+    public ResponseEntity<?> getAllTags() {
+    	
+    	List<String> tags = noteService.getAllUniqueTagsByUserId(1);
+        
+        // Check if notes are found
+        if (tags.isEmpty()) {
+            // Return a 404 (Not Found) if no notes are found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tags found");
+        }
+
+        // Return a 200 (OK) response with the list of notes
+        return ResponseEntity.status(HttpStatus.OK).body(tags);
+    }
+    
+    @GetMapping("/getTags/{tags}")
+    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags) {
+        // Call the service method to get the notes by tags
+        List<Note> notes = noteService.getNotesByTagListAndUserId(tags, 1);
+        
+        // Check if notes are found
+        if (notes.isEmpty()) {
+            // Return a 404 (Not Found) if no notes are found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
+        }
+        
+        Collections.reverse(notes);
+        
+
+        // Return a 200 (OK) response with the list of notes
+        return ResponseEntity.status(HttpStatus.OK).body(notes);
+    }
+    
+    
 }

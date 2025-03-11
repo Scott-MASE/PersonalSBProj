@@ -63,17 +63,17 @@ public class UserController {
                 String token = userService.generateJwtToken(user);
 
                 // Create LoginResponse with message and userId
-                LoginResponse loginResponse = new LoginResponse("Success", user.getId());
+                LoginResponse loginResponse = new LoginResponse("Success", user.getId(), user.getUsername());
 
                 return ResponseEntity.ok(loginResponse);
             } else {
                 // Invalid password
-                LoginResponse loginResponse = new LoginResponse("Invalid password", null);
+                LoginResponse loginResponse = new LoginResponse("Invalid password", null, user.getUsername());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
             }
         } else {
             // User not found
-            LoginResponse loginResponse = new LoginResponse("User not found", null);
+            LoginResponse loginResponse = new LoginResponse("User not found", null, "");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
         }
     }

@@ -7,6 +7,9 @@ const dashboardj = "javascript/dashboard.js";
 const registrationh = "content/registration.html";
 const registrationj = "javascript/registration.js";
 
+var username = "Guest";
+var logged_userId = 1;
+
 
 
 

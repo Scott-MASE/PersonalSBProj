@@ -1,6 +1,8 @@
 package com.tus.proj.note_managment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.tus.proj.user_managment.User;
@@ -15,4 +17,10 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     List<Note> findByUserId(int userId);
     
     List<Note> findByTag(String tag);
+    
+    @Query("SELECT DISTINCT n.tag FROM Note n WHERE n.tag IS NOT NULL AND n.userId = :userId")
+    List<String> findDistinctTagsByUserId(@Param("userId") int userId);
+
+
+
 }
