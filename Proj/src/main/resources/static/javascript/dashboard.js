@@ -14,6 +14,15 @@ $(document).ready(function() {
 		username = "Guest";
 		loadPage(loginh, loginj);
 		});
+		
+	$('#clear-filter-button').off('click').on('click', function() {
+			console.log("Reseting Filter");
+			$('.sidebar-scrollview input[type="checkbox"]').prop('checked', true);
+
+			// Optionally, trigger the change event for the checkboxes to update the filter
+			$('.sidebar-scrollview input[type="checkbox"]').trigger('change');
+
+			});
 	
 
 
@@ -238,7 +247,9 @@ $(document).ready(function() {
 		htmlStr += '</label>'
 		
 		$('.sidebar-scrollview').append(htmlStr);
+		
 		});
+		
 	};
 	
 	$('.sidebar-scrollview').on('change', "input[type='checkbox']", function () {

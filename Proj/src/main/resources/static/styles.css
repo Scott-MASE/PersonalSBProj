@@ -492,6 +492,13 @@ h4 {
 	width: 80%;
 }
 
+#clear-filter-button {
+    position: absolute;
+    bottom: 24vh;
+    left: 2vw;
+	width: 80%;
+}
+
 .custom-checkbox {
 	position: relative;
     display: flex;
