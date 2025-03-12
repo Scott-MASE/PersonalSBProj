@@ -39,10 +39,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(role);
-        return authorities;
+        return List.of(role);  // Cleaner and avoids unnecessary list creation
     }
+
 
     // Getters and Setters
     public int getId() {

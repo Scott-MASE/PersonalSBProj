@@ -1,6 +1,7 @@
 /* Global Styles */
 :root {
     --orange: #FFC300;
+	--darkOrange: rgb(165, 133, 46);
     --grey: rgb(174, 174, 174);
     --black: #1a1a1a; 
     --font: 18px; 
@@ -160,7 +161,7 @@ button:hover {
 .beehive {
     position: fixed;
     top: 0;
-    width: 200px; 
+    width: 12vw; 
     height: 100vh;
     background-size: contain;
     background-repeat: repeat-y;
@@ -546,6 +547,110 @@ h4 {
 .custom-checkbox input:checked + .checkmark::after {
     opacity: 1;
 }
+
+.admin-content{
+	    position: fixed;
+	    bottom: 0;
+	    width: 76vw;
+	    height: 90vh;
+	    left: 12vw;
+	    background-color: var(--darkestGrey);
+	    
+	    display: flex;
+	    flex-wrap: wrap; /* Allows wrapping to next row */
+	    gap: 25px; /* Spacing between tiles */
+	    padding: 15px;
+	    overflow-y: auto; /* Enables vertical scrolling if needed */
+	    align-content: flex-start; /* Ensures rows are filled from the top */
+	    justify-content:center; /* Aligns items to the left */
+		align-items: center;
+		flex-direction: column;
+	
+
+}
+
+.admin-topbar {
+	position: fixed;
+	top: 0;
+	width: 100vw; 
+	height: 10vh;
+	left: 0;
+	top: 0;
+	background-color: var(--black);
+}
+
+.admin-title {
+    color: var(--orange);
+    position: absolute;
+	top: 1vh;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+table {
+	position: absolute;
+	left: 50%;
+	top: 10%;
+	transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--darkGrey);
+}
+
+th {
+    background-color: var(--orange);
+    color: var(--black);
+}
+
+td {
+	color: white;
+	font-size: 20px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #388E3C;
+}
+
+.delete-btn:hover {
+    background-color: #B71C1C;
+}
+
+#admin-logout-button {
+    position: absolute;
+    top: 1%;
+    left: 15%;
+	width: 10%;
+}
+
+
 
 
 

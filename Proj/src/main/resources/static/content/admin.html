@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - User Management</title>
+    <link rel="stylesheet" href="/styles.css"> 
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+</head>
+<body>
+	
+	<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-centered">
+	        <div class="modal-content custom-modal">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="createNoteModalLabel">Edit User</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
+	            <div class="modal-body">
+	                <form id="noteForm">
+	                    <div class="input-group">
+	                        <label for="username">Username</label>
+	                        <input type="text" id="username" placeholder="Change Username">
+	                    </div>
+	                    <div class="input-group">
+	                        <label for="password">Password</label>
+	                        <input type="text" id="password" placeholder="Change Password">
+	                    </div>
+	                    <div class="input-group">
+	                        <label for="userType">User Type</label>
+	                        <select id="userType" required>
+	                            <option value="USER">User</option>
+	                            <option value="MODERATOR">Moderator</option>
+								<option value="ADMIN">Admin</option>
+
+	                        </select>
+	                    </div>
+	                    <button type="submit" id="save-or-create">Save Changes</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<div class="beehive beehive-left"></div>
+	<div class="beehive beehive-right"></div>
+        <h3 class="admin-title">Admin Panel - Manage Users</h3>
+		<button class="btn btn-danger" id="admin-logout-button">
+		    <i class="bi bi-box-arrow-right"></i> Logout
+		</button>
+	<div class="admin-content">
+		<table>
+		    <thead>
+		        <tr>
+		            <th>User ID</th>
+		            <th>Username</th>
+		            <th>User Type</th>
+		            <th>Actions</th>
+		        </tr>
+		    </thead>
+		    <tbody id="user-table-body">
+		        <!-- Users will be dynamically added here -->
+		    </tbody>
+		</table>
+		
+	</div>
+
+
+	<script src="/javascript/admin.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

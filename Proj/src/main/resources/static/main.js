@@ -7,6 +7,9 @@ const dashboardj = "javascript/dashboard.js";
 const registrationh = "content/registration.html";
 const registrationj = "javascript/registration.js";
 
+const adminh = "content/admin.html";
+const adminj = "javascript/admin.js";
+
 var username = "Guest";
 var logged_userId = 1;
 
@@ -32,8 +35,9 @@ function loadPage(page, jsFile) {
 $(document).ready(function() {
 
 
-	loadPage(dashboardh, dashboardj);
+//	loadPage(dashboardh, dashboardj);
 //	loadPage(registrationh, registrationj);
-//	loadPage(loginh, loginj);
+	loadPage(loginh, loginj);
+//	loadPage(adminh, adminj);
 
 });

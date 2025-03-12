@@ -62,21 +62,33 @@ public class UserController {
                 // Generate JWT Token
                 String token = userService.generateJwtToken(user);
 
-                // Create LoginResponse with message and userId
-                LoginResponse loginResponse = new LoginResponse("Success", user.getId(), user.getUsername());
+                // Convert UserRole to String
+                String role = user.getRole().toString();
+
+                // Create LoginResponse with message, userId, username, and role
+                LoginResponse loginResponse = new LoginResponse("Success", user.getId(), user.getUsername(), role);
 
                 return ResponseEntity.ok(loginResponse);
             } else {
                 // Invalid password
-                LoginResponse loginResponse = new LoginResponse("Invalid password", null, user.getUsername());
+                LoginResponse loginResponse = new LoginResponse("Invalid password", null, user.getUsername(), "");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
             }
         } else {
             // User not found
-            LoginResponse loginResponse = new LoginResponse("User not found", null, "");
+            LoginResponse loginResponse = new LoginResponse("User not found", null, "", "");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
         }
     }
+
+
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        Optional<User> user = userService.findUserByUserId(id);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     private boolean isValidPassword(String password) {
         return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[*@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
@@ -100,4 +112,36 @@ public class UserController {
 
         return ResponseEntity.ok(username);
     }
+    
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UpdateUserRequest request) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Validate username
+            if (request.getUsername() != null && request.getUsername().length() < 2) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 2 characters long.");
+            }
+
+            // Validate password
+            if (request.getPassword() != null && !isValidPassword(request.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must meet security requirements.");
+            }
+
+            // Update fields if provided
+            if (request.getUsername() != null) user.setUsername(request.getUsername());
+            if (request.getPassword() != null) user.setPassword(request.getPassword());
+            if (request.getRole() != null) user.setRole(request.getRole());
+
+            userService.saveUser(user);
+            return ResponseEntity.ok("User updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+    
+    
+    
 }

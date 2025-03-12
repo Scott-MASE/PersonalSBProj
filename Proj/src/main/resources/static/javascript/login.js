@@ -25,17 +25,26 @@ $(document).ready(function() {
 	        },
 	        success: function(response) {
 	            if (response.message === "Success") {
-	                // Set logged_userId to the authenticated user's ID
+	                // Store user details in localStorage
 	                logged_userId = response.userId;
-					username = response.username;
+	                username = response.username;
+	                let role = response.role; // Ensure backend sends this
 
-	                // Store the user ID in localStorage for persistence
 	                localStorage.setItem("userId", response.userId);
-					localStorage.setItem("username", response.username);
-					console.log(username);
+	                localStorage.setItem("username", response.username);
+	                localStorage.setItem("role", response.role);
 
-	                // Navigate to the dashboard
-	                loadPage(dashboardh, dashboardj);
+	                console.log("Logged in as:", username, "Role:", role);
+
+	                // Redirect based on role
+	                if (role === "ADMIN") {
+	                    loadPage(adminh, adminj);
+	                } else if (role === "USER" || role === "MODERATOR") {
+	                    loadPage(dashboardh, dashboardj);
+	                } else {
+	                    alert("Unknown role. Redirecting to dashboard.");
+	                    loadPage(dashboardh, dashboardj);
+	                }
 	            } else {
 	                alert(response.message); 
 	            }
@@ -45,6 +54,7 @@ $(document).ready(function() {
 	        }
 	    });
 	});
+
 	
 	let storedUserId = localStorage.getItem("userId");
 	if (storedUserId) {

@@ -20,5 +20,8 @@ public interface IJwtService {
 	<T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
 	boolean isTokenValid(String token, UserDetails userDetails);
+	
+	String extractUserRole(String token);
+
 }
 

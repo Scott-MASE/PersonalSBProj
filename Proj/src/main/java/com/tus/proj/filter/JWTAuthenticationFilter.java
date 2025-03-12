@@ -1,9 +1,11 @@
 package com.tus.proj.filter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -36,43 +38,37 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // If Token isn't present, move on.
-    	String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract token
         String jwtToken = authHeader.substring(7);
+
         try {
-        	
             String username = jwtService.extractUsername(jwtToken);
-            
-            // If username is present and current security context is empty, continue to authorisation.
+            String role = jwtService.extractUserRole(jwtToken);
+
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 Optional<User> userOptional = userRepo.findByUsername(username);
-                
-                if (!userOptional.isPresent()) {
-                	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                	return;
-                }
-                
-                // If token is valid, authorise user (add details to security context)
-                User user = userOptional.get();
-                if (jwtService.isTokenValid(jwtToken, user)) {
+
+                if (userOptional.isPresent() && jwtService.isTokenValid(jwtToken, userOptional.get())) {
+                    User user = userOptional.get();
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            user, null, user.getAuthorities()
+                            user, null, List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        
+
         filterChain.doFilter(request, response);
     }
+
 }

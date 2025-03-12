@@ -25,12 +25,15 @@ public class JwtService implements IJwtService {
 	}
 
 	public String generateToken(String username, UserRole role) {
-		return Jwts.builder().setSubject(username).claim("role", role.getDisplayName())
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1-hour expiration
-				.signWith(getSigningKey(), SignatureAlgorithm.HS256) // SHA-256 signing
-				.compact();
+	    return Jwts.builder()
+	        .setSubject(username)
+	        .claim("role", role.name()) // Store role as claim
+	        .setIssuedAt(new Date(System.currentTimeMillis()))
+	        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+	        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+	        .compact();
 	}
+
 
 	public Claims extractAllClaims(String token) {
 		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
@@ -49,6 +52,10 @@ public class JwtService implements IJwtService {
 		String username = extractUsername(token);
 		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
 	}
+	public String extractUserRole(String token) {
+	    return extractClaim(token, claims -> claims.get("role", String.class));
+	}
+
 
 	private boolean isTokenExpired(String token) {
 		return extractClaim(token, Claims::getExpiration).before(new Date());
