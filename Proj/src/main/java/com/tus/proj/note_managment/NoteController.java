@@ -1,6 +1,7 @@
 package com.tus.proj.note_managment;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class NoteController {
     }
 
 
+    @PreAuthorize("hasRole('User')")
     @PostMapping("/create")
     public ResponseEntity<?> createNote(@RequestBody CreateNoteRequest noteRequest) {
     	
@@ -49,6 +51,8 @@ public class NoteController {
     }
 
 
+    
+    @PreAuthorize("hasRole('User')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Note>> getAllNotes() {
         List<Note> notes = noteService.getAllNotes();
@@ -57,6 +61,7 @@ public class NoteController {
         return ResponseEntity.ok(notes);
     }
     
+    @PreAuthorize("hasRole('User')")
     @GetMapping("/{id}/getAll")
     public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int id) {
         List<Note> notes = noteService.getAllNotesByUserId(id);
@@ -66,6 +71,7 @@ public class NoteController {
     }
 
 
+    @PreAuthorize("hasRole('User')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getNoteById(@PathVariable int id) {
         Optional<Note> note = noteService.getNoteById(id);
@@ -79,7 +85,7 @@ public class NoteController {
 
 
 
-
+    @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/meta")
     public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody CreateNoteRequest noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
@@ -102,6 +108,7 @@ public class NoteController {
     }
 
 
+    @PreAuthorize("hasRole('User')")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteNote(@PathVariable int id) {
         Optional<Note> note = noteService.getNoteById(id);
@@ -113,6 +120,7 @@ public class NoteController {
         return ResponseEntity.ok("Note deleted successfully");
     }
     
+    @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/content")
     public ResponseEntity<?> updateNoteContent(@PathVariable int id, @RequestBody String newContent) {
         Optional<Note> existingNote = noteService.getNoteById(id);
@@ -132,6 +140,7 @@ public class NoteController {
         return ResponseEntity.ok(savedNote);
     }
     
+    @PreAuthorize("hasRole('User')")
     @GetMapping("/getTags")
     public ResponseEntity<?> getAllTags() {
     	
@@ -147,6 +156,7 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.OK).body(tags);
     }
     
+    @PreAuthorize("hasRole('User')")
     @GetMapping("/getTags/{tags}")
     public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags) {
         // Call the service method to get the notes by tags

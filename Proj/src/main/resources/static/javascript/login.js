@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	
+	$('#reg-link').on('click', function () {
+	    loadPage(registrationh, registrationj);
+	});
+	
     // Listen for the login form submit event
     document.getElementById('login-form').addEventListener('submit', function(event) {
         event.preventDefault();  // Prevent the default form submission
@@ -7,28 +12,28 @@ $(document).ready(function() {
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
 
-        // Call the login function to process the login request
+
         loginUser(username, password);
     });
 
-    // Function to handle login request
+
     function loginUser(username, password) {
-        // URL for the login endpoint
+
         const url = '/api/users/login';
 
-        // Prepare the login data to send in the request body as JSON
+
         const loginData = {
             username: username,
             password: password
         };
 
-        // Make the login request using the fetch API
+
         fetch(url, {
-            method: 'POST',  // HTTP method for the login
+            method: 'POST',  
             headers: {
-                'Content-Type': 'application/json',  // Specify content type as JSON
+                'Content-Type': 'application/json', 
             },
-            body: JSON.stringify(loginData)  // Send the login data as a JSON string
+            body: JSON.stringify(loginData) 
         })
         .then(response => {
             if (response.ok) {  // If the response is OK (status 200)
@@ -41,11 +46,10 @@ $(document).ready(function() {
         })
         .then(data => {
             if (data && data.jwt) {
-                // Successful login, show success alert
-                showAlert('Login successful!', 'success');
+
                 console.log(data.jwt);
                 
-                // Save JWT token in storage
+
                 TokenStorage.saveToken(data.jwt);
 
                 // Decode the JWT token to extract the role
@@ -54,6 +58,7 @@ $(document).ready(function() {
 
                 // Save the role in localStorage
                 localStorage.setItem("role", role);
+				localStorage.setItem('username', username);
 				
 				console.log(role);
 
@@ -73,19 +78,33 @@ $(document).ready(function() {
         });
     }
 
-    // Function to show alert messages
-    function showAlert(message, type) {
-        // Create a Bootstrap alert and append it to the body or a specific container
-        const alertElement = `<div class="alert alert-${type}" role="alert">${message}</div>`;
-        $('body').append(alertElement);  // Append the alert to the body
+	function showAlert(message, type) {
+	    // Create a Bootstrap alert and append it to the body or a specific container
+	    const alertElement = $(`<div class="alert alert-${type}" role="alert">${message}</div>`);
 
-        // Optionally, auto-remove the alert after 5 seconds
-        setTimeout(() => {
-            $(alertElement).fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
-    }
+	    // Set styles to position the alert absolutely, overlaying all content
+	    alertElement.css({
+	        position: 'absolute',
+	        top: '20px',  // Position 20px from the top of the screen
+	        left: '50%',
+	        transform: 'translateX(-50%)',  // Center it horizontally
+	        zIndex: 9999,  // Ensure it's on top of other elements
+	        width: 'auto',
+	        maxWidth: '80%',  // You can limit the width to avoid it being too large
+	        margin: '0 auto',
+	    });
+
+	    $('body').append(alertElement);  // Append the alert to the body
+
+	    // Optionally, auto-remove the alert after 2 seconds (2000ms)
+	    setTimeout(() => {
+	        alertElement.fadeOut('slow', function() {
+	            $(this).remove();
+	        });
+	    }, 2000);
+	}
+
+
 
     // Password visibility toggle functionality
     const passwordInput = document.getElementById('password');

@@ -27,24 +27,30 @@ $(document).ready(function () {
         // Debugging: Log to console to verify request
         console.log("Sending AJAX request to /api/users/register:", { username, password, role: "USER" });
 
-        $.ajax({
-            type: "POST",
-            url: "/api/users/register", // ✅ Ensure this matches the backend route
-            contentType: "application/json",
-            data: JSON.stringify({
-                username: username,
-                password: password,
-                role: "USER"
-            }),
-            success: function (response) {
-				console.log(response)
-                loadPage(loginh, loginj);
-            },
-            error: function (xhr) {
-                console.error("Error response:", xhr.responseText);
-                alert(xhr.responseText || "Registration failed. Please try again.");
-            }
-        });
+		$.ajax({
+		    type: "POST",
+		    url: "/api/users/register",
+		    contentType: "application/json",
+		    data: JSON.stringify({
+		        username: username,
+		        password: password,
+		        role: "USER"  // Ensure this is what the backend expects
+		    }),
+		    success: function (response) {
+		        console.log(response);
+		        loadPage(loginh, loginj);  // Redirect or load the page after successful registration
+		    },
+		    error: function (xhr) {
+		        console.error("Error response:", xhr.responseText);
+		        if (xhr.status === 400) {
+		            alert("Bad request: Invalid username or password.");
+		        } else {
+		            alert(xhr.responseText || "Registration failed. Please try again.");
+		        }
+		    }
+		});
+
+
     });
 	
 	$('#log-link').off('click').on('click', function(e) {

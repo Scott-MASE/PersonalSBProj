@@ -4,6 +4,16 @@ $(document).ready(function() {
 	var rootURL = "http://localhost:9092";
 	
 
+	const username = localStorage.getItem('username');
+
+
+	if (username) {
+	    document.getElementById('username').textContent = username;
+	} else {
+	    console.log('No username found in localStorage.');
+	}
+	
+
 
 		
 	$('#logout-button').off('click').on('click', function() {
@@ -24,33 +34,31 @@ $(document).ready(function() {
 
 	
 	$('#create-note').off('click').on('click', function(e) {
-	    e.preventDefault(); // Prevent default behavior
+	    e.preventDefault(); 
 	    console.log("Opening modal...");
 
-	    // Reset the form fields
 	    $("#noteForm")[0].reset();
 
-	    // Clear any displayed values or selections
+
 	    $("#noteTitle").val('');
 	    $("#noteTag").val('');
-	    $("#notePriority").val('LOW'); // Reset to default priority if needed
+	    $("#notePriority").val('LOW'); 
 	    $("#noteDeadline").val('');
 
-	    // Update modal title and button text for creating a new note
+
 	    $("#createNoteModalLabel").text("Create Note");
 	    $("#save-or-create").text("Create");
 
-	    $('#createNoteModal').modal('show'); // Open Bootstrap modal
+	    $('#createNoteModal').modal('show'); 
 	});
 	
 
 	
 	$('#noteForm').off('submit').on('submit', function(event) {
-	    event.preventDefault(); // Prevent default form submission
+	    event.preventDefault(); 
 		let noteId = $("#noteForm").data("note-id");
 		if ($("#createNoteModalLabel").text() === "Create Note") {
 			console.log("creating");
-			// Extract form data
 			let noteData = {
 			    title: $("#noteTitle").val().trim(),
 			    content: "",
@@ -62,6 +70,7 @@ $(document).ready(function() {
 
 			// Send AJAX request
 			$.ajax({
+				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			    type: "POST",
 			    url: "/api/notes/create",
 			    contentType: "application/json",
@@ -101,6 +110,7 @@ $(document).ready(function() {
 
 			    // Send AJAX request for updating the note
 			    $.ajax({
+					headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			        type: "PUT",
 			        url: "/api/notes/" + noteId + "/meta",  // Make sure this matches your PUT endpoint
 			        contentType: "application/json",
@@ -146,6 +156,7 @@ $(document).ready(function() {
 
 
 	    $.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        type: "DELETE",
 	        url: "/api/notes/" + noteId +"/delete",  
 	        success: function(response) {
@@ -269,6 +280,7 @@ $(document).ready(function() {
 
 	    // Make an AJAX request to fetch notes for the selected tags
 	    $.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        url: `http://localhost:9092/api/notes/getTags/${checkedValues.join(',')}`,  // Pass tags in the URL
 	        method: 'GET',
 //	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
@@ -368,6 +380,7 @@ $(document).ready(function() {
 	    let updatedContent = $("#editNoteContent").val();
 
 	    $.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        url: "/api/notes/" + noteId + "/content",
 	        type: "PUT",
 	        contentType: "application/json",

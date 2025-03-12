@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRepository;
+import com.tus.proj.user_managment.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,5 +63,31 @@ public class UserService {
         
         throw new BadCredentialsException("Invalid username or password");
     }
+    
+
+    public Optional<User> editUser(int id, String username, String password, UserRole role) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (username != null && username.length() >= 3) {
+                user.setUsername(username);
+            }
+
+            if (password != null && !password.isEmpty()) {
+                user.setPassword(passwordEncoder.encode(password)); // Encrypt updated password
+            }
+
+            if (role != null) {
+                user.setRole(role);
+            }
+
+            return Optional.of(userRepository.save(user)); // Save and return updated user
+        }
+
+        return Optional.empty(); // User not found
+    }
+
 }
 
