@@ -55,6 +55,8 @@ public class UserController {
 		User createdUser = userService.createUser(user);
 		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 	}
+	
+	
 
 	private boolean isValidPassword(String password) {
 		boolean containsUpperCase = false, containsLowerCase = false, containsNumber = false;
@@ -136,6 +138,15 @@ public class UserController {
 	    
 	    return user.map(ResponseEntity::ok)
 	               .orElseGet(() -> ResponseEntity.notFound().build());
+	}
+	
+
+	@GetMapping("/username/{username}")
+	public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
+	    Optional<User> user = userService.findByUsername(username);
+	    
+	    return user.map(u -> ResponseEntity.ok(u.getId())) // If user is found, return their ID
+	               .orElseGet(() -> ResponseEntity.notFound().build()); // If user not found, return 404
 	}
 
 

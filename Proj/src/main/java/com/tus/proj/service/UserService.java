@@ -89,5 +89,10 @@ public class UserService {
         return Optional.empty(); // User not found
     }
 
+	public Optional<User> findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return userRepository.findByUsername(username);
+	}
+
 }
 

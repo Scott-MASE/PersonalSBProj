@@ -13,6 +13,29 @@ $(document).ready(function() {
 	    console.log('No username found in localStorage.');
 	}
 	
+	function getUserIdByUsername(username) {
+	    $.ajax({
+	        url: '/api/users/username/' + username,  // Make sure the URL matches your backend route
+	        type: 'GET',
+	        success: function(response) {
+	            // If user is found, store the user ID in localStorage
+	            if (response) {
+	                localStorage.setItem('userId', response);
+	                console.log('User ID stored in localStorage:', response);
+					findAllNotes(response);
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            // If user is not found or any other error occurs
+	            if (xhr.status === 404) {
+	                console.log('User not found');
+	            } else {
+	                console.log('Error: ' + error);
+	            }
+	        }
+	    });
+	}
+	
 
 
 		
@@ -65,7 +88,7 @@ $(document).ready(function() {
 			    tag: $("#noteTag").val().trim(),
 			    priority: $("#notePriority").val(),
 			    deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-			    user: logged_userId
+			    user: localStorage.getItem('userId')
 			};
 
 			// Send AJAX request
@@ -85,7 +108,7 @@ $(document).ready(function() {
 
 			        // Reset form
 			        $("#noteForm")[0].reset();
-					findAllNotes();
+					findAllNotes(localStorage.getItem('userId'));
 					findAllTags();
 			    },
 			    error: function (xhr, status, error) {
@@ -125,7 +148,7 @@ $(document).ready(function() {
 
 			            // Optionally, reset form fields or update the UI with the new note data
 			            $("#noteForm")[0].reset();
-			            findAllNotes();  // Optionally refresh the notes list
+			            findAllNotes(localStorage.getItem('userId'));  // Optionally refresh the notes list
 						findAllTags();
 			        },
 			        error: function(xhr, status, error) {
@@ -166,7 +189,7 @@ $(document).ready(function() {
 	            modalInstance.hide();
 
 
-	            findAllNotes();  
+	            findAllNotes(localStorage.getItem('userId'));  
 				findAllTags();
 	        },
 	        error: function(xhr, status, error) {
@@ -220,16 +243,18 @@ $(document).ready(function() {
 	}
 
 	
-	var findAllNotes = function() {
+	var findAllNotes = function(userId) {
+		console.log("userId: " + userId);
 		console.log("Find all notes");
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
-			url: "api/notes/" +logged_userId+"/getAll",
+			url: "api/notes/" +userId+"/getAll",
 			dataType: 'json',
 			success: function(data) {
 			    
 			    renderNotes(data);
+				console.log("HHEEERREE" +localStorage.getItem('userId'));
 				
 				
 			  
@@ -388,7 +413,7 @@ $(document).ready(function() {
 	        success: function(response) {
 	            alert("Note updated successfully!");
 	            $("#editNoteModal").modal("hide"); // Close modal
-	            findAllNotes();
+	            findAllNotes(localStorage.getItem('userId'));
 	        },
 	        error: function(xhr) {
 	            alert("Failed to update note: " + xhr.responseText);
@@ -401,8 +426,12 @@ $(document).ready(function() {
 	$("#closeModalBtn").on("click", function() {
 	    $("#noteModal").fadeOut();
 	});
-
-	findAllNotes();
+	
+	getUserIdByUsername(username);
+	
+	
+	
+	
 	findAllTags();
 
 	

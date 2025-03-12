@@ -43,6 +43,8 @@ public class SecurityConfig {
     	            .requestMatchers("/h2-console/**").permitAll()
     	            .requestMatchers("api/users/login").permitAll()
     	            .requestMatchers("api/users/register").permitAll()
+    	            .requestMatchers("api/users/username/{username}").permitAll()
+
     	            .requestMatchers("/api/notes/getTags", "/api/notes/1/getAll").hasRole("User")  // Allow USER to access these endpoints
 
     	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
