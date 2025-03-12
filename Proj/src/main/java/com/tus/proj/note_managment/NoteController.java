@@ -141,10 +141,10 @@ public class NoteController {
     }
     
     @PreAuthorize("hasRole('User')")
-    @GetMapping("/getTags")
-    public ResponseEntity<?> getAllTags() {
+    @GetMapping("{id}/getTags")
+    public ResponseEntity<?> getAllTags(@PathVariable int id) {
     	
-    	List<String> tags = noteService.getAllUniqueTagsByUserId(1);
+    	List<String> tags = noteService.getAllUniqueTagsByUserId(id);
         
         // Check if notes are found
         if (tags.isEmpty()) {
@@ -157,10 +157,10 @@ public class NoteController {
     }
     
     @PreAuthorize("hasRole('User')")
-    @GetMapping("/getTags/{tags}")
-    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags) {
+    @GetMapping("/getTags/{tags}/{id}")
+    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags, @PathVariable int id) {
         // Call the service method to get the notes by tags
-        List<Note> notes = noteService.getNotesByTagListAndUserId(tags, 1);
+        List<Note> notes = noteService.getNotesByTagListAndUserId(tags, id);
         
         // Check if notes are found
         if (notes.isEmpty()) {

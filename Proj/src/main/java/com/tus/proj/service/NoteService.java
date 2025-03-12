@@ -40,7 +40,7 @@ public class NoteService {
 	}
 	
 	public List<String> getAllUniqueTagsByUserId(int id){
-		return noteRepository.findDistinctTagsByUserId(1);
+		return noteRepository.findDistinctTagsByUserId(id);
 		
 	}
 

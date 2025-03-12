@@ -23,6 +23,7 @@ $(document).ready(function() {
 	                localStorage.setItem('userId', response);
 	                console.log('User ID stored in localStorage:', response);
 					findAllNotes(response);
+					findAllTags(response);
 	            }
 	        },
 	        error: function(xhr, status, error) {
@@ -231,7 +232,7 @@ $(document).ready(function() {
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
 		
-			url: 'api/notes/getTags',
+			url: 'api/notes/'+localStorage.getItem('userId')+'/getTags',
 			dataType: 'json',
 			success: function(data){
 				renderTags(data);
@@ -306,7 +307,7 @@ $(document).ready(function() {
 	    // Make an AJAX request to fetch notes for the selected tags
 	    $.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-	        url: `http://localhost:9092/api/notes/getTags/${checkedValues.join(',')}`,  // Pass tags in the URL
+	        url: `http://localhost:9092/api/notes/getTags/${checkedValues.join(',')}/${localStorage.getItem('userId')}`,  // Pass tags in the URL
 	        method: 'GET',
 //	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        success: function (notes) {
@@ -432,7 +433,7 @@ $(document).ready(function() {
 	
 	
 	
-	findAllTags();
+	
 
 	
 });

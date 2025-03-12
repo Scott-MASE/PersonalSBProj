@@ -45,7 +45,7 @@ public class SecurityConfig {
     	            .requestMatchers("api/users/register").permitAll()
     	            .requestMatchers("api/users/username/{username}").permitAll()
 
-    	            .requestMatchers("/api/notes/getTags", "/api/notes/1/getAll").hasRole("User")  // Allow USER to access these endpoints
+    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/1/getAll").hasRole("User")  // Allow USER to access these endpoints
 
     	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
     	            .requestMatchers("/actuator/**").permitAll()   // Allow monitoring endpoints (optional)
