@@ -2,18 +2,18 @@ package com.tus.proj.user_managment;
 
 import org.springframework.security.core.GrantedAuthority;
 
-
 public enum UserRole implements GrantedAuthority {
-    GUEST("Guest"),
+    ADMIN("Admin"),
     USER("User"),
-    ADMIN("Admin");
-	
+    MODERATOR("Moderator");
+
+
     private final String displayName;
 
     UserRole(String displayName) {
         this.displayName = displayName;
     }
-    
+
     public String getDisplayName() {
         return displayName;
     }

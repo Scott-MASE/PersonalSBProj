@@ -33,11 +33,24 @@ function loadPage(page, jsFile) {
 
 
 $(document).ready(function() {
+	
+	//Authentication Check		
+	let isLoggedIn = localStorage.getItem("token");
 
+	if (!isLoggedIn) {
+		loadPage(loginh, loginj);
+	} else {
+		let role = localStorage.getItem("role");
+		        if (role) {
+		            loadSidebarLinks(role);
+		            loadContentByRole(role);
+					console.log(role);
+		        }
+	}
 
 //	loadPage(dashboardh, dashboardj);
 //	loadPage(registrationh, registrationj);
-	loadPage(loginh, loginj);
+	
 //	loadPage(adminh, adminj);
 
 });

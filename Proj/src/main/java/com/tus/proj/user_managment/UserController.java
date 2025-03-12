@@ -1,147 +1,101 @@
 package com.tus.proj.user_managment;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.tus.proj.service.JwtService;
 import com.tus.proj.service.UserService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-    private final UserRepository userRepository;
+	private final UserService userService;
+	private final JwtService jwtService;
 
-    public UserController(UserService userService, UserRepository userRepository) {
-        this.userService = userService;
-        this.userRepository = userRepository;
+	public UserController(UserService userService, JwtService jwtService) {
+		this.userService = userService;
+		this.jwtService = jwtService;
+	}
+
+	@PreAuthorize("hasRole('Admin')")
+	@PostMapping
+	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
+		// Convert the DTO to a User entity
+		User user = new User();
+		if (request.getUsername().length() >= 3) {
+			user.setUsername(request.getUsername());
+		} else {
+			return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+		}
+
+		if (isValidPassword(request.getPassword())) {
+			user.setPassword(request.getPassword());
+		} else {
+			return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+		}
+		user.setRole(request.getRole());
+
+		User createdUser = userService.createUser(user);
+		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+	}
+
+	private boolean isValidPassword(String password) {
+		boolean containsUpperCase = false, containsLowerCase = false, containsNumber = false;
+		for (char c : password.toCharArray()) {
+			if (Character.isUpperCase(c)) {
+				containsUpperCase = true;
+			} else if (Character.isLowerCase(c)) {
+				containsLowerCase = true;
+			} else if (Character.isDigit(c)) {
+				containsNumber = true;
+			}
+		}
+		return ((password.length() >= 8) && containsUpperCase && containsLowerCase && containsNumber);
+	}
+
+	// New endpoint to get all users
+	@PreAuthorize("hasRole('Admin')")
+	@GetMapping
+	public ResponseEntity<List<User>> getAllUsers() {
+		List<User> users = userService.getAllUsers();
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+
+	@PreAuthorize("hasRole('System Administrator')")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+		boolean deleted = userService.deleteUser(id);
+		if (deleted) {
+			return ResponseEntity.noContent().build(); // 204 No Content on success
+		} else {
+			return ResponseEntity.notFound().build(); // 404 if user not found
+		}
+	}
+
+	@PostMapping("/login")  //authentication package because uses dto
+    public ResponseEntity<?> loginValidation(@RequestBody LoginRequest request) {
+    	try {
+        	User user = userService.authenticate(request.getUsername(), request.getPassword());
+        	String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
+        	LoginResponse loginResponse = new LoginResponse();
+        	loginResponse.setJwt(jwt);
+            return ResponseEntity.ok(loginResponse); // 200 OK with true indicating success
+        } catch (BadCredentialsException e) {
+        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false); // 401 Unauthorized with false indicating failure
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
-        // Validate username
-        if (request.getUsername().length() < 2) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 2 characters long.");
-        }
-
-        // Validate password
-        if (!isValidPassword(request.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must meet security requirements.");
-        }
-
-        // Check if username exists
-        if (userService.findUserByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is already taken.");
-        }
-
-        // Save user
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        user.setRole(UserRole.USER); // Set role to USER
-
-        User createdUser = userService.saveUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginValidation(@RequestParam String username,
-                                                         @RequestParam String password) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (user.getPassword().equals(password)) {
-                // Generate JWT Token
-                String token = userService.generateJwtToken(user);
-
-                // Convert UserRole to String
-                String role = user.getRole().toString();
-
-                // Create LoginResponse with message, userId, username, and role
-                LoginResponse loginResponse = new LoginResponse("Success", user.getId(), user.getUsername(), role);
-
-                return ResponseEntity.ok(loginResponse);
-            } else {
-                // Invalid password
-                LoginResponse loginResponse = new LoginResponse("Invalid password", null, user.getUsername(), "");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
-            }
-        } else {
-            // User not found
-            LoginResponse loginResponse = new LoginResponse("User not found", null, "", "");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
-        }
-    }
-
-
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        Optional<User> user = userService.findUserByUserId(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-
-    private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[*@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
-    }
-
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        boolean deleted = userService.deleteUser(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-    @GetMapping("username")
-    public ResponseEntity<String> getCurrentUsername(Authentication authentication) {
-        // Get the currently logged-in user's username from the authentication object
-        String username = authentication.getName(); // Extracts the username from the SecurityContext
-
-        return ResponseEntity.ok(username);
-    }
-    
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UpdateUserRequest request) {
-        Optional<User> userOptional = userRepository.findById(id);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            // Validate username
-            if (request.getUsername() != null && request.getUsername().length() < 2) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 2 characters long.");
-            }
-
-            // Validate password
-            if (request.getPassword() != null && !isValidPassword(request.getPassword())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must meet security requirements.");
-            }
-
-            // Update fields if provided
-            if (request.getUsername() != null) user.setUsername(request.getUsername());
-            if (request.getPassword() != null) user.setPassword(request.getPassword());
-            if (request.getRole() != null) user.setRole(request.getRole());
-
-            userService.saveUser(user);
-            return ResponseEntity.ok("User updated successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-    }
-    
-    
-    
 }

@@ -3,15 +3,10 @@ $(document).ready(function() {
 	
 	var rootURL = "http://localhost:9092";
 	
-	$("#username").text(username);  
-	console.log(username);
-	console.log(logged_userId);
 
 
 		
 	$('#logout-button').off('click').on('click', function() {
-		console.log("logging out");
-		username = "Guest";
 		loadPage(loginh, loginj);
 		});
 		
@@ -199,7 +194,9 @@ $(document).ready(function() {
 	var findAllTags = function(){
 		console.log("Finding all tags");
 		$.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
+		
 			url: 'api/notes/getTags',
 			dataType: 'json',
 			success: function(data){
@@ -215,6 +212,7 @@ $(document).ready(function() {
 	var findAllNotes = function() {
 		console.log("Find all notes");
 		$.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
 			url: "api/notes/" +logged_userId+"/getAll",
 			dataType: 'json',
