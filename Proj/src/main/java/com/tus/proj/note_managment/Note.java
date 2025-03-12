@@ -3,14 +3,9 @@ package com.tus.proj.note_managment;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tus.proj.user_managment.User;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "notes")
@@ -30,16 +25,18 @@ public class Note {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime deadline;
 
-    private int userId;  // Changed from User to userId as an integer
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // Changed from userId to User object
 
     public Note() {}
 
-    public Note(String title, String content, Priority priority, LocalDateTime deadline, int userId, String tag) {
+    public Note(String title, String content, Priority priority, LocalDateTime deadline, User user, String tag) {
         this.title = title;
         this.content = content;
         this.priority = priority;
         this.deadline = deadline;
-        this.userId = userId;
+        this.user = user;
         this.tag = tag;
     }
 
@@ -83,12 +80,12 @@ public class Note {
         this.deadline = deadline;
     }
 
-    public int getUserId() {
-        return userId;  // Getter for userId
+    public User getUser() {  // Changed from getUserId to getUser
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;  // Setter for userId
+    public void setUser(User user) {  // Changed from setUserId to setUser
+        this.user = user;
     }
 
     public String getTag() {

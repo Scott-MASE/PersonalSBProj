@@ -27,11 +27,14 @@ public class DataInitializer implements ApplicationRunner {
      // Check if an admin user exists (using username "admin")
      if (userRepository.findByUsername(username).isEmpty()) {
          // Create a new admin user. The password will be encrypted by the UserService.
-         User admin = new User(username, password, UserRole.ADMIN);
+         User admin = new User("admin", "admin", UserRole.ADMIN);
          userService.createUser(admin);
          
-         User user = new User("user", "user", UserRole.USER);
+         User user = new User("James", "user", UserRole.USER);
          userService.createUser(user);
+         
+         User user2 = new User("Jim", "user", UserRole.USER);
+         userService.createUser(user2);
          
      }
  }

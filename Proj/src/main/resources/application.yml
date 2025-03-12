@@ -9,9 +9,9 @@ spring:
       ddl-auto: update  # Set to 'update' for automatic schema generation or 'none' if you want to manage it manually
     defer-datasource-initialization: true
     show-sql: true
-#  sql:
-#    init:
-#      mode: always  # To ensure SQL scripts are run on startup (if any)
+ # sql:
+ #   init:
+ #     mode: always  # To ensure SQL scripts are run on startup (if any)
 
   # Disable H2 console for MySQL
   h2:

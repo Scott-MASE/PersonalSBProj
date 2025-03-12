@@ -11,7 +11,7 @@ public class CreateNoteRequest {
 	private String tag;
 	private Priority priority;
 	private LocalDateTime deadline;
-	private int userId;
+	private User user;
 
 	public String getTitle() {
 		return title;
@@ -53,12 +53,12 @@ public class CreateNoteRequest {
 		this.deadline = deadline;
 	}
 
-	public int getUser() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUser(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.tus.proj.user_managment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "users")
-@Data  // This will generate getters, setters, toString, equals, and hashCode methods
+@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,6 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
-    // The password will be stored in its encrypted form.
     @Column(nullable = false)
     private String password;
 
@@ -31,6 +31,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
     
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Note> notes;
 
     public User() {}
 
