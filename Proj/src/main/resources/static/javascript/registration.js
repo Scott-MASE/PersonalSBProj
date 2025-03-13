@@ -9,18 +9,18 @@ $(document).ready(function () {
         let confirmPassword = $("#confirm-password").val();
 
         if (username.length < 2) {
-            alert("Username must be at least 2 characters long.");
+            showAlert("Username must be at least 2 characters long.", "warning");
             return;
         }
 
         let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(password)) {
-            alert("Password must be at least 8 characters, include one uppercase, one lowercase, one number, and one special character (*@$!%*?&).");
+            showAlert("Password must be at least 8 characters, include one uppercase, one lowercase, one number, and one special character (*@$!%*?&).", "warning");
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Passwords do not match.");
+            showAlert("Passwords do not match.", "warning");
             return;
         }
 

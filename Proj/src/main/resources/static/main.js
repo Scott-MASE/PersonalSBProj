@@ -30,6 +30,30 @@ function loadPage(page, jsFile) {
     });
 }
 
+function showAlert(message, type) {
+    const alertElement = $(`<div class="alert alert-${type}" role="alert">${message}</div>`);
+
+    alertElement.css({
+        position: 'absolute',
+        top: '20px',  
+        left: '50%',
+        transform: 'translateX(-50%)', 
+        zIndex: 9999,  
+        width: 'auto',
+        maxWidth: '80%',  
+        margin: '0 auto',
+    });
+
+    $('body').append(alertElement);  // Append the alert to the body
+
+    // Optionally, auto-remove the alert after 2 seconds (2000ms)
+    setTimeout(() => {
+        alertElement.fadeOut('slow', function() {
+            $(this).remove();
+        });
+    }, 2000);
+}
+
 
 
 $(document).ready(function() {
