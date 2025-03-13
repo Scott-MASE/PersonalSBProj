@@ -30,9 +30,15 @@ public class DataInitializer implements ApplicationRunner {
          User admin = new User(username, password, UserRole.ADMIN);
          userService.createUser(admin);
          
-         User user = new User("user", "user", UserRole.USER);
+         User user = new User("James", "user", UserRole.USER);
          userService.createUser(user);
          
+         User user2 = new User("Jim", "user", UserRole.USER);
+         userService.createUser(user2);
+         
+         User user3 = new User("Mod", "mod", UserRole.MODERATOR);
+         userService.createUser(user3);
+
      }
  }
 }
