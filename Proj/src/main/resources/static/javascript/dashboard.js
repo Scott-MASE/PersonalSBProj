@@ -41,7 +41,7 @@ $(document).ready(function() {
 
 		
 	$('#logout-button').off('click').on('click', function() {
-		loadPage(loginh, loginj);
+		logout();
 		});
 		
 	$('#clear-filter-button').off('click').on('click', function() {

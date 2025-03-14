@@ -30,6 +30,14 @@ function loadPage(page, jsFile) {
     });
 }
 
+function logout(){
+	console.log("Logging out");
+	sessionStorage.clear();
+	localStorage.clear();
+	TokenStorage.removeToken();  // Clears localStorage
+	loadPage(loginh, loginj);
+}
+
 function showAlert(message, type) {
     const alertElement = $(`<div class="alert alert-${type}" role="alert">${message}</div>`);
 

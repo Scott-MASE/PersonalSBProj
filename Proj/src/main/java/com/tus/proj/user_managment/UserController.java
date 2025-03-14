@@ -83,28 +83,31 @@ public class UserController {
 	@PreAuthorize("hasRole('Admin')")
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-		boolean deleted = userService.deleteUser(id);
-		if (deleted) {
-			return ResponseEntity.noContent().build(); // 204 No Content on success
-		} else {
-			return ResponseEntity.notFound().build(); // 404 if user not found
-		}
+	    boolean deleted = userService.deleteUser(id);
+	    
+	    if (deleted) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content on success
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found if user not found
+	    }
 	}
+
 
 
 	@PostMapping("/login")  
     public ResponseEntity<?> loginValidation(@RequestBody LoginRequest request) {
-    	try {
-        	User user = userService.authenticate(request.getUsername(), request.getPassword());
-        	String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
-        	LoginResponse loginResponse = new LoginResponse();
-        	loginResponse.setJwt(jwt);
-            return ResponseEntity.ok(loginResponse); // 200 OK with true indicating success
-        } catch (BadCredentialsException e) {
-        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false); // 401 Unauthorized with false indicating failure
-    }
+	    try {
+	        User user = userService.authenticate(request.getUsername(), request.getPassword());
+	        String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
 
-    }
+	        LoginResponse loginResponse = new LoginResponse();
+	        loginResponse.setJwt(jwt);
+
+	        return ResponseEntity.status(HttpStatus.OK).body(loginResponse); // 200 OK with JWT
+	    } catch (BadCredentialsException e) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password"); // 401 Unauthorized
+	    }
+	}
 	
 	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/edit/{id}")
@@ -115,13 +118,12 @@ public class UserController {
 	        return ResponseEntity.notFound().build();
 	    }
 
-	    // Convert role string to enum if necessary
 	    UserRole role = null;
 	    if (request.getRole() != null) {
 	        try {
-	            role = UserRole.valueOf(request.getRole().toUpperCase()); // Ensuring case sensitivity match
+	            role = UserRole.valueOf(request.getRole().toUpperCase()); 
 	        } catch (IllegalArgumentException e) {
-	            return ResponseEntity.badRequest().build(); // Invalid role value
+	            return ResponseEntity.badRequest().build(); 
 	        }
 	    }
 

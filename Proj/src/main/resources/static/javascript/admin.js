@@ -3,8 +3,7 @@ $(document).ready(function () {
 
     // Logout button
     $('#admin-logout-button').on('click', function () {
-        console.log("Logging out");
-        loadPage(loginh, loginj);
+		logout()
     });
 
     // Fetch users from backend and populate the table
