@@ -209,7 +209,7 @@ button:hover {
     overflow-y: auto;
 	top:10vh;
     padding: 20px; /* Increase padding for visibility */
-    max-height: 60vh;
+    max-height: 50vh;
     background-color: var(--darkestGrey); /* Add contrast */
     border: 2px solid var(--orange); /* Optional: Helps see the div */
 }
@@ -675,6 +675,13 @@ td {
 #sortNotes option {
     background-color: var(--darkestGrey);
     color: var(--grey);
+}
+
+#pwrd {
+	color: white;
+	text-align: center;
+
+	
 }
 
 

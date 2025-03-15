@@ -43,9 +43,9 @@ function showAlert(message, type) {
 
     alertElement.css({
         position: 'absolute',
-        top: '20px',  
+        top: '20%',  
         left: '50%',
-        transform: 'translateX(-50%)', 
+        transform: 'translate(-50%, -50%)', 
         zIndex: 9999,  
         width: 'auto',
         maxWidth: '80%',  
@@ -59,7 +59,7 @@ function showAlert(message, type) {
         alertElement.fadeOut('slow', function() {
             $(this).remove();
         });
-    }, 2000);
+    }, 4000);
 }
 
 

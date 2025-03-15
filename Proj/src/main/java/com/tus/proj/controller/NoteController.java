@@ -133,7 +133,7 @@ public class NoteController {
 	    // Reverse the order of notes if needed
 	    switch(order) {
 	    	case 0: 
-	    		Collections.reverse(notes);
+	    		Collections.sort(notes, Comparator.comparing(Note::getId));
 	    		break;
 	    	case 1: 
 	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));

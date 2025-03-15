@@ -104,7 +104,7 @@ $(document).ready(function() {
 				contentType: "application/json",
 				data: JSON.stringify(noteData),
 				success: function(response) {
-					alert("Note created successfully!");
+					showAlert("Note created successfully!", "success");
 
 					// Close the modal
 					let modalElement = $("#createNoteModal");
@@ -118,7 +118,7 @@ $(document).ready(function() {
 				},
 				error: function(xhr, status, error) {
 					console.error("Error:", error);
-					alert("Failed to create note.");
+					showAlert("Failed to create note.", "warning");
 				}
 			});
 
@@ -144,7 +144,7 @@ $(document).ready(function() {
 				contentType: "application/json",
 				data: JSON.stringify(updatedNoteData),
 				success: function(response) {
-					alert("Note updated successfully!");
+					showAlert("Note updated successfully!", "success");
 
 					// Close the modal
 					let modalElement = $("#createNoteModal");
@@ -158,7 +158,7 @@ $(document).ready(function() {
 				},
 				error: function(xhr, status, error) {
 					console.error("Error:", error);
-					alert("Failed to update note.");
+					showAlert("Failed to update note.", "warning");
 				}
 			});
 
@@ -199,10 +199,11 @@ $(document).ready(function() {
 
 				findAllNotes(localStorage.getItem('userId'));
 				findAllTags();
+				showAlert("Note deleted", "success")
 			},
 			error: function(xhr, status, error) {
 				console.error("Error:", error);
-				alert("Failed to delete note.");
+				showAlert("Failed to delete note.", "warning");
 			}
 		});
 	});
@@ -429,15 +430,32 @@ $(document).ready(function() {
 			contentType: "application/json",
 			data: JSON.stringify(updateData),
 			success: function(response) {
-				alert("Note updated successfully!");
+				showAlert("Note updated successfully!", "success");
 				$("#editNoteModal").modal("hide"); // Close modal
 				findAllNotes(localStorage.getItem('userId'));
 			},
 			error: function(xhr) {
-				alert("Failed to update note: " + xhr.responseText);
+				showAlert("Failed to update note: " + xhr.responseText, "warning");
 			}
 		});
 	});
+	
+	const titleInput = document.getElementById("noteTitle");
+	const tagInput = document.getElementById("noteTag");
+	const form = document.getElementById("noteForm");
+
+	function enforceCharacterLimit(input, limit) {
+	    input.addEventListener("input", function () {
+	        if (this.value.length > limit) {
+	            this.value = this.value.slice(0, limit); // Truncate extra characters
+	            showAlert(`Maximum ${limit} characters allowed!`, "warning");
+	        }
+	    });
+	}
+
+	enforceCharacterLimit(titleInput, 10);
+	enforceCharacterLimit(tagInput, 10);
+	
 
 
 

@@ -33,7 +33,7 @@ $(document).ready(function () {
 	            });
 	        },
 	        error: function () {
-	            alert("Failed to load users.");
+	            showAlert("Failed to load users.", "warning");
 	        }
 	    });
 	}
@@ -55,7 +55,7 @@ $(document).ready(function () {
 	            $('#editUserModal').modal('show');
 	        },
 	        error: function () {
-	            alert("Failed to fetch user data. Make sure you are logged in.");
+	            showAlert("Failed to fetch user data. Make sure you are logged in.", "warning");
 	        }
 	    });
 	};
@@ -78,12 +78,12 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify(updatedUser),
             success: function () {
-                alert("User updated successfully.");
+                showAlert("User updated successfully.", "success");
                 $('#editUserModal').modal('hide');
                 fetchUsers(); 
             },
             error: function () {
-                alert("Failed to update user.");
+                showAlert("Failed to update user.", "warning");
             }
         });
     });
@@ -95,11 +95,11 @@ $(document).ready(function () {
                 url: `${apiUrl}/delete/${id}`,
                 type: "DELETE",
                 success: function () {
-                    alert("User deleted.");
+                    showAlert("User deleted.", "success");
                     fetchUsers(); 
                 },
                 error: function () {
-                    alert("Failed to delete user.");
+                    showAlert("Failed to delete user.", "warning");
                 }
             });
         }

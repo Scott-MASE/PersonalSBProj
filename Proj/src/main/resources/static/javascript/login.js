@@ -78,31 +78,7 @@ $(document).ready(function() {
         });
     }
 
-	function showAlert(message, type) {
-	    // Create a Bootstrap alert and append it to the body or a specific container
-	    const alertElement = $(`<div class="alert alert-${type}" role="alert">${message}</div>`);
 
-	    // Set styles to position the alert absolutely, overlaying all content
-	    alertElement.css({
-	        position: 'absolute',
-	        top: '20px',  // Position 20px from the top of the screen
-	        left: '50%',
-	        transform: 'translateX(-50%)',  // Center it horizontally
-	        zIndex: 9999,  // Ensure it's on top of other elements
-	        width: 'auto',
-	        maxWidth: '80%',  // You can limit the width to avoid it being too large
-	        margin: '0 auto',
-	    });
-
-	    $('body').append(alertElement);  // Append the alert to the body
-
-	    // Optionally, auto-remove the alert after 2 seconds (2000ms)
-	    setTimeout(() => {
-	        alertElement.fadeOut('slow', function() {
-	            $(this).remove();
-	        });
-	    }, 2000);
-	}
 
 
 
