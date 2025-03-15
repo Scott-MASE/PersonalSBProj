@@ -21,6 +21,7 @@ import com.tus.proj.user_managment.User;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,8 +106,8 @@ public class NoteController {
 	}
 
 	@PreAuthorize("hasRole('User')")
-	@GetMapping("/getAll/loggedUser")
-	public ResponseEntity<List<Note>> getAllNotesById() {
+	@GetMapping("/getAll/loggedUser/{order}")
+	public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int order) {
 	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 	    // Get the user from the username
@@ -130,7 +131,26 @@ public class NoteController {
 	    }
 
 	    // Reverse the order of notes if needed
-	    Collections.reverse(notes);
+	    switch(order) {
+	    	case 0: 
+	    		Collections.reverse(notes);
+	    		break;
+	    	case 1: 
+	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));
+	            break;
+	    	case 2:
+	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));
+	            Collections.reverse(notes);
+	            break;
+	        case 3:
+	            Collections.sort(notes, Comparator.comparing(Note::getTitle));
+	            break;
+	        case 4: 
+	            Collections.sort(notes, Comparator.comparing(Note::getDeadline));
+	            break;
+	        default:
+	        	break;
+	    }
 
 	    // Return 200 OK with the notes
 	    return ResponseEntity.ok(notes);

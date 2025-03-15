@@ -15,10 +15,9 @@ $(document).ready(function() {
 
 	function getUserIdByUsername(username) {
 		$.ajax({
-			url: '/api/users/username/' + username,  // Make sure the URL matches your backend route
+			url: '/api/users/username/' + username,  
 			type: 'GET',
 			success: function(response) {
-				// If user is found, store the user ID in localStorage
 				if (response) {
 					localStorage.setItem('userId', response);
 					console.log('User ID stored in localStorage:', response);
@@ -37,6 +36,11 @@ $(document).ready(function() {
 		});
 	}
 
+	$('#sortNotes').on('change', function() {
+	    let selectedValue = $(this).val();
+	    localStorage.setItem('sortNotes', selectedValue);
+		findAllNotes();
+	});
 
 
 
@@ -248,18 +252,20 @@ $(document).ready(function() {
 	}
 
 
-	var findAllNotes = function(userId) {
-		console.log("userId: " + userId);
+	var findAllNotes = function() {
 		console.log("Find all notes");
+		
+		let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
+
+		
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
-			url: "api/notes/getAll/loggedUser",
+			url: "api/notes/getAll/loggedUser/" + sortOption,
 			dataType: 'json',
 			success: function(data) {
 
 				renderNotes(data);
-				console.log("HHEEERREE" + localStorage.getItem('userId'));
 
 
 

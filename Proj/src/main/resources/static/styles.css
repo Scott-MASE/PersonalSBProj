@@ -650,6 +650,34 @@ td {
 	width: 10%;
 }
 
+#sortNotes {
+	position: absolute;
+	top: 110%;
+    width: 80%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid var(--darkGrey);
+    border-radius: 6px;
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+#sortNotes:hover,
+#sortNotes:focus {
+    border-color: var(--orange);
+    outline: none;
+}
+
+#sortNotes option {
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+}
+
+
 
 
 

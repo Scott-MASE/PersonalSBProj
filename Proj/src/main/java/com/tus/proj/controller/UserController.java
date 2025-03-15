@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,10 +106,7 @@ public class UserController {
     @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        // First, delete all notes associated with the user
-//        noteService.deleteNotesByUserId(id);
 
-        // Then, delete the user
         boolean deleted = userService.deleteUser(id);
 
         if (deleted) {
@@ -138,7 +134,7 @@ public class UserController {
 
             // If the user is a regular User
             if (user.getRole() == UserRole.USER) {
-                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById()).withSelfRel(); // Example Note endpoint
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById(0)).withSelfRel(); // Example Note endpoint
 
 
                 responseModel.add(selfLink);
@@ -214,4 +210,7 @@ public class UserController {
         return user.map(u -> ResponseEntity.ok(u.getId()))
                    .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
+    
+    
 }

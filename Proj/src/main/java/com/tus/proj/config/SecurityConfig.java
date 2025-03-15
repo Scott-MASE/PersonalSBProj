@@ -45,11 +45,10 @@ public class SecurityConfig {
     	            .requestMatchers("/api/users/username/{username}").permitAll()
     	            .requestMatchers("/api/users/delete/**").hasRole("Admin") 
 
-    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser").hasRole("User")  // Allow USER to access these endpoints
+    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser").hasRole("User")  
 
-    	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
-    	            .requestMatchers("/actuator/**").permitAll()   // Allow monitoring endpoints (optional)
-    	            // Allow public access to specified endpoints and static resources
+    	            .requestMatchers("/sonarqube/**").permitAll() 
+    	            .requestMatchers("/actuator/**").permitAll()   
     	            .requestMatchers(
     	                "/",
     	                "/index.html", 

@@ -65,8 +65,7 @@ function showAlert(message, type) {
 
 
 $(document).ready(function() {
-	
-	//Authentication Check		
+		
 	let isLoggedIn = localStorage.getItem("token");
 
 	if (!isLoggedIn) {
@@ -74,9 +73,13 @@ $(document).ready(function() {
 	} else {
 		let role = localStorage.getItem("role");
 		        if (role) {
-		            loadSidebarLinks(role);
-		            loadContentByRole(role);
-					console.log(role);
+		            if(role == "User"){
+						loadPage(dashboardh, dashboardj);
+						console.log("logged user");
+					} else if(role == "Admin"){
+						loadPage(adminh, adminj);
+						console.log("logged admin");
+					}
 		        }
 	}
 
