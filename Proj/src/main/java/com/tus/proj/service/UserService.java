@@ -32,14 +32,14 @@ public class UserService {
         return userRepository.findAll();
     }
     
-    public Optional<User> getUserById(int id) {
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
     
     
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(Long id) {
     	
-    	if (id == 1) {
+    	if (id == 1L) {
     		throw new IllegalStateException("Cannot delete the user with ID 1 (sys admin)");
         }
     	
@@ -65,7 +65,7 @@ public class UserService {
     }
     
 
-    public Optional<User> editUser(int id, String username, String password, UserRole role) {
+    public Optional<User> editUser(Long id, String username, String password, UserRole role) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {

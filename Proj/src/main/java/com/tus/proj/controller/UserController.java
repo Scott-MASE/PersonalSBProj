@@ -3,10 +3,14 @@ package com.tus.proj.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,137 +29,181 @@ import com.tus.proj.user_managment.dto.EditUserRequestDTO;
 import com.tus.proj.user_managment.dto.LoginRequestDTO;
 import com.tus.proj.user_managment.dto.LoginResponseDTO;
 
-
-
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-	private final UserService userService;
-	private final JwtService jwtService;
+    private final UserService userService;
+    private final JwtService jwtService;
 
-	public UserController(UserService userService, JwtService jwtService) {
-		this.userService = userService;
-		this.jwtService = jwtService;
-	}
+    public UserController(UserService userService, JwtService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+    }
 
+    @PostMapping("/register")
+    public ResponseEntity<EntityModel<User>> createUser(@RequestBody CreateUserRequestDTO request) {
+        User user = new User();
+        if (request.getUsername().length() >= 3) {
+            user.setUsername(request.getUsername());
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-	@PostMapping("/register")
-	public ResponseEntity<User> createUser(@RequestBody CreateUserRequestDTO request) {
-		// Convert the DTO to a User entity
-		User user = new User();
-		if (request.getUsername().length() >= 3) {
-			user.setUsername(request.getUsername());
-		} else {
-			return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
-		}
+        if (isValidPassword(request.getPassword())) {
+            user.setPassword(request.getPassword());
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        user.setRole(request.getRole());
 
-		if (isValidPassword(request.getPassword())) {
-			user.setPassword(request.getPassword());
-		} else {
-			return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
-		}
-		user.setRole(request.getRole());
+        User createdUser = userService.createUser(user);
 
-		User createdUser = userService.createUser(user);
-		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-	}
-	
-	
+        EntityModel<User> userModel = EntityModel.of(createdUser);
 
-	private boolean isValidPassword(String password) {
-		boolean containsUpperCase = false, containsLowerCase = false, containsNumber = false;
-		for (char c : password.toCharArray()) {
-			if (Character.isUpperCase(c)) {
-				containsUpperCase = true;
-			} else if (Character.isLowerCase(c)) {
-				containsLowerCase = true;
-			} else if (Character.isDigit(c)) {
-				containsNumber = true;
-			}
-		}
-		return ((password.length() >= 8) && containsUpperCase && containsLowerCase && containsNumber);
-	}
+        // Create self link and add it to the EntityModel
+        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(createdUser.getId())).withSelfRel();
+        userModel.add(selfLink);
 
-	// New endpoint to get all users
-	@PreAuthorize("hasRole('Admin')")
-	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		return new ResponseEntity<>(users, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(userModel, HttpStatus.CREATED);
+    }
 
-	@PreAuthorize("hasRole('Admin')")
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-	    boolean deleted = userService.deleteUser(id);
-	    
-	    if (deleted) {
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content on success
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found if user not found
-	    }
-	}
+    private boolean isValidPassword(String password) {
+        boolean containsUpperCase = false, containsLowerCase = false, containsNumber = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                containsUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                containsLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                containsNumber = true;
+            }
+        }
+        return ((password.length() >= 8) && containsUpperCase && containsLowerCase && containsNumber);
+    }
 
+    @PreAuthorize("hasRole('Admin')")
+    @GetMapping
+    public ResponseEntity<List<EntityModel<User>>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
 
+        List<EntityModel<User>> userModels = users.stream()
+            .map(user -> {
+                EntityModel<User> userModel = EntityModel.of(user);
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(user.getId())).withSelfRel();
+                Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel("update");
+                Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel("delete");
+                userModel.add(selfLink, editLink, deleteLink);
+                return userModel;
+            })
+            .toList();
 
-	@PostMapping("/login")  
+        return new ResponseEntity<>(userModels, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean deleted = userService.deleteUser(id);
+
+        if (deleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PostMapping("/login")
     public ResponseEntity<?> loginValidation(@RequestBody LoginRequestDTO request) {
-	    try {
-	        User user = userService.authenticate(request.getUsername(), request.getPassword());
-	        String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
+        try {
+            // Authenticate the user
+            User user = userService.authenticate(request.getUsername(), request.getPassword());
+            Long userId = user.getId();
+            String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
 
-	        LoginResponseDTO loginResponse = new LoginResponseDTO();
-	        loginResponse.setJwt(jwt);
+            // Create the LoginResponseDTO object
+            LoginResponseDTO loginResponse = new LoginResponseDTO();
+            loginResponse.setJwt(jwt);
 
-	        return ResponseEntity.status(HttpStatus.OK).body(loginResponse); // 200 OK with JWT
-	    } catch (BadCredentialsException e) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password"); // 401 Unauthorized
-	    }
-	}
-	
-	@PreAuthorize("hasRole('Admin')")
-	@PutMapping("/edit/{id}")
-	public ResponseEntity<User> editUser(@PathVariable int id, @RequestBody EditUserRequestDTO request) {
-	    Optional<User> existingUser = userService.getUserById(id);
-	    
-	    if (!existingUser.isPresent()) { // Fixing the null check
-	        return ResponseEntity.notFound().build();
-	    }
+            // Create the HATEOAS links based on the role
+            EntityModel<LoginResponseDTO> responseModel = EntityModel.of(loginResponse);
 
-	    UserRole role = null;
-	    if (request.getRole() != null) {
-	        try {
-	            role = UserRole.valueOf(request.getRole().toUpperCase()); 
-	        } catch (IllegalArgumentException e) {
-	            return ResponseEntity.badRequest().build(); 
-	        }
-	    }
-
-	    Optional<User> updatedUser = userService.editUser(id, request.getUsername(), request.getPassword(), role);
-
-	    return updatedUser.map(ResponseEntity::ok)
-	                      .orElseGet(() -> ResponseEntity.notFound().build());
-	}
-	
-	@PreAuthorize("hasRole('Admin')")
-	@GetMapping("/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable int id) {
-	    Optional<User> user = userService.getUserById(id);
-	    
-	    return user.map(ResponseEntity::ok)
-	               .orElseGet(() -> ResponseEntity.notFound().build());
-	}
-	
-
-	@GetMapping("/username/{username}")
-	public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
-	    Optional<User> user = userService.findByUsername(username);
-	    
-	    return user.map(u -> ResponseEntity.ok(u.getId())) // If user is found, return their ID
-	               .orElseGet(() -> ResponseEntity.notFound().build()); // If user not found, return 404
-	}
+            // If the user is a regular User
+            if (user.getRole() == UserRole.USER) {
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById()).withSelfRel(); // Example Note endpoint
 
 
+                responseModel.add(selfLink);
+            }
+
+            if (user.getRole() == UserRole.ADMIN) {
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getAllUsers()).withSelfRel();
+
+
+                responseModel.add(selfLink);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseModel);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        }
+    }
+
+
+    @PreAuthorize("hasRole('Admin')")
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<EntityModel<User>> editUser(@PathVariable Long id, @RequestBody EditUserRequestDTO request) {
+        Optional<User> existingUser = userService.getUserById(id);
+
+        if (!existingUser.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UserRole role = null;
+        if (request.getRole() != null) {
+            try {
+                role = UserRole.valueOf(request.getRole().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
+        Optional<User> updatedUser = userService.editUser(id, request.getUsername(), request.getPassword(), role);
+
+        if (updatedUser.isPresent()) {
+        	User user = updatedUser.get();
+            EntityModel<User> userModel = EntityModel.of(updatedUser.get());
+            Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(user.getId())).withSelfRel();
+            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel("update");
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel("delete");
+            userModel.add(selfLink, editLink, deleteLink);
+
+            return ResponseEntity.ok(userModel);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<User>> getUserById(@PathVariable Long id) {
+        Optional<User> user = userService.getUserById(id);
+
+        return user.map(existingUser -> {
+            EntityModel<User> userModel = EntityModel.of(existingUser);
+            Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(existingUser.getId())).withSelfRel();
+            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(existingUser.getId(), null)).withRel("update");
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(existingUser.getId())).withRel("delete");
+            userModel.add(selfLink, editLink, deleteLink);
+            return ResponseEntity.ok(userModel);
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
+        Optional<User> user = userService.findByUsername(username);
+
+        return user.map(u -> ResponseEntity.ok(u.getId()))
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

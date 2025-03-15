@@ -20,7 +20,7 @@ public class NoteService {
 		this.noteRepository = noteRepository;
 	}
 	
-	public List<Note> getNotesByTagListAndUserId(List<String> tags, int id) {
+	public List<Note> getNotesByTagListAndUserId(List<String> tags, Long id) {
 	    List<Note> allNotes = new ArrayList<>();
 	    List<Note> userNotes = new ArrayList<>();
 	    
@@ -39,7 +39,7 @@ public class NoteService {
 	    return userNotes;
 	}
 	
-	public List<String> getAllUniqueTagsByUserId(int id){
+	public List<String> getAllUniqueTagsByUserId(Long id){
 		return noteRepository.findDistinctTagsByUserId(id);
 		
 	}
@@ -55,7 +55,7 @@ public class NoteService {
 		return noteRepository.findAll();
 	}
 	
-	public List<Note> getAllNotesByUserId(int id){
+	public List<Note> getAllNotesByUserId(Long id){
 		return noteRepository.findByUserId(id);
 	}
 	

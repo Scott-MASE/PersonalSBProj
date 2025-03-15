@@ -24,7 +24,6 @@ public class SecurityConfig {
 	    this.jwtFilter = jwtFilter;
 	}
 
-    // Define a PasswordEncoder bean for your application.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,7 +44,7 @@ public class SecurityConfig {
     	            .requestMatchers("/api/users/register").permitAll()
     	            .requestMatchers("/api/users/username/{username}").permitAll()
 
-    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/1/getAll").hasRole("User")  // Allow USER to access these endpoints
+    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser").hasRole("User")  // Allow USER to access these endpoints
 
     	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
     	            .requestMatchers("/actuator/**").permitAll()   // Allow monitoring endpoints (optional)

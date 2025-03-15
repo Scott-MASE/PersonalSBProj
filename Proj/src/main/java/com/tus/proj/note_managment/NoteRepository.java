@@ -14,12 +14,12 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     
     List<Note> findByPriority(Priority priority);
 
-    List<Note> findByUserId(int userId);
+    List<Note> findByUserId(Long userId);
     
     List<Note> findByTag(String tag);
     
     @Query("SELECT DISTINCT n.tag FROM Note n WHERE n.tag IS NOT NULL AND n.userId = :userId")
-    List<String> findDistinctTagsByUserId(@Param("userId") int userId);
+    List<String> findDistinctTagsByUserId(@Param("userId") Long userId);
 
 
 

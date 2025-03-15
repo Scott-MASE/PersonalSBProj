@@ -31,11 +31,11 @@ public class Note {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadline;
 
-    private int userId;  // Changed from User to userId as an integer
+    private Long userId;  // Changed from User to userId as an integer
 
     public Note() {}
 
-    public Note(String title, String content, Priority priority, LocalDate deadline, int userId, String tag) {
+    public Note(String title, String content, Priority priority, LocalDate deadline, Long userId, String tag) {
         this.title = title;
         this.content = content;
         this.priority = priority;
@@ -84,11 +84,11 @@ public class Note {
         this.deadline = localDate;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;  // Getter for userId
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;  // Setter for userId
     }
 

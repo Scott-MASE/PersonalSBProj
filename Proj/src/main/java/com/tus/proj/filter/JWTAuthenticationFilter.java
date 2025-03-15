@@ -36,9 +36,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		System.out.println("Got into filter");
 		String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		System.out.println(authHeader);
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
@@ -47,7 +45,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		String username;
 		String role;
 
-		System.out.println(jwtToken);
 		try {
 			Claims claims = jwtService.extractAllClaims(jwtToken);
 			username = claims.getSubject();
@@ -57,11 +54,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		System.out.println(role);
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 			if (jwtService.isTokenValid(jwtToken, userDetails)) {
-				System.out.println(role);
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
 						null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
