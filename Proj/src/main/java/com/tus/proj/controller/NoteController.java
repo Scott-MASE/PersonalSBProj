@@ -70,7 +70,7 @@ public class NoteController {
 		User user = opUser.get();
 
 		Note note = new Note(noteRequest.getTitle(), noteRequest.getContent(), noteRequest.getPriority(),
-				noteRequest.getDeadline(), user.getId(), noteRequest.getTag());
+				noteRequest.getDeadline(), user, noteRequest.getTag());
 
 		Note savedNote = noteService.saveNote(note);
 
@@ -155,7 +155,7 @@ public class NoteController {
 		if (oPnote.isPresent()) {
 			Note note = oPnote.get();
 
-			if (note.getUserId() != user.getId()) {
+			if (note.getUser().getId() != user.getId()) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body("You are not authorized to access or modify this note.");
 			}
@@ -186,7 +186,7 @@ public class NoteController {
 		User user = opUser.get();
 		Note note = existingNote.get();
 		
-		if (note.getUserId() != user.getId()) {
+		if (note.getUser().getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body("You are not authorized to access or modify this note.");
 		}
@@ -231,7 +231,7 @@ public class NoteController {
 		
 		Note note = oPnote.get();
 		
-		if (note.getUserId() != user.getId()) {
+		if (note.getUser().getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body("You are not authorized to access or modify this note.");
 		}
@@ -260,7 +260,7 @@ public class NoteController {
 
 		User user = opUser.get();
 		
-		if (note.getUserId() != user.getId()) {
+		if (note.getUser().getId() != user.getId()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body("You are not authorized to access or modify this note.");
 		}

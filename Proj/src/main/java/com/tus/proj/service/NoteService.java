@@ -31,7 +31,7 @@ public class NoteService {
 	    }
 	    
 	    for(Note note: allNotes) {
-	    	if(note.getUserId() == id) {
+	    	if(note.getUser().getId() == id) {
 	    		userNotes.add(note);
 	    	}
 	    }

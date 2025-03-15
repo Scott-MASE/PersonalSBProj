@@ -7,6 +7,9 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.tus.proj.note_managment.Note;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,16 +32,28 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
     
-
-    public User() {}
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference  // Parent-side reference
+    private List<Note> notes = new ArrayList<>();
+    
 
     public User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
+
+    public User(String username, String password, UserRole role, List<Note> notes) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.notes = notes;
+    }
     
-    @Override
+    public User() {
+	}
+
+	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(role);

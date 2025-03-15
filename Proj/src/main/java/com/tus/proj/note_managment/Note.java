@@ -3,7 +3,9 @@ package com.tus.proj.note_managment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tus.proj.user_managment.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,92 +13,99 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "notes")
 public class Note {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    private String title;
-    private String content;
-    private String tag;
+	private String title;
+	private String content;
+	private String tag;
 
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
+	@Enumerated(EnumType.STRING)
+	private Priority priority;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate deadline;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate deadline;
 
-    private Long userId;  // Changed from User to userId as an integer
 
-    public Note() {}
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false) // Foreign key column in "notes" table
+	@JsonBackReference
+	private User user;
 
-    public Note(String title, String content, Priority priority, LocalDate deadline, Long userId, String tag) {
-        this.title = title;
-        this.content = content;
-        this.priority = priority;
-        this.deadline = deadline;
-        this.userId = userId;
-        this.tag = tag;
-    }
+	public Note() {
+	}
 
-    public int getId() {
-        return id;
-    }
+	public Note(String title, String content, Priority priority, LocalDate deadline, User user, String tag) {
+		this.title = title;
+		this.content = content;
+		this.priority = priority;
+		this.deadline = deadline;
+		this.user = user;
+		this.tag = tag;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public Priority getPriority() {
-        return priority;
-    }
+	public void setContent(String content) {
+		this.content = content;
+	}
 
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
+	public Priority getPriority() {
+		return priority;
+	}
 
-    public LocalDate getDeadline() {
-        return deadline;
-    }
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
 
-    public void setDeadline(LocalDate localDate) {
-        this.deadline = localDate;
-    }
+	public LocalDate getDeadline() {
+		return deadline;
+	}
 
-    public Long getUserId() {
-        return userId;  // Getter for userId
-    }
+	public void setDeadline(LocalDate localDate) {
+		this.deadline = localDate;
+	}
 
-    public void setUserId(Long userId) {
-        this.userId = userId;  // Setter for userId
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public String getTag() {
-        return tag;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 }
