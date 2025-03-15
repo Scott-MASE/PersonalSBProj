@@ -20,6 +20,8 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     
     List<Note> findByUser(User user);
     
+    void deleteByUserId(Long userId);
+    
     @Query("SELECT DISTINCT n.tag FROM Note n WHERE n.tag IS NOT NULL AND n.user.id = :userId")
     List<String> findDistinctTagsByUserId(@Param("userId") Long userId);
     

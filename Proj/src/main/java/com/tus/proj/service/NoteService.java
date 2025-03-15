@@ -69,6 +69,10 @@ public class NoteService {
 		noteRepository.deleteById(id);
 	}
 	
+    public void deleteNotesByUserId(Long userId) {
+        noteRepository.deleteByUserId(userId);
+    }
+	
 	// Update an existing note
 	public Note updateNote(int id, Note updatedNote) {
 		return noteRepository.findById(id).map(note -> {

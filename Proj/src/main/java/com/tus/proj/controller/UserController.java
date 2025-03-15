@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tus.proj.service.JwtService;
+import com.tus.proj.service.NoteService;
 import com.tus.proj.service.UserService;
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRole;
@@ -34,11 +35,13 @@ import com.tus.proj.user_managment.dto.LoginResponseDTO;
 public class UserController {
 
     private final UserService userService;
+    private final NoteService noteService;
     private final JwtService jwtService;
 
-    public UserController(UserService userService, JwtService jwtService) {
+    public UserController(UserService userService, NoteService noteService,JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.noteService = noteService;
     }
 
     @PostMapping("/register")
@@ -104,6 +107,10 @@ public class UserController {
     @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        // First, delete all notes associated with the user
+//        noteService.deleteNotesByUserId(id);
+
+        // Then, delete the user
         boolean deleted = userService.deleteUser(id);
 
         if (deleted) {
@@ -112,6 +119,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> loginValidation(@RequestBody LoginRequestDTO request) {

@@ -3,10 +3,13 @@ package com.tus.proj.service;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.tus.proj.note_managment.NoteRepository;
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRepository;
 import com.tus.proj.user_managment.UserRole;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +18,13 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final NoteRepository noteRepository;
     private final PasswordEncoder passwordEncoder;
     
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NoteRepository noteRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.noteRepository = noteRepository;
     }
     
     public User createUser(User user) {
@@ -36,19 +41,27 @@ public class UserService {
         return userRepository.findById(id);
     }
     
-    
+    @Transactional
     public boolean deleteUser(Long id) {
-    	
-    	if (id == 1L) {
-    		throw new IllegalStateException("Cannot delete the user with ID 1 (sys admin)");
+        
+        // Prevent deletion of the system admin user (ID 1)
+        if (id == 1L) {
+            throw new IllegalStateException("Cannot delete the user with ID 1 (sys admin)");
         }
-    	
+
+        // Check if the user exists
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
+            // Delete all notes associated with the user
+            noteRepository.deleteByUserId(id);
+            
+            // Delete the user
             userRepository.deleteById(id);
+
             return true;
         }
-        return false;
+
+        return false; // Return false if user is not found
     }
     
     public User authenticate(String userName, String rawPassword) throws BadCredentialsException {
@@ -92,6 +105,10 @@ public class UserService {
 	public Optional<User> findByUsername(String username) {
 		// TODO Auto-generated method stub
 		return userRepository.findByUsername(username);
+	}
+
+	public boolean existsById(Long id) {
+		return userRepository.existsById(id);
 	}
 
 }
