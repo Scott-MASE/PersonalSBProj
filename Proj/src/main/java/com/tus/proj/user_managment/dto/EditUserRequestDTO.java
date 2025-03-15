@@ -1,13 +1,13 @@
-package com.tus.proj.user_managment;
+package com.tus.proj.user_managment.dto;
 
-public class EditUserRequest {
+public class EditUserRequestDTO {
     private String username;
     private String password;
     private String role; // Should be a string since frontend sends it as a string
 
-    public EditUserRequest() {}
+    public EditUserRequestDTO() {}
 
-    public EditUserRequest(String username, String password, String role) {
+    public EditUserRequestDTO(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;

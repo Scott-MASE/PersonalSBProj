@@ -1,4 +1,4 @@
-package com.tus.proj.user_managment;
+package com.tus.proj.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tus.proj.service.JwtService;
 import com.tus.proj.service.UserService;
+import com.tus.proj.user_managment.User;
+import com.tus.proj.user_managment.UserRole;
+import com.tus.proj.user_managment.dto.CreateUserRequestDTO;
+import com.tus.proj.user_managment.dto.EditUserRequestDTO;
+import com.tus.proj.user_managment.dto.LoginRequestDTO;
+import com.tus.proj.user_managment.dto.LoginResponseDTO;
 
 
 
@@ -36,7 +42,7 @@ public class UserController {
 
 
 	@PostMapping("/register")
-	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
+	public ResponseEntity<User> createUser(@RequestBody CreateUserRequestDTO request) {
 		// Convert the DTO to a User entity
 		User user = new User();
 		if (request.getUsername().length() >= 3) {
@@ -95,12 +101,12 @@ public class UserController {
 
 
 	@PostMapping("/login")  
-    public ResponseEntity<?> loginValidation(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> loginValidation(@RequestBody LoginRequestDTO request) {
 	    try {
 	        User user = userService.authenticate(request.getUsername(), request.getPassword());
 	        String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
 
-	        LoginResponse loginResponse = new LoginResponse();
+	        LoginResponseDTO loginResponse = new LoginResponseDTO();
 	        loginResponse.setJwt(jwt);
 
 	        return ResponseEntity.status(HttpStatus.OK).body(loginResponse); // 200 OK with JWT
@@ -111,7 +117,7 @@ public class UserController {
 	
 	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/edit/{id}")
-	public ResponseEntity<User> editUser(@PathVariable int id, @RequestBody EditUserRequest request) {
+	public ResponseEntity<User> editUser(@PathVariable int id, @RequestBody EditUserRequestDTO request) {
 	    Optional<User> existingUser = userService.getUserById(id);
 	    
 	    if (!existingUser.isPresent()) { // Fixing the null check

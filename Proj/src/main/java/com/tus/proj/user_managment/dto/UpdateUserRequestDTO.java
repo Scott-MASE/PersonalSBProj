@@ -1,11 +1,11 @@
-package com.tus.proj.user_managment;
+package com.tus.proj.user_managment.dto;
 
-public class LoginRequest {
+import com.tus.proj.user_managment.UserRole;
+
+public class UpdateUserRequestDTO {
     private String username;
     private String password;
-
-    // Default constructor
-    public LoginRequest() {}
+    private UserRole role;
 
     // Getters and Setters
     public String getUsername() {
@@ -22,5 +22,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

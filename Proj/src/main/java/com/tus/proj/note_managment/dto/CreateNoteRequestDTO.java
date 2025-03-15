@@ -1,11 +1,12 @@
-package com.tus.proj.note_managment;
+package com.tus.proj.note_managment.dto;
 
 import java.time.LocalDateTime;
 
+import com.tus.proj.note_managment.Priority;
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRole;
 
-public class CreateNoteRequest {
+public class CreateNoteRequestDTO {
 	private String title;
 	private String content;
 	private String tag;

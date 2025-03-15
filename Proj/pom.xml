@@ -121,6 +121,12 @@
 </dependency>
 
 
+<dependency>
+    <groupId>org.springframework.hateoas</groupId>
+    <artifactId>spring-hateoas</artifactId>
+</dependency>
+
+
 
 </dependencies>
 

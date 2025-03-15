@@ -1,6 +1,8 @@
-package com.tus.proj.user_managment;
+package com.tus.proj.user_managment.dto;
 
-public class CreateUserRequest {
+import com.tus.proj.user_managment.UserRole;
+
+public class CreateUserRequestDTO {
     private String username;
     private String password;
     private UserRole role;
