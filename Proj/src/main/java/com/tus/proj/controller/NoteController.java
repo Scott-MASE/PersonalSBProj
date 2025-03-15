@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tus.proj.note_managment.Note;
 import com.tus.proj.note_managment.dto.CreateNoteRequestDTO;
+import com.tus.proj.note_managment.dto.DeleteNoteRequestDTO;
+import com.tus.proj.note_managment.dto.UpdateNoteContentRequestDTO;
+import com.tus.proj.note_managment.dto.UpdateNoteMetaRequestDTO;
 import com.tus.proj.service.NoteService;
 import org.springframework.http.HttpStatus;
 
@@ -25,6 +28,16 @@ public class NoteController {
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
+    }
+    
+    private static EntityModel<Note> generateHATEOASLinks(Note savedNote){
+        EntityModel<Note> noteModel = EntityModel.of(savedNote);
+        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(savedNote.getId())).withSelfRel();
+        Link updateMetaLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(savedNote.getId(), null)).withRel("updateMeta");
+        Link updateContentLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(savedNote.getId(), null)).withRel("updateContent");
+        Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(savedNote.getId(), null)).withRel("delete");
+        noteModel.add(selfLink, updateMetaLink,updateContentLink, deleteLink);
+        return noteModel;
     }
 
     @PreAuthorize("hasRole('User')")
@@ -46,11 +59,8 @@ public class NoteController {
         Note savedNote = noteService.saveNote(note);
 
 
-        EntityModel<Note> noteModel = EntityModel.of(savedNote);
-        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(savedNote.getId())).withSelfRel();
-        Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(savedNote.getId(), null)).withRel("update");
-        Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(savedNote.getId())).withRel("delete");
-        noteModel.add(selfLink, updateLink, deleteLink);
+        EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(noteModel);
     }
@@ -67,7 +77,7 @@ public class NoteController {
         for (Note note : notes) {
             Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId())).withSelfRel();
             Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null)).withRel("update");
-            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId())).withRel("delete");
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null)).withRel("delete");
             notesModel.add(selfLink, updateLink, deleteLink);
         }
 
@@ -89,11 +99,7 @@ public class NoteController {
         Optional<Note> note = noteService.getNoteById(id);
 
         if (note.isPresent()) {
-            EntityModel<Note> noteModel = EntityModel.of(note.get());
-            Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(id)).withSelfRel();
-            Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(id, null)).withRel("update");
-            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(id)).withRel("delete");
-            noteModel.add(selfLink, updateLink, deleteLink);
+        	EntityModel<Note> noteModel = generateHATEOASLinks(note.get());
 
             return ResponseEntity.ok(noteModel);
         } else {
@@ -103,7 +109,7 @@ public class NoteController {
 
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/meta")
-    public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody CreateNoteRequestDTO noteRequest) {
+    public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
@@ -114,22 +120,25 @@ public class NoteController {
         note.setPriority(noteRequest.getPriority());
         note.setTag(noteRequest.getTag());
         note.setTitle(noteRequest.getTitle());
+        note.setContent(noteRequest.getContent());
 
         Note savedNote = noteService.updateNote(id, note);
 
         // Adding HATEOAS links
-        EntityModel<Note> noteModel = EntityModel.of(savedNote);
-        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(savedNote.getId())).withSelfRel();
-        Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(savedNote.getId(), null)).withRel("update");
-        Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(savedNote.getId())).withRel("delete");
-        noteModel.add(selfLink, updateLink, deleteLink);
+        EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
 
         return ResponseEntity.ok(noteModel);
     }
 
+
     @PreAuthorize("hasRole('User')")
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<String> deleteNote(@PathVariable int id) {
+    public ResponseEntity<String> deleteNote(@PathVariable int id, @RequestBody DeleteNoteRequestDTO deleteRequest) {
+        // Check if user has confirmed deletion
+        if (!"confirmed".equalsIgnoreCase(deleteRequest.getUserConfirmation())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Deletion not confirmed");
+        }
+
         Optional<Note> note = noteService.getNoteById(id);
         if (note.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
@@ -139,9 +148,10 @@ public class NoteController {
         return ResponseEntity.ok("Note deleted successfully");
     }
 
+
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/content")
-    public ResponseEntity<?> updateNoteContent(@PathVariable int id, @RequestBody String newContent) {
+    public ResponseEntity<?> updateNoteContent(@PathVariable int id, @RequestBody UpdateNoteContentRequestDTO updateRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
@@ -149,7 +159,8 @@ public class NoteController {
 
         Note note = existingNote.get();
 
-        // Remove extra quotes if they exist (to fix old data)
+        String newContent = updateRequest.getContent();
+
         if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
             newContent = newContent.substring(1, newContent.length() - 1);
         }
@@ -158,14 +169,11 @@ public class NoteController {
         Note savedNote = noteService.updateNote(id, note);
 
         // Adding HATEOAS links
-        EntityModel<Note> noteModel = EntityModel.of(savedNote);
-        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(savedNote.getId())).withSelfRel();
-        Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(savedNote.getId(), null)).withRel("update");
-        Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(savedNote.getId())).withRel("delete");
-        noteModel.add(selfLink, updateLink, deleteLink);
+        EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
 
         return ResponseEntity.ok(noteModel);
     }
+
 
     @PreAuthorize("hasRole('User')")
     @GetMapping("{id}/getTags")
@@ -199,7 +207,7 @@ public class NoteController {
         for (Note note : notes) {
             Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId())).withSelfRel();
             Link updateLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null)).withRel("update");
-            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId())).withRel("delete");
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null)).withRel("delete");
             notesModel.add(selfLink, updateLink, deleteLink);
         }
 

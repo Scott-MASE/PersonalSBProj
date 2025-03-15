@@ -41,9 +41,9 @@ public class SecurityConfig {
     	        .authorizeHttpRequests(authorize -> authorize
     	            // Allow all requests to the H2 console
     	            .requestMatchers("/h2-console/**").permitAll()
-    	            .requestMatchers("api/users/login").permitAll()
-    	            .requestMatchers("api/users/register").permitAll()
-    	            .requestMatchers("api/users/username/{username}").permitAll()
+    	            .requestMatchers("/api/users/login").permitAll()
+    	            .requestMatchers("/api/users/register").permitAll()
+    	            .requestMatchers("/api/users/username/{username}").permitAll()
 
     	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/1/getAll").hasRole("User")  // Allow USER to access these endpoints
 

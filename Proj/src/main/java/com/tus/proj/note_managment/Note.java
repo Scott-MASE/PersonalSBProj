@@ -1,5 +1,6 @@
 package com.tus.proj.note_managment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,13 +29,13 @@ public class Note {
     private Priority priority;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime deadline;
+    private LocalDate deadline;
 
     private int userId;  // Changed from User to userId as an integer
 
     public Note() {}
 
-    public Note(String title, String content, Priority priority, LocalDateTime deadline, int userId, String tag) {
+    public Note(String title, String content, Priority priority, LocalDate deadline, int userId, String tag) {
         this.title = title;
         this.content = content;
         this.priority = priority;
@@ -75,12 +76,12 @@ public class Note {
         this.priority = priority;
     }
 
-    public LocalDateTime getDeadline() {
+    public LocalDate getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = deadline;
+    public void setDeadline(LocalDate localDate) {
+        this.deadline = localDate;
     }
 
     public int getUserId() {

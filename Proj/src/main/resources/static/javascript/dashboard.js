@@ -175,23 +175,26 @@ $(document).ready(function() {
 	});
 
 	$("#confirmDelete").on("click", function() {
-
 	    let noteId = $("#deleteNoteModal").data("note-id");
 
+	    // Create the request payload with user confirmation
+	    let deleteRequest = {
+	        userConfirmation: "confirmed" // Change this to whatever the user confirmation should be
+	    };
 
 	    $.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        type: "DELETE",
-	        url: "/api/notes/" + noteId +"/delete",  
+	        url: "/api/notes/" + noteId + "/delete",
+	        contentType: "application/json", // Ensure content type is JSON
+	        data: JSON.stringify(deleteRequest), // Send the deleteRequest as JSON in the body
 	        success: function(response) {
-	            
 	            let modalElement = $("#deleteNoteModal");
 	            let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
 	            modalInstance.hide();
 
-
-	            findAllNotes(localStorage.getItem('userId'));  
-				findAllTags();
+	            findAllNotes(localStorage.getItem('userId'));
+	            findAllTags();
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("Error:", error);
@@ -199,6 +202,7 @@ $(document).ready(function() {
 	        }
 	    });
 	});
+
 
 	
 	$(document).on("click", ".bi-gear-fill.cog-icon", function() {
@@ -398,19 +402,23 @@ $(document).ready(function() {
 	    $("#editNoteModal").modal("show"); // Open modal
 	});
 
-	
 	$("#editNoteForm").on("submit", function(event) {
 	    event.preventDefault(); // Prevent form submission
 
 	    let noteId = $(this).data("note-id");
 	    let updatedContent = $("#editNoteContent").val();
 
+	    // Create an object to match the UpdateNoteContentRequestDTO structure
+	    let updateData = {
+	        content: updatedContent
+	    };
+
 	    $.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        url: "/api/notes/" + noteId + "/content",
 	        type: "PUT",
 	        contentType: "application/json",
-	        data: JSON.stringify(updatedContent), // Send raw string, not an object
+	        data: JSON.stringify(updateData), 
 	        success: function(response) {
 	            alert("Note updated successfully!");
 	            $("#editNoteModal").modal("hide"); // Close modal
@@ -421,6 +429,7 @@ $(document).ready(function() {
 	        }
 	    });
 	});
+
 
 
 	

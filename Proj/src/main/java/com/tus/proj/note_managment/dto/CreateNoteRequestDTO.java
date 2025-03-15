@@ -1,5 +1,6 @@
 package com.tus.proj.note_managment.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.tus.proj.note_managment.Priority;
@@ -11,7 +12,7 @@ public class CreateNoteRequestDTO {
 	private String content;
 	private String tag;
 	private Priority priority;
-	private LocalDateTime deadline;
+	private LocalDate deadline;
 	private int userId;
 
 	public String getTitle() {
@@ -46,11 +47,11 @@ public class CreateNoteRequestDTO {
 		this.priority = priority;
 	}
 
-	public LocalDateTime getDeadline() {
+	public LocalDate getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(LocalDateTime deadline) {
+	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
 	}
 
