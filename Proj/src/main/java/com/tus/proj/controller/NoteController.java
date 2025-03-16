@@ -13,6 +13,7 @@ import com.tus.proj.note_managment.Access;
 import com.tus.proj.note_managment.Note;
 import com.tus.proj.note_managment.dto.CreateNoteRequestDTO;
 import com.tus.proj.note_managment.dto.DeleteNoteRequestDTO;
+import com.tus.proj.note_managment.dto.NoteDTO;
 import com.tus.proj.note_managment.dto.UpdateNoteContentRequestDTO;
 import com.tus.proj.note_managment.dto.UpdateNoteMetaRequestDTO;
 import com.tus.proj.service.NoteService;
@@ -21,6 +22,7 @@ import com.tus.proj.user_managment.User;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -108,86 +110,68 @@ public class NoteController {
 
 	@PreAuthorize("hasRole('User')")
 	@GetMapping("/getAll/loggedUser/{order}/{pUsername}")
-	public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int order, @PathVariable String pUsername) {
-		List<Note> notes;
-		
-		if(pUsername.equals("null")) {
-			
-		    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+	public ResponseEntity<List<NoteDTO>> getAllNotesById(@PathVariable int order, @PathVariable String pUsername) {
+	    List<Note> notes;
 
-		    // Get the user from the username
-		    Optional<User> opUser = userService.findByUsername(username);
+	    if (pUsername.equals("null")) {
+	        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-		    if (!opUser.isPresent()) {
-		        // If user is not found, return 404 Not Found
-		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-		                             .body(null); // Or a message like "User not found"
-		    }
+	        // Get the user from the username
+	        Optional<User> opUser = userService.findByUsername(username);
+	        if (!opUser.isPresent()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // User not found
+	        }
 
-		    User user = opUser.get();
-
-		    // Get the notes for the user
-		    notes = noteService.getAllNotesByUserId(user.getId());
-			
-		} else {
-			
-		    Optional<User> opUser = userService.findByUsername(pUsername);
-
-		    if (!opUser.isPresent()) {
-			    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-			    // Get the user from the username
-			    opUser = userService.findByUsername(username);
-
-			    if (!opUser.isPresent()) {
-			        // If user is not found, return 404 Not Found
-			        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-			                             .body(null); // Or a message like "User not found"
-			    }
-
-			    User user = opUser.get();
-
-			    // Get the notes for the user
-			    notes = noteService.getAllNotesByUserId(user.getId());
-		    }
-			notes = noteService.getPublicNotesByUsername(pUsername);
-			
-		}
-		
-
+	        User user = opUser.get();
+	        notes = noteService.getAllNotesByUserId(user.getId());
+	    } else {
+	        Optional<User> opUser = userService.findByUsername(pUsername);
+	        if (!opUser.isPresent()) {
+	            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+	            opUser = userService.findByUsername(username);
+	            if (!opUser.isPresent()) {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // User not found
+	            }
+	            User user = opUser.get();
+	            notes = noteService.getAllNotesByUserId(user.getId());
+	        } else {
+	            notes = noteService.getPublicNotesByUsername(pUsername);
+	        }
+	    }
 
 	    // If no notes are found, return 204 No Content
 	    if (notes.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-	                             .body(notes); // An empty body is acceptable, or an empty array/list
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(List.of());
 	    }
 
-	    // Reverse the order of notes if needed
-	    switch(order) {
-	    	case 0: 
-	    		Collections.sort(notes, Comparator.comparing(Note::getId));
-	    		Collections.reverse(notes);
-	    		break;
-	    	case 1: 
-	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));
+	    // Convert notes to NoteDTOs
+	    List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
+
+
+	    // Sorting logic
+	    switch (order) {
+	        case 0:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
 	            break;
-	    	case 2:
-	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));
-	            Collections.reverse(notes);
+	        case 1:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+	            break;
+	        case 2:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
 	            break;
 	        case 3:
-	        	Collections.sort(notes, Comparator.comparing(note -> note.getTitle().toLowerCase()));
+	            noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
 	            break;
-	        case 4: 
-	            Collections.sort(notes, Comparator.comparing(Note::getDeadline));
+	        case 4:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
 	            break;
 	        default:
-	        	break;
+	            break;
 	    }
 
-
-	    return ResponseEntity.ok(notes);
+	    return ResponseEntity.ok(noteDTOs);
 	}
+
 	
 	
 

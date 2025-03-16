@@ -373,8 +373,7 @@ $(document).ready(function() {
 			htmlStr += '</div>';
 
 			$('.scrollview').append(htmlStr);
-			
-			console.log(note.user.id);
+			console.log(note.username);
 		});
 
 	};
