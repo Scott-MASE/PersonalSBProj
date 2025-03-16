@@ -265,7 +265,7 @@ $(document).ready(function() {
 				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 				type: 'GET',
 
-				url: 'api/notes/getTags/public',
+				url: 'api/notes/getTags/publicTags',
 				dataType: 'json',
 				success: function(data) {
 					renderTags(data);
@@ -321,7 +321,7 @@ $(document).ready(function() {
 	        $.ajax({
 	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	            type: 'GET',
-	            url: "api/notes/getPublic",
+	            url: `api/notes/getPublic/mod/${sortOption}`,
 	            dataType: 'json',
 	            success: function(data) {
 	                renderNotes(data);

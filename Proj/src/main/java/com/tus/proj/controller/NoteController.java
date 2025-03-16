@@ -408,16 +408,42 @@ public class NoteController {
 	}
 	
 	@PreAuthorize("hasRole('Moderator')")
-	@GetMapping("/getPublic")
-	public ResponseEntity<List<Note>> getAllPublicNotes() {
+	@GetMapping("/getPublic/mod/{order}")
+	public ResponseEntity<List<NoteDTO>> getAllPublicNotes(@PathVariable int order) {
+		
+		List<Note> notes = noteService.getAllPublicNotes();
 
-	    List<Note> publicNotes = noteService.getAllPublicNotes();
-
-	    if (publicNotes.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
+	    // If no notes are found, return 204 No Content
+	    if (notes.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(List.of());
 	    }
 
-	    return ResponseEntity.ok(publicNotes);
+	    // Convert notes to NoteDTOs
+	    List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
+
+
+	    // Sorting logic
+	    switch (order) {
+	        case 0:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
+	            break;
+	        case 1:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+	            break;
+	        case 2:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+	            break;
+	        case 3:
+	            noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
+	            break;
+	        case 4:
+	            noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
+	            break;
+	        default:
+	            break;
+	    }
+
+	    return ResponseEntity.ok(noteDTOs);
 	}
 	
 	@PreAuthorize("hasRole('Moderator')")
@@ -440,7 +466,7 @@ public class NoteController {
 	}
 	
 	@PreAuthorize("hasRole('Moderator')")
-	@GetMapping("/getTags/public")
+	@GetMapping("/getTags/publicTags")
 	public ResponseEntity<?> getAllPublicTags() {
 		
 		
@@ -468,7 +494,6 @@ public class NoteController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
 		}
 
-		Collections.reverse(notes);
 
 		CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
 		for (Note note : notes) {
