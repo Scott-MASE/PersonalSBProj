@@ -367,8 +367,10 @@ $(document).ready(function() {
 			htmlStr += '</div>';
 			htmlStr += '</button>';
 
-			htmlStr += '<i id="cog-btn-' + note.id + '" class="bi bi-gear-fill cog-icon"></i>';
-			htmlStr += '<i id="trash-btn-' + note.id + '" class="bi bi-trash-fill trash-icon"></i>';
+			if ( note.access !== "PUBLIC" || username == note.username ) {
+			    htmlStr += '<i id="cog-btn-' + note.id + '" class="bi bi-gear-fill cog-icon"></i>';
+			    htmlStr += '<i id="trash-btn-' + note.id + '" class="bi bi-trash-fill trash-icon"></i>';
+			}
 
 			htmlStr += '</div>';
 
