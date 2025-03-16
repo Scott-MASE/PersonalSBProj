@@ -97,4 +97,16 @@ public class NoteService {
     public List<Note> getPublicNotesByUsername(String username) {
         return noteRepository.findPublicNotesByUsername(username);
     }
+    
+    public List<Note> getAllPublicNotes() {
+        return noteRepository.findAllPublicNotes();
+    }
+    
+	public List<String> getAllUniquePublicTags() {
+		return noteRepository.findDistinctPublicTags();
+	}
+	
+	public List<Note> getPublicNotesByTags(List<String> tags) {
+	    return noteRepository.findPublicNotesByTags(tags);
+	}
 }

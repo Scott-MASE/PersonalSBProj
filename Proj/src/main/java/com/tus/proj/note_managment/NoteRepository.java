@@ -28,7 +28,13 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     @Query("SELECT n FROM Note n WHERE n.access = 'PUBLIC' AND n.user.username = :username")
     List<Note> findPublicNotesByUsername(@Param("username") String username);
 
+    @Query("SELECT n FROM Note n WHERE n.access = 'PUBLIC'")
+    List<Note> findAllPublicNotes();
 
+    @Query("SELECT DISTINCT n.tag FROM Note n WHERE n.tag IS NOT NULL AND n.access = 'PUBLIC'")
+    List<String> findDistinctPublicTags();
 
+    @Query("SELECT n FROM Note n WHERE n.access = 'PUBLIC' AND n.tag IN :tags")
+    List<Note> findPublicNotesByTags(@Param("tags") List<String> tags);
 
 }

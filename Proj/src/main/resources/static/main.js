@@ -73,7 +73,7 @@ $(document).ready(function() {
 	} else {
 		let role = localStorage.getItem("role");
 		        if (role) {
-		            if(role == "User"){
+		            if(role == "User" || role == "Moderator"){
 						loadPage(dashboardh, dashboardj);
 						console.log("logged user");
 					} else if(role == "Admin"){

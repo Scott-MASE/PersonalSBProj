@@ -274,7 +274,7 @@ public class NoteController {
 		
 		Note note = oPnote.get();
 		
-		if (note.getUser().getId() != user.getId()) {
+		if ((note.getUser().getId() != user.getId())) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body("You are not authorized to access or modify this note.");
 		}
@@ -406,5 +406,86 @@ public class NoteController {
 
 	    return ResponseEntity.ok(publicNotes);
 	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@GetMapping("/getPublic")
+	public ResponseEntity<List<Note>> getAllPublicNotes() {
+
+	    List<Note> publicNotes = noteService.getAllPublicNotes();
+
+	    if (publicNotes.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
+	    }
+
+	    return ResponseEntity.ok(publicNotes);
+	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@DeleteMapping("/{id}/delete/mod")
+	public ResponseEntity<String> deletePublicNote(@PathVariable int id, @RequestBody DeleteNoteRequestDTO deleteRequest) {
+		// Check if user has confirmed deletion
+		if (!"confirmed".equalsIgnoreCase(deleteRequest.getUserConfirmation())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Deletion not confirmed");
+		}
+		
+		
+		Optional<Note> oPnote = noteService.getNoteById(id);
+		if (oPnote.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+		}
+
+
+		noteService.deleteNote(id);
+		return ResponseEntity.ok("Note deleted successfully");
+	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@GetMapping("/getTags/public")
+	public ResponseEntity<?> getAllPublicTags() {
+		
+		
+		List<String> tags = noteService.getAllUniquePublicTags();
+
+		// Check if notes are found
+		if (tags.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tags found");
+		}
+
+		// Return tags with HATEOAS links
+		return ResponseEntity.status(HttpStatus.OK).body(tags);
+	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@GetMapping("/getTags/public/{tags}")
+	public ResponseEntity<?> getPublicNotesByTags(@PathVariable List<String> tags) {
+		
+
+		// Call the service method to get the notes by tags
+		List<Note> notes = noteService.getPublicNotesByTags(tags);
+
+		// Check if notes are found
+		if (notes.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
+		}
+
+		Collections.reverse(notes);
+
+		CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
+		for (Note note : notes) {
+			Link selfLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId())).withSelfRel();
+			Link updateLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
+					.withRel("update");
+			Link deleteLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
+					.withRel("delete");
+			notesModel.add(selfLink, updateLink, deleteLink);
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(notesModel);
+	}
+	
+	
 
 }

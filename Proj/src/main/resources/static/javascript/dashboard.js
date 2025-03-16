@@ -5,6 +5,7 @@ $(document).ready(function() {
 
 
 	const username = localStorage.getItem('username');
+	const role = localStorage.getItem("role")
 
 
 	if (username) {
@@ -165,6 +166,8 @@ $(document).ready(function() {
 		let deleteRequest = {
 			userConfirmation: "confirmed" // Change this to whatever the user confirmation should be
 		};
+		
+		if(role == "User"){
 
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
@@ -186,6 +189,28 @@ $(document).ready(function() {
 				showAlert("Failed to delete note.", "warning");
 			}
 		});
+		} else if (role == "Moderator"){
+			$.ajax({
+				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+				type: "DELETE",
+				url: "/api/notes/" + noteId + "/delete/mod",
+				contentType: "application/json", // Ensure content type is JSON
+				data: JSON.stringify(deleteRequest), // Send the deleteRequest as JSON in the body
+				success: function(response) {
+					let modalElement = $("#deleteNoteModal");
+					let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
+					modalInstance.hide();
+
+					findAllNotes();
+					findAllTags();
+					showAlert("Note deleted", "success")
+				},
+				error: function(xhr, status, error) {
+					console.error("Error:", error);
+					showAlert("Failed to delete note.", "warning");
+				}
+			});
+		}
 	});
 
 
@@ -221,7 +246,7 @@ $(document).ready(function() {
 		console.log("Finding all tags");
 		
 
-		
+		if(role == "User"){
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
@@ -235,6 +260,21 @@ $(document).ready(function() {
 				console.log(error);
 			}
 		})
+		} else if (role == "Moderator"){
+			$.ajax({
+				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+				type: 'GET',
+
+				url: 'api/notes/getTags/public',
+				dataType: 'json',
+				success: function(data) {
+					renderTags(data);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		}
 	}
 	
 	$("#getPublicNotes").on("click", function(e) {
@@ -253,36 +293,47 @@ $(document).ready(function() {
 
 
 	var findAllNotes = function() {
-		console.log("Find all notes");
+	    console.log("Find all notes");
 
-		let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
-		
-		let username = localStorage.getItem('publicUsername');
-		if (!username) {
-		    username = "null";
-		}
-		console.log(username);
+	    let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
 
-		$.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			type: 'GET',
-			url: "api/notes/getAll/loggedUser/" + sortOption + "/" + username,
-			dataType: 'json',
-			success: function(data) {
+	    if (role !== "Moderator") {
+	        let username = localStorage.getItem('publicUsername') || "null";
+	        console.log("Fetching notes for user:", username);
 
-				renderNotes(data);
+	        $.ajax({
+	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	            type: 'GET',
+	            url: `api/notes/getAll/loggedUser/${sortOption}/${username}`,
+	            dataType: 'json',
+	            success: function(data) {
+	                renderNotes(data);
+	            },
+	            error: function(xhr, status, error) {
+	                $(".details").remove();
+	                console.log("Failed to fetch notes:", error);
+	            }
+	        });
 
+	    } else if (role === "Moderator") {
+	        console.log("Fetching all public notes for moderator");
 
-
-			},
-			error: function(xhr, status, error) {
-				$(".details").remove();
-				console.log("failed")
-			}
-
-
-		})
+	        $.ajax({
+	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	            type: 'GET',
+	            url: "api/notes/getPublic",
+	            dataType: 'json',
+	            success: function(data) {
+	                renderNotes(data);
+	            },
+	            error: function(xhr, status, error) {
+	                $(".details").remove();
+	                console.log("Failed to fetch public notes:", error);
+	            }
+	        });
+	    }
 	};
+
 
 	var renderTags = function(data) {
 		$('.sidebar-scrollview').empty();
@@ -319,7 +370,7 @@ $(document).ready(function() {
 			return;
 		}
 
-		// Make an AJAX request to fetch notes for the selected tags
+		if(role == "User"){
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			url: `http://localhost:9092/api/notes/getTags/loggedUser/${checkedValues.join(',')}`,  // Pass tags in the URL
@@ -344,6 +395,32 @@ $(document).ready(function() {
 				console.error("Error fetching notes:", xhr.responseText);
 			}
 		});
+		} else if(role == "Moderator"){
+			$.ajax({
+				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+				url: `http://localhost:9092/api/notes/getTags/public/${checkedValues.join(',')}`,  
+				method: 'GET',
+				//	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+				success: function(response) {
+					console.log("Response received:", response);
+
+					// Extract notes from HATEOAS response
+					const notes = response._embedded?.noteList || [];
+
+					if (!notes.length) {
+						showAlert("No notes found for selected tags.", "warning");
+						$('.scrollview').empty(); // Clear existing notes
+						return;
+					}
+
+					// Pass data to renderNotes function
+					renderNotes(notes);
+				},
+				error: function(xhr) {
+					console.error("Error fetching notes:", xhr.responseText);
+				}
+			});
+		}
 	});
 
 	var renderNotes = function(data) {
@@ -367,7 +444,7 @@ $(document).ready(function() {
 			htmlStr += '</div>';
 			htmlStr += '</button>';
 
-			if ( note.access !== "PUBLIC" || username == note.username ) {
+			if (username == note.username  || role == "Moderator") {
 			    htmlStr += '<i id="cog-btn-' + note.id + '" class="bi bi-gear-fill cog-icon"></i>';
 			    htmlStr += '<i id="trash-btn-' + note.id + '" class="bi bi-trash-fill trash-icon"></i>';
 			}

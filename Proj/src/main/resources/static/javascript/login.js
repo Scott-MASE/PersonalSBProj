@@ -66,7 +66,7 @@ $(document).ready(function() {
                 if (role === "Admin") {
 					console.log("Loading Admin Content")
                     loadPage("content/admin.html", "javascript/admin.js")
-                } else if (role === "User") {
+                } else if (role === "User" || role == "Moderator") {
 					console.log("Loading user Content")
                     loadPage("content/dashboard.html", "javascript/dashboard.js")
                 } 
