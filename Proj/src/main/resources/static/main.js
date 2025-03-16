@@ -10,32 +10,27 @@ const registrationj = "javascript/registration.js";
 const adminh = "content/admin.html";
 const adminj = "javascript/admin.js";
 
-var username = "Guest";
-var logged_userId = 1;
-
-
-
+let username = "Guest";
+let logged_userId = 1;
 
 function unloadScript(src) {
-    $("script[src='" + src + "']").remove();
+    $(`script[src='${src}']`).remove();
 }
 
 function loadPage(page, jsFile) {
-    $("#dynamic-content").load(page, function() {
+    $("#dynamic-content").load(page, () => {
         if (jsFile) {
-            $("script[src='" + jsFile + "']").remove();
+            $(`script[src='${jsFile}']`).remove();
         }
-
-
     });
 }
 
-function logout(){
-	console.log("Logging out");
-	sessionStorage.clear();
-	localStorage.clear();
-	TokenStorage.removeToken();  // Clears localStorage
-	loadPage(loginh, loginj);
+function logout() {
+    console.log("Logging out");
+    sessionStorage.clear();
+    localStorage.clear();
+    TokenStorage.removeToken();
+    loadPage(loginh, loginj);
 }
 
 function showAlert(message, type) {
@@ -43,18 +38,17 @@ function showAlert(message, type) {
 
     alertElement.css({
         position: 'absolute',
-        top: '20%',  
+        top: '20%',
         left: '50%',
-        transform: 'translate(-50%, -50%)', 
-        zIndex: 9999,  
+        transform: 'translate(-50%, -50%)',
+        zIndex: 9999,
         width: 'auto',
-        maxWidth: '80%',  
-        margin: '0 auto',
+        maxWidth: '80%',
+        margin: '0 auto'
     });
 
-    $('body').append(alertElement);  // Append the alert to the body
+    $('body').append(alertElement);
 
-    // Optionally, auto-remove the alert after 2 seconds (2000ms)
     setTimeout(() => {
         alertElement.fadeOut('slow', function() {
             $(this).remove();
@@ -62,30 +56,21 @@ function showAlert(message, type) {
     }, 4000);
 }
 
+$(document).ready(() => {
+    const isLoggedIn = localStorage.getItem("token");
 
-
-$(document).ready(function() {
-		
-	let isLoggedIn = localStorage.getItem("token");
-
-	if (!isLoggedIn) {
-		loadPage(loginh, loginj);
-	} else {
-		let role = localStorage.getItem("role");
-		        if (role) {
-		            if(role == "User" || role == "Moderator"){
-						loadPage(dashboardh, dashboardj);
-						console.log("logged user");
-					} else if(role == "Admin"){
-						loadPage(adminh, adminj);
-						console.log("logged admin");
-					}
-		        }
-	}
-
-//	loadPage(dashboardh, dashboardj);
-//	loadPage(registrationh, registrationj);
-	
-//	loadPage(adminh, adminj);
-
+    if (!isLoggedIn) {
+        loadPage(loginh, loginj);
+    } else {
+        const role = localStorage.getItem("role");
+        if (role) {
+            if (role === "User" || role === "Moderator") {
+                loadPage(dashboardh, dashboardj);
+                console.log("logged user");
+            } else if (role === "Admin") {
+                loadPage(adminh, adminj);
+                console.log("logged admin");
+            }
+        }
+    }
 });

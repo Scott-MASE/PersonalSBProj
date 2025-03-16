@@ -8,7 +8,8 @@ $(document).ready(() => {
     } else {
         console.log("No username found in localStorage.");
     }
-
+	
+	// resets the create/edit note modal values
     function resetForm() {
         $("#noteForm")[0].reset();
         $("#noteTitle, #noteTag").val("");
@@ -22,7 +23,8 @@ $(document).ready(() => {
         let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
         modalInstance.hide();
     }
-
+	
+	// function for performing ajax request, reduces repetition
     function handleNoteRequest(url, method, data, successMessage) {
         $.ajax({
             headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
@@ -43,7 +45,8 @@ $(document).ready(() => {
             }
         });
     }
-
+	
+	// keeps track of note sort dropdowns current value
     $("#sortNotes").on("change", function () {
         localStorage.setItem("sortNotes", $(this).val());
         fetchNotes();
@@ -51,6 +54,7 @@ $(document).ready(() => {
 
     $("#logout-button").on("click", logout);
 
+	// checks all filter boxes
     $("#clear-filter-button").on("click", function () {
         console.log("Resetting Filter");
         $(".sidebar-scrollview input[type='checkbox']").prop("checked", true).trigger("change");
@@ -82,6 +86,8 @@ $(document).ready(() => {
             handleNoteRequest("/api/notes/create", "POST", noteData, "Note created successfully!");
         } else {
             console.log("Editing note...");
+			// this is used a few times, it chooses wether mod endpoint or user endpoint is used. 
+			// they generally do the same thing, but mod enpoints can access other users public notes
             let url = role === "Moderator" ? `/api/notes/${noteId}/mod/meta` : `/api/notes/${noteId}/meta`;
             handleNoteRequest(url, "PUT", noteData, "Note updated successfully!");
         }
@@ -95,6 +101,7 @@ $(document).ready(() => {
         $("#deleteNoteModal").data("note-id", noteId).modal("show");
     });
 
+	// delete note confirmation
     $("#confirmDelete").on("click", function () {
         let noteId = $("#deleteNoteModal").data("note-id");
         let deleteRequest = { userConfirmation: "confirmed" };
@@ -124,7 +131,8 @@ $(document).ready(() => {
 	    let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
 	    openNoteModal($noteTileBtn);
 	});
-
+	
+	// populates the edit/create note modal with the selected notes details
 	function openNoteModal($noteTileBtn) {
 	    $("#noteTitle").val($noteTileBtn.data("note-title"));
 	    $("#noteTag").val($noteTileBtn.data("note-tag"));
@@ -151,6 +159,7 @@ $(document).ready(() => {
 	    });
 	}
 
+	// when empty or invalid, returns the users notes, when a valid username is entered, returns their public notes
 	$("#getPublicNotes").on("click", function(e) {
 	    e.preventDefault();
 	    let username = $("#publicUsername").val().trim() || "null";
@@ -158,6 +167,7 @@ $(document).ready(() => {
 	    fetchNotes();
 	});
 
+	// retrieves notes, the users by default with variable order, or another users public notes if a valid name is provided
 	function fetchNotes() {
 	    console.log("Fetching notes");
 	    let sortOption = localStorage.getItem('sortNotes') || 0;
@@ -178,7 +188,8 @@ $(document).ready(() => {
 	        }
 	    });
 	}
-
+	
+	//add tags to the filter scrollview
 	function renderTags(data) {
 	    const container = $('.sidebar-scrollview').empty().append('<h2>Filter</h2>');
 	    data.forEach(tag => {
@@ -190,6 +201,7 @@ $(document).ready(() => {
 	    });
 	}
 
+	//keeps track of which tags are ticked in filter, refreshes notes if a tickbox is changed
 	$('.sidebar-scrollview').on('change', "input[type='checkbox']", function() {
 	    const checkedValues = $('.sidebar-scrollview input[type="checkbox"]:checked')
 	        .map((_, el) => $(el).parent().text().trim())
@@ -202,6 +214,12 @@ $(document).ready(() => {
 	        $('.scrollview').empty();
 	        return;
 	    }
+		
+		// gets rid of public notes if tag is changed, mod can only see pub notes
+		if (role !== "Moderator"){
+		$("#publicUsername").text("");
+		localStorage.setItem("publicUsername", "");
+		}
 
 	    const url = role === "User" ? 
 	        `/api/notes/getTags/loggedUser/${checkedValues.join(',')}` :
@@ -226,6 +244,7 @@ $(document).ready(() => {
 	    });
 	});
 
+	// this creates the hex notes and populates the main content area with them
 	function renderNotes(data) {
 	    console.log("Populating notes");
 	    const container = $('.scrollview').empty();
@@ -294,6 +313,7 @@ $(document).ready(() => {
 	    });
 	}
 
+	// limits title and tag length to ensure they dont spill off the hexagon
 	function enforceCharacterLimit(input, limit) {
 	    input.addEventListener("input", function() {
 	        if (this.value.length > limit) {

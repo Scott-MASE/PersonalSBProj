@@ -134,10 +134,12 @@ public class UserController {
 
             // If the user is a regular User
             if (user.getRole() == UserRole.USER) {
-                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById(0, "James")).withSelfRel(); // Example Note endpoint
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById(0, "null")).withSelfRel(); 
+                Link createLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).createNote(null)).withRel("Create"); 
+                Link tagsLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllTags()).withRel("Tags"); 
 
 
-                responseModel.add(selfLink);
+                responseModel.add(selfLink, createLink, tagsLink);
             }
 
             if (user.getRole() == UserRole.ADMIN) {
@@ -145,6 +147,13 @@ public class UserController {
 
 
                 responseModel.add(selfLink);
+            }
+            if (user.getRole() == UserRole.MODERATOR) {
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllPublicNotes(0, "null")).withSelfRel();
+                Link tagsLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllPublicTags()).withRel("Tags"); 
+
+
+                responseModel.add(selfLink, tagsLink);
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(responseModel);
