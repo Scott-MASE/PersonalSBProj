@@ -1,610 +1,315 @@
-$(document).ready(function() {
+$(document).ready(() => {
+    const rootURL = "http://localhost:9092";
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
 
+    if (username) {
+        $("#username").text(username);
+    } else {
+        console.log("No username found in localStorage.");
+    }
 
-	var rootURL = "http://localhost:9092";
+    function resetForm() {
+        $("#noteForm")[0].reset();
+        $("#noteTitle, #noteTag").val("");
+        $("#notePriority").val("LOW");
+        $("#noteDeadline").val("");
+        $("#noteAccess").val("PRIVATE");
+    }
 
+    function closeModal(modalId) {
+        let modalElement = $(modalId);
+        let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
+        modalInstance.hide();
+    }
 
-	const username = localStorage.getItem('username');
-	const role = localStorage.getItem("role")
+    function handleNoteRequest(url, method, data, successMessage) {
+        $.ajax({
+            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+            type: method,
+            url,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                showAlert(successMessage, "success");
+                closeModal("#createNoteModal");
+                resetForm();
+                fetchNotes();
+                fetchTags();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                showAlert("Failed to process note.", "warning");
+            }
+        });
+    }
 
+    $("#sortNotes").on("change", function () {
+        localStorage.setItem("sortNotes", $(this).val());
+        fetchNotes();
+    });
 
-	if (username) {
-		document.getElementById('username').textContent = username;
-	} else {
-		console.log('No username found in localStorage.');
-	}
+    $("#logout-button").on("click", logout);
 
+    $("#clear-filter-button").on("click", function () {
+        console.log("Resetting Filter");
+        $(".sidebar-scrollview input[type='checkbox']").prop("checked", true).trigger("change");
+    });
 
+    $("#create-note").on("click", function (e) {
+        e.preventDefault();
+        console.log("Opening modal...");
+        resetForm();
+        $("#createNoteModalLabel").text("Create Note");
+        $("#save-or-create").text("Create");
+        $("#createNoteModal").modal("show");
+    });
 
-	$('#sortNotes').on('change', function() {
-		let selectedValue = $(this).val();
-		localStorage.setItem('sortNotes', selectedValue);
-		findAllNotes();
-	});
+    $("#noteForm").on("submit", function (event) {
+        event.preventDefault();
+        let noteId = $("#noteForm").data("note-id");
+        let noteData = {
+            title: $("#noteTitle").val().trim(),
+            content: "", 
+            tag: $("#noteTag").val().trim(),
+            priority: $("#notePriority").val(),
+            deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
+            access: $("#noteAccess").val()
+        };
 
+        if ($("#createNoteModalLabel").text() === "Create Note") {
+            console.log("Creating note...");
+            handleNoteRequest("/api/notes/create", "POST", noteData, "Note created successfully!");
+        } else {
+            console.log("Editing note...");
+            let url = role === "Moderator" ? `/api/notes/${noteId}/mod/meta` : `/api/notes/${noteId}/meta`;
+            handleNoteRequest(url, "PUT", noteData, "Note updated successfully!");
+        }
+    });
 
+    $(document).on("click", ".bi-trash-fill.trash-icon", function () {
+        let $noteTileBtn = $(this).closest(".note-tile-container").find(".note-tile-btn");
+        let noteId = $noteTileBtn.data("note-id");
+        let noteTitle = $noteTileBtn.data("note-title");
+        $("#deleteNoteModalLabel").text(`Delete ${noteTitle}?`);
+        $("#deleteNoteModal").data("note-id", noteId).modal("show");
+    });
 
-	$('#logout-button').off('click').on('click', function() {
-		logout();
-	});
+    $("#confirmDelete").on("click", function () {
+        let noteId = $("#deleteNoteModal").data("note-id");
+        let deleteRequest = { userConfirmation: "confirmed" };
+        let url = role === "Moderator" ? `/api/notes/${noteId}/delete/mod` : `/api/notes/${noteId}/delete`;
 
-	$('#clear-filter-button').off('click').on('click', function() {
-		console.log("Reseting Filter");
-		$('.sidebar-scrollview input[type="checkbox"]').prop('checked', true);
-
-		// Optionally, trigger the change event for the checkboxes to update the filter
-		$('.sidebar-scrollview input[type="checkbox"]').trigger('change');
-
-	});
-
-
-
-
-
-	$('#create-note').off('click').on('click', function(e) {
-		e.preventDefault();
-		console.log("Opening modal...");
-
-		$("#noteForm")[0].reset();
-
-
-		$("#noteTitle").val('');
-		$("#noteTag").val('');
-		$("#notePriority").val('LOW');
-		$("#noteDeadline").val('');
-		$("#noteAccess").val('PRIVATE');
-
-		$("#createNoteModalLabel").text("Create Note");
-		$("#save-or-create").text("Create");
-
-		$('#createNoteModal').modal('show');
-	});
-
-
-
-	$('#noteForm').off('submit').on('submit', function(event) {
-		event.preventDefault();
-		let noteId = $("#noteForm").data("note-id");
-		if ($("#createNoteModalLabel").text() === "Create Note") {
-			console.log("creating");
-			let noteData = {
-				title: $("#noteTitle").val().trim(),
-				content: "",
-				tag: $("#noteTag").val().trim(),
-				priority: $("#notePriority").val(),
-				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-				access: $("#noteAccess").val()
-			};
-
-			// Send AJAX request
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				type: "POST",
-				url: "/api/notes/create",
-				contentType: "application/json",
-				data: JSON.stringify(noteData),
-				success: function(response) {
-					showAlert("Note created successfully!", "success");
-
-					// Close the modal
-					let modalElement = $("#createNoteModal");
-					let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
-					modalInstance.hide();
-
-					// Reset form
-					$("#noteForm")[0].reset();
-					findAllNotes();
-					findAllTags();
-				},
-				error: function(xhr, status, error) {
-					console.error("Error:", error);
-					showAlert("Failed to create note.", "warning");
-				}
-			});
-
-
-		} else {
-
-			console.log("Editing");
-
-			// Extract form data for updating an existing note
-			let updatedNoteData = {
-				title: $("#noteTitle").val().trim(),
-				content: "",  // Add content field if you have one
-				tag: $("#noteTag").val().trim(),
-				priority: $("#notePriority").val(),
-				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-				access: $("#noteAccess").val()
-			};
-
-			if(role == "User"){
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				type: "PUT",
-				url: "/api/notes/" + noteId + "/meta",  // Make sure this matches your PUT endpoint
-				contentType: "application/json",
-				data: JSON.stringify(updatedNoteData),
-				success: function(response) {
-					showAlert("Note updated successfully!", "success");
-
-					// Close the modal
-					let modalElement = $("#createNoteModal");
-					let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
-					modalInstance.hide();
-
-					// Optionally, reset form fields or update the UI with the new note data
-					$("#noteForm")[0].reset();
-					findAllNotes();  // Optionally refresh the notes list
-					findAllTags();
-				},
-				error: function(xhr, status, error) {
-					console.error("Error:", error);
-					showAlert("Failed to update note.", "warning");
-				}
-			});
-			} else if(role == "Moderator"){
-				$.ajax({
-					headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-					type: "PUT",
-					url: "/api/notes/" + noteId + "/mod/meta",  // Make sure this matches your PUT endpoint
-					contentType: "application/json",
-					data: JSON.stringify(updatedNoteData),
-					success: function(response) {
-						showAlert("Note updated successfully!", "success");
-
-						// Close the modal
-						let modalElement = $("#createNoteModal");
-						let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
-						modalInstance.hide();
-
-						// Optionally, reset form fields or update the UI with the new note data
-						$("#noteForm")[0].reset();
-						findAllNotes();  // Optionally refresh the notes list
-						findAllTags();
-					},
-					error: function(xhr, status, error) {
-						console.error("Error:", error);
-						showAlert("Failed to update note.", "warning");
-					}
-				});
-			}
-
-
-		}
-
-
-	});
-
-	$(document).on("click", ".bi-trash-fill.trash-icon", function() {
-		let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
-
-		let noteId = $noteTileBtn.data("note-id");
-		let noteTitle = $noteTileBtn.data("note-title");
-		$("#deleteNoteModalLabel").text("Delete " + noteTitle + "?");
-		$("#deleteNoteModal").data("note-id", noteId);
-		$("#deleteNoteModal").modal("show");
-	});
-
-	$("#confirmDelete").on("click", function() {
-		let noteId = $("#deleteNoteModal").data("note-id");
-
-		// Create the request payload with user confirmation
-		let deleteRequest = {
-			userConfirmation: "confirmed" // Change this to whatever the user confirmation should be
-		};
-		
-		if(role == "User"){
-
-		$.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			type: "DELETE",
-			url: "/api/notes/" + noteId + "/delete",
-			contentType: "application/json", // Ensure content type is JSON
-			data: JSON.stringify(deleteRequest), // Send the deleteRequest as JSON in the body
-			success: function(response) {
-				let modalElement = $("#deleteNoteModal");
-				let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
-				modalInstance.hide();
-
-				findAllNotes();
-				findAllTags();
-				showAlert("Note deleted", "success")
-			},
-			error: function(xhr, status, error) {
-				console.error("Error:", error);
-				showAlert("Failed to delete note.", "warning");
-			}
-		});
-		} else if (role == "Moderator"){
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				type: "DELETE",
-				url: "/api/notes/" + noteId + "/delete/mod",
-				contentType: "application/json", // Ensure content type is JSON
-				data: JSON.stringify(deleteRequest), // Send the deleteRequest as JSON in the body
-				success: function(response) {
-					let modalElement = $("#deleteNoteModal");
-					let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
-					modalInstance.hide();
-
-					findAllNotes();
-					findAllTags();
-					showAlert("Note deleted", "success")
-				},
-				error: function(xhr, status, error) {
-					console.error("Error:", error);
-					showAlert("Failed to delete note.", "warning");
-				}
-			});
-		}
-	});
-
+        $.ajax({
+            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+            type: "DELETE",
+            url,
+            contentType: "application/json",
+            data: JSON.stringify(deleteRequest),
+            success: function () {
+                closeModal("#deleteNoteModal");
+                fetchNotes();
+                fetchTags();
+                showAlert("Note deleted", "success");
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                showAlert("Failed to delete note.", "warning");
+            }
+        });
+    });
 
 
 	$(document).on("click", ".bi-gear-fill.cog-icon", function() {
-		let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
-
-		let noteId = $noteTileBtn.data("note-id");
-		let noteTitle = $noteTileBtn.data("note-title");
-		let noteTag = $noteTileBtn.data("note-tag");
-		let notePriority = $noteTileBtn.data("note-priority");
-		let noteDeadline = $noteTileBtn.data("note-deadline");
-		let noteAccess = $noteTileBtn.data("note-access");
-
-		$("#noteTitle").val(noteTitle);
-		$("#noteTag").val(noteTag);
-		$("#notePriority").val(notePriority);  // Set priority in the select field
-		$("#noteDeadline").val(noteDeadline);  // Set deadline in the input field
-		$("#noteAccess").val(noteAccess);
-
-		// Update the modal title and button text
-		$("#createNoteModalLabel").text("Save Note");
-		$("#save-or-create").text("Save");
-
-		// Store the noteId in the form data for later use when saving
-		$("#noteForm").data("note-id", noteId);
-
-		// Open the modal
-		$("#createNoteModal").modal("show");
+	    let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
+	    openNoteModal($noteTileBtn);
 	});
 
-	var findAllTags = function() {
-		console.log("Finding all tags");
-		
-
-		if(role == "User"){
-		$.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			type: 'GET',
-
-			url: 'api/notes/getTags/loggedUser',
-			dataType: 'json',
-			success: function(data) {
-				renderTags(data);
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		})
-		} else if (role == "Moderator"){
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				type: 'GET',
-
-				url: 'api/notes/getTags/publicTags',
-				dataType: 'json',
-				success: function(data) {
-					renderTags(data);
-				},
-				error: function(error) {
-					console.log(error);
-				}
-			})
-		}
+	function openNoteModal($noteTileBtn) {
+	    $("#noteTitle").val($noteTileBtn.data("note-title"));
+	    $("#noteTag").val($noteTileBtn.data("note-tag"));
+	    $("#notePriority").val($noteTileBtn.data("note-priority"));
+	    $("#noteDeadline").val($noteTileBtn.data("note-deadline"));
+	    $("#createNoteModalLabel").text("Edit Note");
+	    $("#save-or-create").text("Save");
+	    $("#noteForm").data("note-id", $noteTileBtn.data("note-id"));
+	    $("#createNoteModal").modal("show");
 	}
-	
+
+	function fetchTags() {
+	    console.log("Finding all tags");
+
+	    let url = role === "User" ? 'api/notes/getTags/loggedUser' : 'api/notes/getTags/publicTags';
+
+	    $.ajax({
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        type: 'GET',
+	        url: url,
+	        dataType: 'json',
+	        success: renderTags,
+	        error: console.error
+	    });
+	}
+
 	$("#getPublicNotes").on("click", function(e) {
 	    e.preventDefault();
-	    
-	    let username = $("#publicUsername").val().trim();
-	    
-	    if (!username) {
-	        username = "null";
-	    }
-	    
+	    let username = $("#publicUsername").val().trim() || "null";
 	    localStorage.setItem("publicUsername", username);
-	    
-	    findAllNotes();
+	    fetchNotes();
 	});
 
+	function fetchNotes() {
+	    console.log("Fetching notes");
+	    let sortOption = localStorage.getItem('sortNotes') || 0;
+	    let username = localStorage.getItem('publicUsername') || "null";
+	    let url = role !== "Moderator" ? 
+	        `api/notes/getAll/loggedUser/${sortOption}/${username}` : 
+	        `api/notes/getPublic/mod/${sortOption}/${username}`;
 
-	var findAllNotes = function() {
-	    console.log("Find all notes");
+	    $.ajax({
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        type: 'GET',
+	        url: url,
+	        dataType: 'json',
+	        success: renderNotes,
+	        error: function(xhr, status, error) {
+	            $(".details").remove();
+	            console.log("Failed to fetch notes:", error);
+	        }
+	    });
+	}
 
-	    let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
-
-	    if (role !== "Moderator") {
-	        let username = localStorage.getItem('publicUsername') || "null";
-	        console.log("Fetching notes for user:", username);
-
-	        $.ajax({
-	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-	            type: 'GET',
-	            url: `api/notes/getAll/loggedUser/${sortOption}/${username}`,
-	            dataType: 'json',
-	            success: function(data) {
-	                renderNotes(data);
-	            },
-	            error: function(xhr, status, error) {
-	                $(".details").remove();
-	                console.log("Failed to fetch notes:", error);
-	            }
-	        });
-
-	    } else if (role === "Moderator") {
-			
-	        console.log("Fetching all public notes for moderator");
-			let username = localStorage.getItem('publicUsername') || "null";
-			console.log("Fetching notes for user:", username);
-
-	        $.ajax({
-	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-	            type: 'GET',
-	            url: `api/notes/getPublic/mod/${sortOption}/${username}`,
-	            dataType: 'json',
-	            success: function(data) {
-	                renderNotes(data);
-	            },
-	            error: function(xhr, status, error) {
-	                $(".details").remove();
-	                console.log("Failed to fetch public notes:", error);
-	            }
-	        });
-	    }
-	};
-
-
-	var renderTags = function(data) {
-		$('.sidebar-scrollview').empty();
-		console.log("tags");
-		$('.sidebar-scrollview').append('<h2>Filter</h2>');
-		$.each(data, function(index, note) {
-			console.log(note)
-			let htmlStr = '<label class="custom-checkbox">';
-			htmlStr += '<input type="checkbox" checked>';
-			htmlStr += '<span class="checkmark"></span>'
-			htmlStr += note
-			htmlStr += '</label>'
-
-			$('.sidebar-scrollview').append(htmlStr);
-
-		});
-
-	};
+	function renderTags(data) {
+	    const container = $('.sidebar-scrollview').empty().append('<h2>Filter</h2>');
+	    data.forEach(tag => {
+	        const htmlStr = `<label class="custom-checkbox">
+	            <input type="checkbox" checked>
+	            <span class="checkmark"></span> ${tag}
+	        </label>`;
+	        container.append(htmlStr);
+	    });
+	}
 
 	$('.sidebar-scrollview').on('change', "input[type='checkbox']", function() {
-		// Get all checked checkboxes
-		const checkedValues = $('.sidebar-scrollview input[type="checkbox"]:checked')
-			.map(function() {
-				return $(this).parent().text().trim();  // Extract tag text
-			})
-			.get();
+	    const checkedValues = $('.sidebar-scrollview input[type="checkbox"]:checked')
+	        .map((_, el) => $(el).parent().text().trim())
+	        .get();
 
-		console.log("Checked Tags:", checkedValues);
+	    console.log("Checked Tags:", checkedValues);
 
-		// Ensure at least one tag is selected before making a request
-		if (checkedValues.length === 0) {
-			console.log("No tags selected.");
-			$('.scrollview').empty(); // Clear notes if nothing is selected
-			return;
-		}
+	    if (!checkedValues.length) {
+	        console.log("No tags selected.");
+	        $('.scrollview').empty();
+	        return;
+	    }
 
-		if(role == "User"){
-		$.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			url: `http://localhost:9092/api/notes/getTags/loggedUser/${checkedValues.join(',')}`,  // Pass tags in the URL
-			method: 'GET',
-			//	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			success: function(response) {
-				console.log("Response received:", response);
+	    const url = role === "User" ? 
+	        `/api/notes/getTags/loggedUser/${checkedValues.join(',')}` :
+	        `/api/notes/getTags/public/${checkedValues.join(',')}`;
 
-				// Extract notes from HATEOAS response
-				const notes = response._embedded?.noteList || [];
-
-				if (!notes.length) {
-					showAlert("No notes found for selected tags.", "warning");
-					$('.scrollview').empty(); // Clear existing notes
-					return;
-				}
-
-				// Pass data to renderNotes function
-				renderNotes(notes);
-			},
-			error: function(xhr) {
-				console.error("Error fetching notes:", xhr.responseText);
-			}
-		});
-		} else if(role == "Moderator"){
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				url: `http://localhost:9092/api/notes/getTags/public/${checkedValues.join(',')}`,  
-				method: 'GET',
-				//	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				success: function(response) {
-					console.log("Response received:", response);
-
-					// Extract notes from HATEOAS response
-					const notes = response._embedded?.noteList || [];
-
-					if (!notes.length) {
-						showAlert("No notes found for selected tags.", "warning");
-						$('.scrollview').empty(); // Clear existing notes
-						return;
-					}
-
-					// Pass data to renderNotes function
-					renderNotes(notes);
-				},
-				error: function(xhr) {
-					console.error("Error fetching notes:", xhr.responseText);
-				}
-			});
-		}
+	    $.ajax({
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        url: url,
+	        method: 'GET',
+	        success: function(response) {
+	            const notes = response._embedded?.noteList || [];
+	            if (!notes.length) {
+	                showAlert("No notes found for selected tags.", "warning");
+	                $('.scrollview').empty();
+	                return;
+	            }
+	            renderNotes(notes);
+	        },
+	        error: function(xhr) {
+	            console.error("Error fetching notes:", xhr.responseText);
+	        }
+	    });
 	});
 
-	var renderNotes = function(data) {
-		console.log("populating notes");
-		$('.scrollview').empty();
+	function renderNotes(data) {
+	    console.log("Populating notes");
+	    const container = $('.scrollview').empty();
 
-		$.each(data, function(index, note) {
-			let htmlStr = '<div class="note-tile-container">';
-
-			htmlStr += '<button class="note-tile-btn" data-note-id="' + note.id + '" data-note-access="' + note.access + '" data-note-title="' + note.title + '" data-note-content="' + note.content + '" data-note-tag="' + note.tag + '" data-note-priority="' + note.priority + '" data-note-deadline="' + note.deadline + '">';
-
-			htmlStr += '<div class="note-tile">';
-			htmlStr += '<p class="note-title">' + note.title + '</p>';
-			htmlStr += '<p class="note-tags">Tag: <span>' + note.tag + '</span></p>';
-			
-			htmlStr += '<p class="note-priority">Priority: <span>' + note.priority + '</span></p>';
-			htmlStr += '<p class="note-priority">Access: <span>' + note.access + '</span></p>';
-
-			htmlStr += '<p class="note-deadline">Deadline:<br><span>' + note.deadline + '</span></p>';
-			
-			htmlStr += '</div>';
-			htmlStr += '</button>';
-
-			if (username == note.username  || role == "Moderator") {
-			    htmlStr += '<i id="cog-btn-' + note.id + '" class="bi bi-gear-fill cog-icon"></i>';
-			    htmlStr += '<i id="trash-btn-' + note.id + '" class="bi bi-trash-fill trash-icon"></i>';
-			}
-
-			htmlStr += '</div>';
-
-			$('.scrollview').append(htmlStr);
-			console.log(note.username);
-		});
-
-	};
-
-
-	$(document).on("click", ".bi-gear-fill.cog-icon", function() {
-
-		let $noteTileBtn = $(this).closest('.note-tile-container').find('.note-tile-btn');
-
-
-		let noteId = $noteTileBtn.data("note-id");
-		let noteTitle = $noteTileBtn.data("note-title");
-		let noteTag = $noteTileBtn.data("note-tag");
-		let notePriority = $noteTileBtn.data("note-priority");
-		let noteDeadline = $noteTileBtn.data("note-deadline");
-
-
-		$("#noteTitle").val(noteTitle);
-		$("#noteTag").val(noteTag);
-		$("#notePriority").val(notePriority);
-		$("#noteDeadline").val(noteDeadline);
-
-
-		$("#createNoteModalLabel").text("Edit Note");
-		$("#save-or-create").text("Save");
-
-		$("#noteForm").data("note-id", noteId);
-
-
-		$("#createNoteModal").modal("show");
-	});
-
-
+	    data.forEach(note => {
+	        const htmlStr = `<div class="note-tile-container">
+	            <button class="note-tile-btn" 
+	                data-note-id="${note.id}" 
+	                data-note-access="${note.access}" 
+	                data-note-title="${note.title}" 
+	                data-note-content="${note.content}" 
+	                data-note-tag="${note.tag}" 
+	                data-note-priority="${note.priority}" 
+	                data-note-deadline="${note.deadline}">
+	                <div class="note-tile">
+	                    <p class="note-title">${note.title}</p>
+	                    <p class="note-tags">Tag: <span>${note.tag}</span></p>
+	                    <p class="note-priority">Priority: <span>${note.priority}</span></p>
+	                    <p class="note-priority">Access: <span>${note.access}</span></p>
+	                    <p class="note-deadline">Deadline:<br><span>${note.deadline}</span></p>
+	                </div>
+	            </button>
+	            ${username === note.username || role === "Moderator" ? `
+	                <i id="cog-btn-${note.id}" class="bi bi-gear-fill cog-icon"></i>
+	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>` : ''
+	            }
+	        </div>`;
+	        container.append(htmlStr);
+	    });
+	}
 
 
 	$(document).on("click", ".note-tile-btn", function() {
-		let noteId = $(this).data("note-id");
-		let noteTitle = $(this).data("note-title");
-		let noteContent = $(this).data("note-content");
-
-		$("#editNoteTitle").text(noteTitle); // Set title
-		$("#editNoteContent").val(noteContent); // Set content
-		$("#editNoteForm").data("note-id", noteId); // Store ID in form
-
-		$("#editNoteModal").modal("show"); // Open modal
+	    $("#editNoteTitle").text($(this).data("note-title"));
+	    $("#editNoteContent").val($(this).data("note-content"));
+	    $("#editNoteForm").data("note-id", $(this).data("note-id"));
+	    $("#editNoteModal").modal("show");
 	});
 
 	$("#editNoteForm").on("submit", function(event) {
-		event.preventDefault(); // Prevent form submission
-
-		let noteId = $(this).data("note-id");
-		let updatedContent = $("#editNoteContent").val();
-
-		// Create an object to match the UpdateNoteContentRequestDTO structure
-		let updateData = {
-			content: updatedContent
-		};
-		if(role == "User"){
-		$.ajax({
-			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-			url: "/api/notes/" + noteId + "/content",
-			type: "PUT",
-			contentType: "application/json",
-			data: JSON.stringify(updateData),
-			success: function(response) {
-				showAlert("Note updated successfully!", "success");
-				$("#editNoteModal").modal("hide"); // Close modal
-				findAllNotes();
-			},
-			error: function(xhr) {
-				showAlert("Failed to update note: " + xhr.responseText, "warning");
-			}
-		});
-		} else if(role == "Moderator"){
-			$.ajax({
-				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-				url: "/api/notes/" + noteId + "/mod/content",
-				type: "PUT",
-				contentType: "application/json",
-				data: JSON.stringify(updateData),
-				success: function(response) {
-					showAlert("Note updated successfully!", "success");
-					$("#editNoteModal").modal("hide"); // Close modal
-					findAllNotes();
-				},
-				error: function(xhr) {
-					showAlert("Failed to update note: " + xhr.responseText, "warning");
-				}
-			});
-		}
+	    event.preventDefault();
+	    const noteId = $(this).data("note-id");
+	    const updatedContent = $("#editNoteContent").val();
+	    updateNoteContent(noteId, updatedContent);
 	});
 
-	const titleInput = document.getElementById("noteTitle");
-	const tagInput = document.getElementById("noteTag");
-	const form = document.getElementById("noteForm");
+	function updateNoteContent(noteId, content) {
+	    const url = role === "User" ? 
+	        `/api/notes/${noteId}/content` : 
+	        `/api/notes/${noteId}/mod/content`;
 
-	function enforceCharacterLimit(input, limit) {
-		input.addEventListener("input", function() {
-			if (this.value.length > limit) {
-				this.value = this.value.slice(0, limit); // Truncate extra characters
-				showAlert(`Maximum ${limit} characters allowed!`, "warning");
-			}
-		});
+	    $.ajax({
+	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+	        url: url,
+	        type: "PUT",
+	        contentType: "application/json",
+	        data: JSON.stringify({ content }),
+	        success: function() {
+	            showAlert("Note updated successfully!", "success");
+	            $("#editNoteModal").modal("hide");
+	            fetchNotes();
+	        },
+	        error: function(xhr) {
+	            showAlert("Failed to update note: " + xhr.responseText, "warning");
+	        }
+	    });
 	}
 
-	enforceCharacterLimit(titleInput, 10);
-	enforceCharacterLimit(tagInput, 10);
+	function enforceCharacterLimit(input, limit) {
+	    input.addEventListener("input", function() {
+	        if (this.value.length > limit) {
+	            this.value = this.value.slice(0, limit);
+	            showAlert(`Maximum ${limit} characters allowed!`, "warning");
+	        }
+	    });
+	}
 
-
-
-
+	enforceCharacterLimit(document.getElementById("noteTitle"), 10);
+	enforceCharacterLimit(document.getElementById("noteTag"), 10);
 
 	$("#closeModalBtn").on("click", function() {
-		$("#noteModal").fadeOut();
+	    $("#noteModal").fadeOut();
 	});
 
-	findAllNotes();
-	findAllTags();
-
-
-
-
-
-
-
+	fetchNotes();
+	fetchTags();
 });

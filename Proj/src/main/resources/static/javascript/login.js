@@ -1,44 +1,28 @@
-$(document).ready(function() {
-	
-	$('#reg-link').on('click', function () {
-	    loadPage(registrationh, registrationj);
-	});
-	
-    // Listen for the login form submit event
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent the default form submission
-
-        // Get values from form inputs
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-
-
+$(document).ready(() => {
+    // Registration link event
+    $('#reg-link').on('click', () => loadPage(registrationh, registrationj));
+    
+    // Listen for the login form submit event using vanilla JS
+    document.getElementById('login-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
         loginUser(username, password);
     });
 
-
     function loginUser(username, password) {
-
         const url = '/api/users/login';
-
-
-        const loginData = {
-            username: username,
-            password: password
-        };
-
+        const loginData = { username, password };
 
         fetch(url, {
-            method: 'POST',  
-            headers: {
-                'Content-Type': 'application/json', 
-            },
-            body: JSON.stringify(loginData) 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(loginData)
         })
         .then(response => {
-            if (response.ok) {  // If the response is OK (status 200)
-                return response.json();  // Parse the JSON response
-            } else if (response.status === 401) {  // Unauthorized (invalid credentials)
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 401) {
                 showAlert('Invalid username or password!', 'danger');
             } else {
                 showAlert('Something went wrong. Please try again.', 'danger');
@@ -46,30 +30,26 @@ $(document).ready(function() {
         })
         .then(data => {
             if (data && data.jwt) {
-
                 console.log(data.jwt);
-                
-
                 TokenStorage.saveToken(data.jwt);
 
-                // Decode the JWT token to extract the role
+                // Decode JWT to extract role
                 const decodedToken = jwt_decode(data.jwt);
                 const role = decodedToken.role;
 
-                // Save the role in localStorage
+                // Save role and username in localStorage
                 localStorage.setItem("role", role);
-				localStorage.setItem('username', username);
-				
-				console.log(role);
+                localStorage.setItem("username", username);
+                console.log(role);
 
                 // Redirect based on role
                 if (role === "Admin") {
-					console.log("Loading Admin Content")
-                    loadPage("content/admin.html", "javascript/admin.js")
-                } else if (role === "User" || role == "Moderator") {
-					console.log("Loading user Content")
-                    loadPage("content/dashboard.html", "javascript/dashboard.js")
-                } 
+                    console.log("Loading Admin Content");
+                    loadPage("content/admin.html", "javascript/admin.js");
+                } else if (role === "User" || role === "Moderator") {
+                    console.log("Loading user Content");
+                    loadPage("content/dashboard.html", "javascript/dashboard.js");
+                }
             }
         })
         .catch(error => {
@@ -78,23 +58,15 @@ $(document).ready(function() {
         });
     }
 
-
-
-
-
     // Password visibility toggle functionality
     const passwordInput = document.getElementById('password');
     const toggleButton = document.getElementById('togglePassword');
 
-    if (toggleButton) {  // Check if the toggle button exists before adding event listener
-        toggleButton.addEventListener('click', function() {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';  // Show password
-                toggleButton.innerHTML = '<i class="bx bx-show"></i>';  // Update the icon
-            } else {
-                passwordInput.type = 'password';  // Hide password
-                toggleButton.innerHTML = '<i class="bx bx-hide"></i>';  // Update the icon
-            }
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleButton.innerHTML = isPassword ? '<i class="bx bx-show"></i>' : '<i class="bx bx-hide"></i>';
         });
     }
 });
