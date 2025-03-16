@@ -43,6 +43,13 @@
 	                            <option value="HIGH">High</option>
 	                        </select>
 	                    </div>
+						<div class="input-group">
+						    <label for="noteAccess">Access</label>
+						    <select id="noteAccess" required>
+						        <option value="PUBLIC">Public</option>
+						        <option value="PRIVATE">Private</option>
+						    </select>
+						</div>
 	                    <div class="input-group">
 	                        <label for="noteDeadline">Deadline</label>
 	                        <input type="date" id="noteDeadline" required>
@@ -109,7 +116,7 @@
 		</button>
 		
 		<div class="input-group">
-		    <label for="sortNotes">Sort Notes:</label>
+		    <label for="sortNotes" id="sortNotesTitle">Sort Notes:</label>
 		    <select id="sortNotes">
 				<option value="0">Recently Created</option>
 		        <option value="2">Priority (Low to High)</option>
@@ -117,6 +124,12 @@
 		        <option value="3">Title (A-Z)</option>
 		        <option value="4">Deadline</option>
 		    </select>
+		</div>
+		
+		<div class="input-group" id="public-notes-group">
+		    <label for="publicUsername">Enter Username:</label>
+		    <input type="text" id="publicUsername" placeholder="Enter username" required>
+		    <button class="btn btn-primary" id="getPublicNotes">Get Public Notes</button>
 		</div>
 		
 		<div class="sidebar-scrollview">

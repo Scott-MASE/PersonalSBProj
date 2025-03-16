@@ -13,32 +13,11 @@ $(document).ready(function() {
 		console.log('No username found in localStorage.');
 	}
 
-	function getUserIdByUsername(username) {
-		$.ajax({
-			url: '/api/users/username/' + username,  
-			type: 'GET',
-			success: function(response) {
-				if (response) {
-					localStorage.setItem('userId', response);
-					console.log('User ID stored in localStorage:', response);
-					findAllNotes(response);
-					findAllTags(response);
-				}
-			},
-			error: function(xhr, status, error) {
-				// If user is not found or any other error occurs
-				if (xhr.status === 404) {
-					console.log('User not found');
-				} else {
-					console.log('Error: ' + error);
-				}
-			}
-		});
-	}
+
 
 	$('#sortNotes').on('change', function() {
-	    let selectedValue = $(this).val();
-	    localStorage.setItem('sortNotes', selectedValue);
+		let selectedValue = $(this).val();
+		localStorage.setItem('sortNotes', selectedValue);
 		findAllNotes();
 	});
 
@@ -72,7 +51,7 @@ $(document).ready(function() {
 		$("#noteTag").val('');
 		$("#notePriority").val('LOW');
 		$("#noteDeadline").val('');
-
+		$("#noteAccess").val('PRIVATE');
 
 		$("#createNoteModalLabel").text("Create Note");
 		$("#save-or-create").text("Create");
@@ -92,8 +71,8 @@ $(document).ready(function() {
 				content: "",
 				tag: $("#noteTag").val().trim(),
 				priority: $("#notePriority").val(),
-				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null
-
+				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
+				access: $("#noteAccess").val()
 			};
 
 			// Send AJAX request
@@ -113,7 +92,7 @@ $(document).ready(function() {
 
 					// Reset form
 					$("#noteForm")[0].reset();
-					findAllNotes(localStorage.getItem('userId'));
+					findAllNotes();
 					findAllTags();
 				},
 				error: function(xhr, status, error) {
@@ -133,7 +112,8 @@ $(document).ready(function() {
 				content: "",  // Add content field if you have one
 				tag: $("#noteTag").val().trim(),
 				priority: $("#notePriority").val(),
-				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null
+				deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
+				access: $("#noteAccess").val()
 			};
 
 			// Send AJAX request for updating the note
@@ -153,7 +133,7 @@ $(document).ready(function() {
 
 					// Optionally, reset form fields or update the UI with the new note data
 					$("#noteForm")[0].reset();
-					findAllNotes(localStorage.getItem('userId'));  // Optionally refresh the notes list
+					findAllNotes();  // Optionally refresh the notes list
 					findAllTags();
 				},
 				error: function(xhr, status, error) {
@@ -197,7 +177,7 @@ $(document).ready(function() {
 				let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
 				modalInstance.hide();
 
-				findAllNotes(localStorage.getItem('userId'));
+				findAllNotes();
 				findAllTags();
 				showAlert("Note deleted", "success")
 			},
@@ -218,11 +198,13 @@ $(document).ready(function() {
 		let noteTag = $noteTileBtn.data("note-tag");
 		let notePriority = $noteTileBtn.data("note-priority");
 		let noteDeadline = $noteTileBtn.data("note-deadline");
+		let noteAccess = $noteTileBtn.data("note-access");
 
 		$("#noteTitle").val(noteTitle);
 		$("#noteTag").val(noteTag);
 		$("#notePriority").val(notePriority);  // Set priority in the select field
 		$("#noteDeadline").val(noteDeadline);  // Set deadline in the input field
+		$("#noteAccess").val(noteAccess);
 
 		// Update the modal title and button text
 		$("#createNoteModalLabel").text("Save Note");
@@ -237,6 +219,9 @@ $(document).ready(function() {
 
 	var findAllTags = function() {
 		console.log("Finding all tags");
+		
+
+		
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
@@ -251,18 +236,37 @@ $(document).ready(function() {
 			}
 		})
 	}
+	
+	$("#getPublicNotes").on("click", function(e) {
+	    e.preventDefault();
+	    
+	    let username = $("#publicUsername").val().trim();
+	    
+	    if (!username) {
+	        username = "null";
+	    }
+	    
+	    localStorage.setItem("publicUsername", username);
+	    
+	    findAllNotes();
+	});
 
 
 	var findAllNotes = function() {
 		console.log("Find all notes");
-		
-		let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
 
+		let sortOption = localStorage.getItem('sortNotes') || 0; // Default to Priority (Low to High)
 		
+		let username = localStorage.getItem('publicUsername');
+		if (!username) {
+		    username = "null";
+		}
+		console.log(username);
+
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			type: 'GET',
-			url: "api/notes/getAll/loggedUser/" + sortOption,
+			url: "api/notes/getAll/loggedUser/" + sortOption + "/" + username,
 			dataType: 'json',
 			success: function(data) {
 
@@ -349,13 +353,17 @@ $(document).ready(function() {
 		$.each(data, function(index, note) {
 			let htmlStr = '<div class="note-tile-container">';
 
-			htmlStr += '<button class="note-tile-btn" data-note-id="' + note.id + '" data-note-title="' + note.title + '" data-note-content="' + note.content + '" data-note-tag="' + note.tag + '" data-note-priority="' + note.priority + '" data-note-deadline="' + note.deadline + '">';
+			htmlStr += '<button class="note-tile-btn" data-note-id="' + note.id + '" data-note-access="' + note.access + '" data-note-title="' + note.title + '" data-note-content="' + note.content + '" data-note-tag="' + note.tag + '" data-note-priority="' + note.priority + '" data-note-deadline="' + note.deadline + '">';
 
 			htmlStr += '<div class="note-tile">';
 			htmlStr += '<p class="note-title">' + note.title + '</p>';
 			htmlStr += '<p class="note-tags">Tag: <span>' + note.tag + '</span></p>';
+			
 			htmlStr += '<p class="note-priority">Priority: <span>' + note.priority + '</span></p>';
+			htmlStr += '<p class="note-priority">Access: <span>' + note.access + '</span></p>';
+
 			htmlStr += '<p class="note-deadline">Deadline:<br><span>' + note.deadline + '</span></p>';
+			
 			htmlStr += '</div>';
 			htmlStr += '</button>';
 
@@ -365,6 +373,8 @@ $(document).ready(function() {
 			htmlStr += '</div>';
 
 			$('.scrollview').append(htmlStr);
+			
+			console.log(note.user.id);
 		});
 
 	};
@@ -432,30 +442,30 @@ $(document).ready(function() {
 			success: function(response) {
 				showAlert("Note updated successfully!", "success");
 				$("#editNoteModal").modal("hide"); // Close modal
-				findAllNotes(localStorage.getItem('userId'));
+				findAllNotes();
 			},
 			error: function(xhr) {
 				showAlert("Failed to update note: " + xhr.responseText, "warning");
 			}
 		});
 	});
-	
+
 	const titleInput = document.getElementById("noteTitle");
 	const tagInput = document.getElementById("noteTag");
 	const form = document.getElementById("noteForm");
 
 	function enforceCharacterLimit(input, limit) {
-	    input.addEventListener("input", function () {
-	        if (this.value.length > limit) {
-	            this.value = this.value.slice(0, limit); // Truncate extra characters
-	            showAlert(`Maximum ${limit} characters allowed!`, "warning");
-	        }
-	    });
+		input.addEventListener("input", function() {
+			if (this.value.length > limit) {
+				this.value = this.value.slice(0, limit); // Truncate extra characters
+				showAlert(`Maximum ${limit} characters allowed!`, "warning");
+			}
+		});
 	}
 
 	enforceCharacterLimit(titleInput, 10);
 	enforceCharacterLimit(tagInput, 10);
-	
+
 
 
 
@@ -464,7 +474,8 @@ $(document).ready(function() {
 		$("#noteModal").fadeOut();
 	});
 
-	getUserIdByUsername(username);
+	findAllNotes();
+	findAllTags();
 
 
 

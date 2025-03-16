@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.tus.proj.note_managment.Access;
 import com.tus.proj.note_managment.Note;
 import com.tus.proj.note_managment.dto.CreateNoteRequestDTO;
 import com.tus.proj.note_managment.dto.DeleteNoteRequestDTO;
@@ -71,7 +72,7 @@ public class NoteController {
 		User user = opUser.get();
 
 		Note note = new Note(noteRequest.getTitle(), noteRequest.getContent(), noteRequest.getPriority(),
-				noteRequest.getDeadline(), user, noteRequest.getTag());
+				noteRequest.getDeadline(), user, noteRequest.getTag(), noteRequest.getAccess());
 
 		Note savedNote = noteService.saveNote(note);
 
@@ -106,23 +107,54 @@ public class NoteController {
 	}
 
 	@PreAuthorize("hasRole('User')")
-	@GetMapping("/getAll/loggedUser/{order}")
-	public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int order) {
-	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+	@GetMapping("/getAll/loggedUser/{order}/{pUsername}")
+	public ResponseEntity<List<Note>> getAllNotesById(@PathVariable int order, @PathVariable String pUsername) {
+		List<Note> notes;
+		
+		if(pUsername.equals("null")) {
+			
+		    String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-	    // Get the user from the username
-	    Optional<User> opUser = userService.findByUsername(username);
+		    // Get the user from the username
+		    Optional<User> opUser = userService.findByUsername(username);
 
-	    if (!opUser.isPresent()) {
-	        // If user is not found, return 404 Not Found
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                             .body(null); // Or a message like "User not found"
-	    }
+		    if (!opUser.isPresent()) {
+		        // If user is not found, return 404 Not Found
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		                             .body(null); // Or a message like "User not found"
+		    }
 
-	    User user = opUser.get();
+		    User user = opUser.get();
 
-	    // Get the notes for the user
-	    List<Note> notes = noteService.getAllNotesByUserId(user.getId());
+		    // Get the notes for the user
+		    notes = noteService.getAllNotesByUserId(user.getId());
+			
+		} else {
+			
+		    Optional<User> opUser = userService.findByUsername(pUsername);
+
+		    if (!opUser.isPresent()) {
+			    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+			    // Get the user from the username
+			    opUser = userService.findByUsername(username);
+
+			    if (!opUser.isPresent()) {
+			        // If user is not found, return 404 Not Found
+			        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			                             .body(null); // Or a message like "User not found"
+			    }
+
+			    User user = opUser.get();
+
+			    // Get the notes for the user
+			    notes = noteService.getAllNotesByUserId(user.getId());
+		    }
+			notes = noteService.getPublicNotesByUsername(pUsername);
+			
+		}
+		
+
 
 	    // If no notes are found, return 204 No Content
 	    if (notes.isEmpty()) {
@@ -134,6 +166,7 @@ public class NoteController {
 	    switch(order) {
 	    	case 0: 
 	    		Collections.sort(notes, Comparator.comparing(Note::getId));
+	    		Collections.reverse(notes);
 	    		break;
 	    	case 1: 
 	            Collections.sort(notes, Comparator.comparing(note -> note.getPriority()));
@@ -143,7 +176,7 @@ public class NoteController {
 	            Collections.reverse(notes);
 	            break;
 	        case 3:
-	            Collections.sort(notes, Comparator.comparing(Note::getTitle));
+	        	Collections.sort(notes, Comparator.comparing(note -> note.getTitle().toLowerCase()));
 	            break;
 	        case 4: 
 	            Collections.sort(notes, Comparator.comparing(Note::getDeadline));
@@ -152,9 +185,11 @@ public class NoteController {
 	        	break;
 	    }
 
-	    // Return 200 OK with the notes
+
 	    return ResponseEntity.ok(notes);
 	}
+	
+	
 
 
 	@PreAuthorize("hasRole('User')")
@@ -196,7 +231,10 @@ public class NoteController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
 		}
 		
+		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		
 		Optional<User> opUser = userService.findByUsername(username);
 		if (!opUser.isPresent()) {
 
@@ -206,7 +244,7 @@ public class NoteController {
 		User user = opUser.get();
 		Note note = existingNote.get();
 		
-		if (note.getUser().getId() != user.getId()) {
+		if ((note.getUser().getId() != user.getId())) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN)
 					.body("You are not authorized to access or modify this note.");
 		}
@@ -217,6 +255,7 @@ public class NoteController {
 		note.setTag(noteRequest.getTag());
 		note.setTitle(noteRequest.getTitle());
 		note.setContent(noteRequest.getContent());
+		note.setAccess(noteRequest.getAccess());
 
 		Note savedNote = noteService.updateNote(id, note);
 
@@ -361,4 +400,27 @@ public class NoteController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(notesModel);
 	}
+	
+	@PreAuthorize("hasRole('User')")
+	@GetMapping("/getPublic/{username}")
+	public ResponseEntity<List<Note>> getPublicNotesByUsername(@PathVariable String username) {
+	    // Find the user by the provided username
+	    Optional<User> opUser = userService.findByUsername(username);
+	    if (!opUser.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+	    User user = opUser.get();
+
+	    // Retrieve the public notes for this user.
+	    // Ensure that noteService.getPublicNotesByUserId() returns only those notes
+	    // where note.getAccess() equals Access.PUBLIC.
+	    List<Note> publicNotes = noteService.getPublicNotesByUserId(user.getId());
+
+	    if (publicNotes.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
+	    }
+
+	    return ResponseEntity.ok(publicNotes);
+	}
+
 }

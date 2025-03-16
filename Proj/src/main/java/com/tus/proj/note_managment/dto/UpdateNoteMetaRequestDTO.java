@@ -2,6 +2,7 @@ package com.tus.proj.note_managment.dto;
 
 import java.time.LocalDate;
 
+import com.tus.proj.note_managment.Access;
 import com.tus.proj.note_managment.Priority;
 
 public class UpdateNoteMetaRequestDTO {
@@ -10,6 +11,7 @@ public class UpdateNoteMetaRequestDTO {
     private Priority priority;
     private LocalDate deadline;
     private String tag;
+    private Access access;
 
     public String getTitle() {
         return title;
@@ -50,5 +52,13 @@ public class UpdateNoteMetaRequestDTO {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
+	public Access getAccess() {
+		return access;
+	}
+
+	public void setAccess(Access access) {
+		this.access = access;
+	}
 }
 

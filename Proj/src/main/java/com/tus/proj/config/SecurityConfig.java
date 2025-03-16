@@ -45,7 +45,7 @@ public class SecurityConfig {
     	            .requestMatchers("/api/users/username/{username}").permitAll()
     	            .requestMatchers("/api/users/delete/**").hasRole("Admin") 
 
-    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser").hasRole("User")  
+    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser/{order}/{username}").hasRole("User")  
 
     	            .requestMatchers("/sonarqube/**").permitAll() 
     	            .requestMatchers("/actuator/**").permitAll()   

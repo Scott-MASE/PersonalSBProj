@@ -33,7 +33,6 @@ public class User implements UserDetails {
     private UserRole role;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference  // Parent-side reference
     private List<Note> notes = new ArrayList<>();
     
 

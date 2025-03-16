@@ -25,7 +25,9 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     @Query("SELECT DISTINCT n.tag FROM Note n WHERE n.tag IS NOT NULL AND n.user.id = :userId")
     List<String> findDistinctTagsByUserId(@Param("userId") Long userId);
     
-    
+    @Query("SELECT n FROM Note n WHERE n.access = 'PUBLIC' AND n.user.username = :username")
+    List<Note> findPublicNotesByUsername(@Param("username") String username);
+
 
 
 

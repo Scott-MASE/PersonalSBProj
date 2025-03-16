@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.tus.proj.note_managment.Access;
 import com.tus.proj.note_managment.Note;
 import com.tus.proj.note_managment.NoteRepository;
 
@@ -84,4 +86,15 @@ public class NoteService {
 			return noteRepository.save(note);
 		}).orElseThrow(() -> new RuntimeException("Note not found"));
 	}
+	
+	public List<Note> getPublicNotesByUserId(Long userId) {
+	    List<Note> allNotes = noteRepository.findByUserId(userId);
+	    return allNotes.stream()
+	                   .filter(note -> note.getAccess() == Access.PUBLIC)
+	                   .collect(Collectors.toList());
+	}
+	
+    public List<Note> getPublicNotesByUsername(String username) {
+        return noteRepository.findPublicNotesByUsername(username);
+    }
 }

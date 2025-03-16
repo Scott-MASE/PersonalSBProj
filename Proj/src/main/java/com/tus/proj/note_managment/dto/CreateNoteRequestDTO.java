@@ -3,6 +3,7 @@ package com.tus.proj.note_managment.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.tus.proj.note_managment.Access;
 import com.tus.proj.note_managment.Priority;
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRole;
@@ -13,6 +14,7 @@ public class CreateNoteRequestDTO {
 	private String tag;
 	private Priority priority;
 	private LocalDate deadline;
+	private Access access;
 
 	public String getTitle() {
 		return title;
@@ -52,6 +54,14 @@ public class CreateNoteRequestDTO {
 
 	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
+	}
+
+	public Access getAccess() {
+		return access;
+	}
+
+	public void setAccess(Access access) {
+		this.access = access;
 	}
 
 

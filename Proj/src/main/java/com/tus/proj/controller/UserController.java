@@ -134,7 +134,7 @@ public class UserController {
 
             // If the user is a regular User
             if (user.getRole() == UserRole.USER) {
-                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById(0)).withSelfRel(); // Example Note endpoint
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getAllNotesById(0, "James")).withSelfRel(); // Example Note endpoint
 
 
                 responseModel.add(selfLink);

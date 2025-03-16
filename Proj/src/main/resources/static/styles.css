@@ -207,9 +207,9 @@ button:hover {
     flex-grow: 1;
 	position: relative;
     overflow-y: auto;
-	top:10vh;
+	top:27vh;
     padding: 20px; /* Increase padding for visibility */
-    max-height: 50vh;
+    max-height: 36vh;
     background-color: var(--darkestGrey); /* Add contrast */
     border: 2px solid var(--orange); /* Optional: Helps see the div */
 }
@@ -486,6 +486,11 @@ h4 {
     height: 250px;
 }
 
+.note-tile p {
+    margin: 9px 0;      /* Adjust vertical margins */
+    line-height: 1.2;   /* Reduce line-height */
+}
+
 #logout-button {
     position: absolute;
     bottom: 12vh;
@@ -682,6 +687,29 @@ td {
 	text-align: center;
 
 	
+}
+
+#public-notes-group{
+	position: absolute;
+	top: 13%;
+}
+
+#publicUsername{
+	width: 80%;
+}
+
+#getPublicNotes{
+	width: 90%;
+	background-color: var(--orange);
+	color: var(--black);
+	border: var(--black);
+	font-weight: bold;
+	font-size: 15px;
+}
+
+#sortNotesTitle{
+	position: relative;
+	top: 20%;
 }
 
 

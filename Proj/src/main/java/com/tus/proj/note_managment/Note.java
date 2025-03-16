@@ -28,6 +28,9 @@ public class Note {
 	private String title;
 	private String content;
 	private String tag;
+	
+	@Enumerated(EnumType.STRING)
+	private Access access;
 
 	@Enumerated(EnumType.STRING)
 	private Priority priority;
@@ -44,13 +47,14 @@ public class Note {
 	public Note() {
 	}
 
-	public Note(String title, String content, Priority priority, LocalDate deadline, User user, String tag) {
+	public Note(String title, String content, Priority priority, LocalDate deadline, User user, String tag, Access access) {
 		this.title = title;
 		this.content = content;
 		this.priority = priority;
 		this.deadline = deadline;
 		this.user = user;
 		this.tag = tag;
+		this.setAccess(access);
 	}
 
 	public int getId() {
@@ -107,5 +111,13 @@ public class Note {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public Access getAccess() {
+		return access;
+	}
+
+	public void setAccess(Access access) {
+		this.access = access;
 	}
 }
