@@ -117,7 +117,7 @@ $(document).ready(function() {
 				access: $("#noteAccess").val()
 			};
 
-			// Send AJAX request for updating the note
+			if(role == "User"){
 			$.ajax({
 				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 				type: "PUT",
@@ -142,6 +142,32 @@ $(document).ready(function() {
 					showAlert("Failed to update note.", "warning");
 				}
 			});
+			} else if(role == "Moderator"){
+				$.ajax({
+					headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+					type: "PUT",
+					url: "/api/notes/" + noteId + "/mod/meta",  // Make sure this matches your PUT endpoint
+					contentType: "application/json",
+					data: JSON.stringify(updatedNoteData),
+					success: function(response) {
+						showAlert("Note updated successfully!", "success");
+
+						// Close the modal
+						let modalElement = $("#createNoteModal");
+						let modalInstance = bootstrap.Modal.getInstance(modalElement[0]);
+						modalInstance.hide();
+
+						// Optionally, reset form fields or update the UI with the new note data
+						$("#noteForm")[0].reset();
+						findAllNotes();  // Optionally refresh the notes list
+						findAllTags();
+					},
+					error: function(xhr, status, error) {
+						console.error("Error:", error);
+						showAlert("Failed to update note.", "warning");
+					}
+				});
+			}
 
 
 		}
@@ -316,12 +342,15 @@ $(document).ready(function() {
 	        });
 
 	    } else if (role === "Moderator") {
+			
 	        console.log("Fetching all public notes for moderator");
+			let username = localStorage.getItem('publicUsername') || "null";
+			console.log("Fetching notes for user:", username);
 
 	        $.ajax({
 	            headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	            type: 'GET',
-	            url: `api/notes/getPublic/mod/${sortOption}`,
+	            url: `api/notes/getPublic/mod/${sortOption}/${username}`,
 	            dataType: 'json',
 	            success: function(data) {
 	                renderNotes(data);
@@ -510,7 +539,7 @@ $(document).ready(function() {
 		let updateData = {
 			content: updatedContent
 		};
-
+		if(role == "User"){
 		$.ajax({
 			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 			url: "/api/notes/" + noteId + "/content",
@@ -526,6 +555,23 @@ $(document).ready(function() {
 				showAlert("Failed to update note: " + xhr.responseText, "warning");
 			}
 		});
+		} else if(role == "Moderator"){
+			$.ajax({
+				headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+				url: "/api/notes/" + noteId + "/mod/content",
+				type: "PUT",
+				contentType: "application/json",
+				data: JSON.stringify(updateData),
+				success: function(response) {
+					showAlert("Note updated successfully!", "success");
+					$("#editNoteModal").modal("hide"); // Close modal
+					findAllNotes();
+				},
+				error: function(xhr) {
+					showAlert("Failed to update note: " + xhr.responseText, "warning");
+				}
+			});
+		}
 	});
 
 	const titleInput = document.getElementById("noteTitle");

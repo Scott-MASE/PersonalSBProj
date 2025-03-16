@@ -408,17 +408,30 @@ public class NoteController {
 	}
 	
 	@PreAuthorize("hasRole('Moderator')")
-	@GetMapping("/getPublic/mod/{order}")
-	public ResponseEntity<List<NoteDTO>> getAllPublicNotes(@PathVariable int order) {
-		
-		List<Note> notes = noteService.getAllPublicNotes();
+	@GetMapping("/getPublic/mod/{order}/{pUsername}")
+	public ResponseEntity<List<NoteDTO>> getAllPublicNotes(@PathVariable int order, @PathVariable String pUsername) {
+		List<Note> notes;
+	    if (pUsername.equals("null")) {
 
-	    // If no notes are found, return 204 No Content
+	    	notes = noteService.getAllPublicNotes();
+	    } else {
+	        Optional<User> opUser = userService.findByUsername(pUsername);
+	        if (!opUser.isPresent()) {
+
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // User not found
+
+	        } else {
+	            notes = noteService.getPublicNotesByUsername(pUsername);
+	        }
+	    }
+		
+	    
+
+
 	    if (notes.isEmpty()) {
 	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(List.of());
 	    }
 
-	    // Convert notes to NoteDTOs
 	    List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
 
 
@@ -509,6 +522,59 @@ public class NoteController {
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(notesModel);
+	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@PutMapping("/{id}/mod/meta")
+	public ResponseEntity<?> updateNoteMetaMod(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
+		Optional<Note> existingNote = noteService.getNoteById(id);
+		if (existingNote.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+		}
+		Note note = existingNote.get();
+
+
+		
+		note.setDeadline(noteRequest.getDeadline());
+		note.setPriority(noteRequest.getPriority());
+		note.setTag(noteRequest.getTag());
+		note.setTitle(noteRequest.getTitle());
+		note.setContent(noteRequest.getContent());
+		note.setAccess(noteRequest.getAccess());
+
+		Note savedNote = noteService.updateNote(id, note);
+
+		// Adding HATEOAS links
+		EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
+
+		return ResponseEntity.ok(noteModel);
+	}
+	
+	@PreAuthorize("hasRole('Moderator')")
+	@PutMapping("/{id}/mod/content")
+	public ResponseEntity<?> updateNoteContentMod(@PathVariable int id,
+			@RequestBody UpdateNoteContentRequestDTO updateRequest) {
+		Optional<Note> existingNote = noteService.getNoteById(id);
+		if (existingNote.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+		}
+
+		Note note = existingNote.get();
+		
+
+		String newContent = updateRequest.getContent();
+
+		if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
+			newContent = newContent.substring(1, newContent.length() - 1);
+		}
+
+		note.setContent(newContent);
+		Note savedNote = noteService.updateNote(id, note);
+
+		// Adding HATEOAS links
+		EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
+
+		return ResponseEntity.ok(noteModel);
 	}
 	
 	
