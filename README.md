@@ -12,8 +12,13 @@ A collaborative note-taking web app with a bee theme, built with Maven and Sprin
 ## ✨ Features
 There are three account types, User, Admin, and Moderator.
 
-### User
-When you first access the webapp, you will be directed to the login page
+### User Guide
+When you first access the webapp, you will be directed to the login page:
+
+![Login Screen](https://raw.githubusercontent.com/Scott-MASE/PersonalSBProj/More-fixed/docs/LoginScreen.png)
+
+Click the 
+
 
 
 
