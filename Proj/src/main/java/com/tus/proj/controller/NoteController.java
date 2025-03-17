@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +39,14 @@ public class NoteController {
         this.noteService = noteService;
         this.userService = userService;
     }
+    
+    private static final Map<String, Integer> PRIORITY_ORDER = Map.of(
+    	    "HIGH", 1,
+    	    "MEDIUM", 2,
+    	    "LOW", 3
+    	);
+
+
 
     // Helper method to retrieve the authenticated user.
     private Optional<User> getAuthenticatedUser() {
@@ -160,10 +169,11 @@ public class NoteController {
                 noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
                 break;
             case 1:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 break;
             case 2:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+            	Collections.reverse(noteDTOs);
                 break;
             case 3:
                 noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
@@ -331,10 +341,11 @@ public class NoteController {
                 noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
                 break;
             case 1:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 break;
             case 2:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+            	Collections.reverse(noteDTOs);
                 break;
             case 3:
                 noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
@@ -404,10 +415,11 @@ public class NoteController {
                 noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
                 break;
             case 1:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 break;
             case 2:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+            	Collections.reverse(noteDTOs);
                 break;
             case 3:
                 noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
@@ -476,10 +488,11 @@ public class NoteController {
                 noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
                 break;
             case 1:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 break;
             case 2:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+            	Collections.reverse(noteDTOs);
                 break;
             case 3:
                 noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
