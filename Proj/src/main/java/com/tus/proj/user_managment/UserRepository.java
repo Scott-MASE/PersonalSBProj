@@ -12,4 +12,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // Check if a username already exists
     boolean existsByUsername(String username);
+    
+    Optional<User> findById(Long Id);
+
+	void deleteById(Long id);
+	
+    boolean existsById(Long id);
+
+    
+    
 }

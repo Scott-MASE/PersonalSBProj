@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiveNotes - Register</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
+    <title>HiveNotes - Registration</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
     <!-- Decorative Beehives -->
@@ -12,30 +12,38 @@
     <div class="beehive beehive-right"></div>
 
     <!-- Registration Section -->
-	<main class="login-container">
-	    <h2>Join HiveNotes</h2>
-	    <p class="login-subtext">Enter a Hive of Information!</p>
-	    
-		<form id="register-form"> <!-- ✅ No action or method -->
-		    <div class="input-group">
-		        <label for="username">Username</label>
-		        <input type="text" id="username" name="username" required placeholder="Enter your username">
-		    </div>
+    <main class="login-container">
+        <h2>Create Your HiveNotes Account</h2>
+        <p class="login-subtext">Join the HiveMind!</p>
+        
+        <form id="registration-form" action="/register" method="post">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter a username">
+				<small class="form-text" id="pwrd">min 2 characters</small>
+            </div>
 
-		    <div class="input-group">
-		        <label for="password">Password</label>
-		        <input type="password" id="password" name="password" required placeholder="Enter your password">
-		    </div>
 
-		    <div class="input-group">
-		        <label for="confirm-password">Confirm Password</label>
-		        <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password">
-		    </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter a password">
+				<small class="form-text" id="pwrd">min 8 characters, one uppercase & lowercase letter, one number, and one special character (*@$!%*?&)</small>
 
-		    <button type="submit">Register</button>
-		</form>
-	</main>
-	<script src="/javascript/registration.js"></script>
+            </div>
 
+            <div class="input-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password">
+            </div>
+
+            <button id="register-btn">Register</button>
+
+			<p class="signup-link">Already have an account? <a href="#" id="log-link">Login here</a></p>
+
+        </form>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/javascript/registration.js"></script> <!-- Link to registration.js -->
 </body>
 </html>

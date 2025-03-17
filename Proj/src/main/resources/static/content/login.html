@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiveNotes - Login</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
     <!-- Decorative Beehives -->
@@ -15,8 +15,7 @@
     <main class="login-container">
         <h2>Welcome to HiveNotes</h2>
         <p class="login-subtext">Enter a Hive of Information!</p>
-        
-        <form action="/login" method="post">
+        <form id="login-form">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required placeholder="Enter your username">
@@ -27,10 +26,16 @@
                 <input type="password" id="password" name="password" required placeholder="Enter your password">
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit" id="login-btn">Login</button>
 
-            <p class="signup-link">New to HiveNotes? <a href="/register">Create an account</a></p>
+            <p class="signup-link">New to HiveNotes? <a href="#" id="reg-link">Create an account</a></p>
         </form>
     </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="/javascript/login.js"></script>
+	
 </body>
 </html>

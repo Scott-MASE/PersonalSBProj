@@ -1,10 +1,12 @@
 /* Global Styles */
 :root {
     --orange: #FFC300;
+	--darkOrange: rgb(165, 133, 46);
     --grey: rgb(174, 174, 174);
     --black: #1a1a1a; 
-    --font: 18px; /* Increased base font size */
+    --font: 18px; 
     --darkGrey: #666;
+    --darkestGrey: #282828;
 }
 
 
@@ -19,27 +21,40 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+	width: 100vw;
 /*	cursor: url('/images/icons8-queen-bee-48.png') 16 16, auto; */
 }
 
-/* Header */
+
 h2 {
-    font-size: 32px; /* Larger heading */
+    font-size: 32px; 
     color: #f0f0f0;
     text-align: center;
     margin-bottom: 10px;
 }
 
-/* Login Subtext */
+h3{
+ 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Perfect centering */
+    font-size: 50px;
+    color: var(--black);
+
+}
+
+
 .login-subtext {
-    font-size: 18px; /* Bigger subtext */
+    font-size: 18px; 
     color: var(--grey);
     margin-bottom: 25px;
+	text-align: center;
 }
 
 /* Form */
 form {
-    max-width: 450px; /* Slightly wider form */
+    max-width: 450px; 
     padding: 30px;
     background-color: #2a2a2a;
     border-radius: 10px;
@@ -47,20 +62,47 @@ form {
 }
 
 /* Form elements */
-.input-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers both label and input */
-	max-width: 500px; /* Make input fields wider */
-	width: 100%;
-    margin-bottom: 15px;
+/* Style the select dropdown to match input fields */
+.input-group select {
+    width: 95%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    appearance: none; /* Removes default system styling */
+    cursor: pointer;
+}
+
+/* Add a dropdown arrow icon */
+.input-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+}
+
+/* Ensure consistency when hovering or focusing */
+.input-group select:hover,
+.input-group select:focus {
+    border-color: var(--orange);
+    outline: none;
+}
+
+/* Style dropdown options */
+.input-group select option {
+    background-color: #2a2a2a;
+    color: var(--grey);
+    padding: 10px;
 }
 
 
 .input-group label {
-    font-size: 22px; /* Increased font size */
-    font-weight: bold; /* Makes text stand out */
-    color: var(--orange); /* Orange color from your theme */
+    font-size: 22px; 
+    font-weight: bold; 
+    color: var(--orange); 
     margin-bottom: 8px;
     text-align: center;
     width: 100%;
@@ -69,10 +111,10 @@ form {
 
 
 .input-group input {
-    width: 95%; /* Slightly wider input */
-    max-width: 380px; /* Prevents stretching */
+    width: 95%; 
+    max-width: 380px; 
     padding: 14px;
-    font-size: 18px; /* Bigger input text */
+    font-size: 18px; 
     border: 1px solid #444;
     border-radius: 6px;
     background-color: #333;
@@ -84,7 +126,7 @@ form {
 button {
     width: 100%;
     padding: 14px;
-    font-size: 20px; /* Bigger button text */
+    font-size: 20px; 
     font-weight: bold;
     background-color: var(--orange);
     color: var(--black);
@@ -99,10 +141,11 @@ button:hover {
     background-color: #ffb000;
 }
 
-/* Signup Link */
+
 .signup-link {
-    font-size: 18px; /* Larger text */
+    font-size: 18px; 
     margin-top: 20px;
+	text-align: center;
 }
 
 .signup-link a {
@@ -114,11 +157,11 @@ button:hover {
     text-decoration: underline;
 }
 
-/* Beehive Side Panels */
+
 .beehive {
     position: fixed;
     top: 0;
-    width: 200px; /* Adjust as needed */
+    width: 12vw; 
     height: 100vh;
     background-size: contain;
     background-repeat: repeat-y;
@@ -127,22 +170,560 @@ button:hover {
 
 .beehive-left {
     left: 0;
-    background-image: url('/images/BeehiveV.png'); /* Replace with actual image */
+    background-image: url('/images/BeehiveV.png'); 
 }
 
 .beehive-right {
     right: 0;
-    background-image: url('/images/BeehiveV.png'); /* Replace with actual image */
+    background-image: url('/images/BeehiveV.png'); 
 }
 
-/* Center Content Adjustments */
+
 .login-container {
-    max-width: 600px; /* Increase width */
-    width: 90%; /* Make it responsive */
-    margin: 0 auto; /* Center the container */
-    padding: 40px; /* Add padding */
-    background-color: #2a2a2a; /* Ensure background color */
+    max-width: 600px; 
+    width: 100%; 
+    margin: 0 auto; 
+    padding: 40px; 
+    background-color: #2a2a2a; 
     border-radius: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
 }
+
+.sidebar {
+    position: fixed;
+    top: 10vh;
+    width: 20vw;
+    height: 100vh;
+    background-size: contain;
+    background-repeat: repeat-y;
+    background-position: center;
+    left: 0;
+    background-color: var(--black);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-scrollview {
+    flex-grow: 1;
+	position: relative;
+    overflow-y: auto;
+	top:27vh;
+    padding: 20px; /* Increase padding for visibility */
+    max-height: 36vh;
+    background-color: var(--darkestGrey); /* Add contrast */
+    border: 2px solid var(--orange); /* Optional: Helps see the div */
+}
+
+.topbar {
+	position: fixed;
+	top: 0;
+	width: 100vw; 
+	height: 10vh;
+	left: 0;
+	top: 0;
+	background-color: var(--orange);
+}
+
+.scrollview {
+    position: fixed;
+    bottom: 0;
+    width: 80vw;
+    height: 90vh;
+    right: 0;
+    background-color: var(--darkestGrey);
+    
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping to next row */
+    gap: 25px; /* Spacing between tiles */
+    padding: 15px;
+    overflow-y: auto; /* Enables vertical scrolling if needed */
+    align-content: flex-start; /* Ensures rows are filled from the top */
+    justify-content: flex-start; /* Aligns items to the left */
+}
+
+.top-scroll{
+    position: relative;
+    width: 100vw;
+    height: 25vh;
+    left: 0;
+    top: 6.25vh;
+
+}
+.mid-scroll{
+    position: relative;
+    width: 100vw;
+    height: 25vh;
+    left: 0;
+    top: 6.25vh;
+}
+.bottom-scroll{
+    position: relative;
+    width: 100vw;
+    height: 25vh;
+    left: 0;
+    top: 6.25vh;
+}
+
+.custom-modal {
+	width: 550px; /* Adjust width for better spacing */
+	max-width: 90%; /* Ensure responsiveness */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+    padding: 20px;
+}
+
+#noteForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.custom-modal .modal-header {
+    border-bottom: 1px solid var(--darkGrey);
+}
+
+.custom-modal .btn-close {
+    filter: invert(1);
+}
+
+.input-group textarea {
+    width: 95%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    resize: none;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #333;
+    color: #e0e0e0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.modal-title{
+	color: var(--orange);
+	font-size: 36px;
+}
+
+#create-note {
+    position: relative;
+    top: 30%;
+    left: 10%;
+    transform: translate(-50%, -50%); /* Perfect centering */
+    width: 15vw;
+    background-color: var(--black);  /* Set button background to black */
+    color: var(--orange);  /* Set text color to orange */
+    border: none;  /* Optional: removes the border */
+    padding: 10px 20px;  /* Optional: padding for better button size */
+    font-size: 16px;  /* Optional: increase font size */
+    border-radius: 5px;  /* Optional: rounded corners */
+    text-align: center;  /* Optional: align text properly */
+}
+
+#create-note:hover {
+    background-color: #333;  /* Darker shade of black on hover */
+    color: #ff6600;  /* Darker orange on hover */
+}
+
+h4 {
+	position: absolute;
+	top: 50%;
+	right: 0%;
+	transform: translate(-50%, -50%); /* Perfect centering */
+	font-size: 40px;
+	color: var(--black);
+}
+
+.note-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers text vertically */
+    align-items: center; /* Centers text horizontally */
+    text-align: center;
+	position: relative;
+    
+    width: 250px;
+    height: 250px;
+    background-image: url('/images/hex.png'); /* Background image */
+    background-size: 125%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--darkestGrey);
+    border-radius: 10px;
+    padding: 25px;
+    color: var(--grey);
+
+}
+
+.note-title {
+	font-weight: bold;
+    font-size: 20px;
+    color: var(--black);
+    margin-bottom: 10px;
+	text-align: center; /* Centers the text horizontally */
+	
+}
+
+.note-tags, 
+.note-priority, 
+.note-deadline {
+    font-size: var(--font);
+    color: var(--black);
+    margin: 10px 0;
+	text-align: center;
+}
+
+.note-tags span, 
+.note-priority span, 
+.note-deadline span {
+    font-weight: bold;
+    color: var(--black);
+}
+
+
+.note-tile-btn {
+    all: unset; /* Removes default button styling */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+	margin-right: 40px;
+    width: 250px; /* Matches note-tile width */
+}
+
+.note-deadline span {
+    display: block; /* Forces the date onto a new line */
+    font-weight: bold;
+    color: var(--black);
+}
+
+.bee-graphic-r {
+	position: absolute;
+	top: -1vh;
+	left: 30vw;
+    background-image: url('/images/bee.png');
+    background-size: contain; /* or cover, depending on your preference */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100px; /* Set a height for the element */
+    width: 100px;  /* Set a width for the element */
+}
+
+.bee-graphic-l {
+    position: absolute;
+    top: -1vh;
+    right: 30vw;
+    background-image: url('/images/bee.png');
+    background-size: contain; /* or cover, depending on your preference */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100px; /* Set a height for the element */
+    width: 100px;  /* Set a width for the element */
+    transform: scaleX(-1); /* This will mirror the image horizontally */
+}
+
+
+	
+/* Keep the icon styling the same */
+.bi-gear-fill {
+    position: absolute;
+    top: 2vh;
+    right: 2vw;
+    width: 5px;
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-block;
+	cursor: pointer;
+	z-index: 10;
+}
+
+.bi-trash-fill {
+    position: absolute;
+    top: 2vh;
+    left: 1vw;
+    width: 5px;
+    color: var(--orange);
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-block;
+	cursor: pointer;
+	z-index: 10;
+}
+
+.note-tile-container {
+    position: relative; /* Makes this the reference for absolute positioning */
+    width: 250px;
+    height: 250px;
+}
+
+.note-tile p {
+    margin: 9px 0;      /* Adjust vertical margins */
+    line-height: 1.2;   /* Reduce line-height */
+}
+
+#logout-button {
+    position: absolute;
+    bottom: 12vh;
+    left: 2vw;
+	width: 80%;
+}
+
+#clear-filter-button {
+    position: absolute;
+    bottom: 24vh;
+    left: 2vw;
+	width: 80%;
+}
+
+.custom-checkbox {
+	position: relative;
+    display: flex;
+	margin-bottom: 5px;
+    align-items: center;
+    font-size: 18px;
+    color: var(--orange);
+    cursor: pointer;
+}
+
+.custom-checkbox input {
+    display: none; /* Hide default checkbox */
+}
+
+.custom-checkbox .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--orange);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input:checked + .checkmark {
+    background-color: var(--orange);
+    border-color: var(--orange);
+}
+
+.custom-checkbox .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid var(--black);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-checkbox input:checked + .checkmark::after {
+    opacity: 1;
+}
+
+.admin-content{
+	    position: fixed;
+	    bottom: 0;
+	    width: 76vw;
+	    height: 90vh;
+	    left: 12vw;
+	    background-color: var(--darkestGrey);
+	    
+	    display: flex;
+	    flex-wrap: wrap; /* Allows wrapping to next row */
+	    gap: 25px; /* Spacing between tiles */
+	    padding: 15px;
+	    overflow-y: auto; /* Enables vertical scrolling if needed */
+	    align-content: flex-start; /* Ensures rows are filled from the top */
+	    justify-content:center; /* Aligns items to the left */
+		align-items: center;
+		flex-direction: column;
+	
+
+}
+
+.admin-topbar {
+	position: fixed;
+	top: 0;
+	width: 100vw; 
+	height: 10vh;
+	left: 0;
+	top: 0;
+	background-color: var(--black);
+}
+
+.admin-title {
+    color: var(--orange);
+    position: absolute;
+	top: 1vh;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+table {
+	position: absolute;
+	left: 50%;
+	top: 10%;
+	transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--darkGrey);
+}
+
+th {
+    background-color: var(--orange);
+    color: var(--black);
+}
+
+td {
+	color: white;
+	font-size: 20px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #388E3C;
+}
+
+.delete-btn:hover {
+    background-color: #B71C1C;
+}
+
+#admin-logout-button {
+    position: absolute;
+    top: 1%;
+    left: 15%;
+	width: 10%;
+}
+
+#sortNotes {
+	position: absolute;
+	top: 110%;
+    width: 80%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid var(--darkGrey);
+    border-radius: 6px;
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+#sortNotes:hover,
+#sortNotes:focus {
+    border-color: var(--orange);
+    outline: none;
+}
+
+#sortNotes option {
+    background-color: var(--darkestGrey);
+    color: var(--grey);
+}
+
+#pwrd {
+	color: white;
+	text-align: center;
+
+	
+}
+
+#public-notes-group{
+	position: absolute;
+	top: 13%;
+}
+
+#publicUsername{
+	width: 80%;
+}
+
+#getPublicNotes{
+	width: 90%;
+	background-color: var(--orange);
+	color: var(--black);
+	border: var(--black);
+	font-weight: bold;
+	font-size: 15px;
+}
+
+#sortNotesTitle{
+	position: relative;
+	top: 20%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
