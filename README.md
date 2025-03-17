@@ -35,6 +35,7 @@ Below is a list of links to content used in this project or resources that aided
 - [Bee PNG - PNGPlay](https://www.pngplay.com/image/125266)
 - [Bee Transparent Image - PNGimg](https://pngimg.com/image/74646)
 - [Honeycomb Vector - Pixabay](https://pixabay.com/vectors/honeycomb-gradient-hexagon-orange-308722/)
+- [HATEOAS Implementation](https://www.javaguides.net/2025/03/hateoas-driven-rest-apis.html)
 
 
 
