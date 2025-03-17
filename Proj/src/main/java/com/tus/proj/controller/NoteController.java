@@ -105,27 +105,27 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(noteModel);
     }
 
-    // Unused; available for Admin use.
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/getAll")
-    public ResponseEntity<CollectionModel<EntityModel<Note>>> getAllNotes() {
-        List<Note> notes = noteService.getAllNotes();
-        Collections.reverse(notes);
-        CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
-        for (Note note : notes) {
-            Link selfLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId()))
-                    .withSelfRel();
-            Link updateLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
-                    .withRel("update");
-            Link deleteLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
-                    .withRel("delete");
-            notesModel.add(selfLink, updateLink, deleteLink);
-        }
-        return ResponseEntity.ok(notesModel);
-    }
+    // Unused; 
+//    @PreAuthorize("hasRole('Admin')")
+//    @GetMapping("/getAll")
+//    public ResponseEntity<CollectionModel<EntityModel<Note>>> getAllNotes() {
+//        List<Note> notes = noteService.getAllNotes();
+//        Collections.reverse(notes);
+//        CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
+//        for (Note note : notes) {
+//            Link selfLink = WebMvcLinkBuilder
+//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId()))
+//                    .withSelfRel();
+//            Link updateLink = WebMvcLinkBuilder
+//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
+//                    .withRel("update");
+//            Link deleteLink = WebMvcLinkBuilder
+//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
+//                    .withRel("delete");
+//            notesModel.add(selfLink, updateLink, deleteLink);
+//        }
+//        return ResponseEntity.ok(notesModel);
+//    }
 
     // Retrieves all notes of the logged in user with a custom order. can also return other users public notes
     @PreAuthorize("hasRole('User')")
@@ -330,29 +330,32 @@ public class NoteController {
                     .withSelfRel();
             Link updateLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
-                    .withRel("update");
+                    .withRel("update meta");
             Link deleteLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
                     .withRel("delete");
-            notesModel.add(selfLink, updateLink, deleteLink);
+            Link contentLink = WebMvcLinkBuilder
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(note.getId(), null))
+                    .withRel("update content");
+            notesModel.add(selfLink, updateLink, deleteLink,contentLink);
         }
         return ResponseEntity.status(HttpStatus.OK).body(notesModel);
     }
 
-    @PreAuthorize("hasRole('User')")
-    @GetMapping("/getPublic/{username}")
-    public ResponseEntity<List<Note>> getPublicNotesByUsername(@PathVariable String username) {
-        Optional<User> opUser = userService.findByUsername(username);
-        if (opUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        User user = opUser.get();
-        List<Note> publicNotes = noteService.getPublicNotesByUserId(user.getId());
-        if (publicNotes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
-        }
-        return ResponseEntity.ok(publicNotes);
-    }
+//    @PreAuthorize("hasRole('User')")
+//    @GetMapping("/getPublic/{username}")
+//    public ResponseEntity<List<Note>> getPublicNotesByUsername(@PathVariable String username) {
+//        Optional<User> opUser = userService.findByUsername(username);
+//        if (opUser.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        User user = opUser.get();
+//        List<Note> publicNotes = noteService.getPublicNotesByUserId(user.getId());
+//        if (publicNotes.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
+//        }
+//        return ResponseEntity.ok(publicNotes);
+//    }
 
     @PreAuthorize("hasRole('Moderator')")
     @GetMapping("/getPublic/mod/{order}/{pUsername}")

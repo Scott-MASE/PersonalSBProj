@@ -40,7 +40,7 @@ public class Note {
 
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false) // Foreign key column in "notes" table
+	@JoinColumn(name = "user_id", nullable = false)
 	@JsonBackReference
 	private User user;
 
