@@ -2,7 +2,11 @@ $(document).ready(() => {
     const rootURL = "http://localhost:9092";
     const username = localStorage.getItem("username");
     const role = localStorage.getItem("role");
-
+	
+	const createNoteButton = document.getElementById('create-note');
+	if (role === 'Moderator') {
+	    createNoteButton.style.display = 'none';
+}
     if (username) {
         $("#username").text(username);
     } else {
