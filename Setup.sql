@@ -17,11 +17,11 @@ VALUES
     ('Progress', 'Summarized monthly progress for the executive team.', 'LOW', '2025-03-20', 'School', 2, "PRIVATE");
 
 -- User 2
-INSERT INTO notes (title, content, priority, deadline, tag, user_id) 
+INSERT INTO notes (title, content, priority, deadline, tag, user_id, access) 
 VALUES 
     ('Strategy', 'tactics and how to approach high-value clients.', 'HIGH', '2025-03-09', 'war', 3, "PRIVATE"),
     ('Goals', 'Set goals for the next quarter and assigned responsibilities.', 'MEDIUM', '2025-03-10', 'war', 3, "PRIVATE"),
-    ('Survey', 'Analyzed customer feedback and suggested improvements.', 'LOW', '2025-03-11', 'land', 3),
+    ('Survey', 'Analyzed customer feedback and suggested improvements.', 'LOW', '2025-03-11', 'land', 3, "PRIVATE"),
     ('Performance', 'Reviewed team performance and identified areas for improvement.', 'HIGH', '2025-03-12', 'war', 3, "PRIVATE"),
     ('Onboarding', 'Refined the client onboarding process based on feedback.', 'MEDIUM', '2025-03-13', 'war', 3, "PRIVATE"),
     ('Launch', 'Mapped out the timeline and strategy for the upcoming product launch.', 'LOW', '2025-03-14', 'war', 3, "PRIVATE"),
