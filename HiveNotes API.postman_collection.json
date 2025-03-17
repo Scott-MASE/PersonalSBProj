@@ -1,0 +1,1979 @@
+{
+	"info": {
+		"_postman_id": "a6954718-b2d7-4f28-be97-6d0f25b7a3c1",
+		"name": "HiveNotes API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40817259"
+	},
+	"item": [
+		{
+			"name": "User API",
+			"item": [
+				{
+					"name": "No Role",
+					"item": [
+						{
+							"name": "Register",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Abc123*8\",\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Register",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Abc123*8\",\n  \"role\": \"USER\"\n}\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/users/register",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"register"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:13:19 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 12,\n    \"username\": \"testuser\",\n    \"password\": \"$2a$10$2eQamnboXrbsERyPmiiGpOxIWBBPOdTwHcqRjbv/XV.RGPpHNqq56\",\n    \"role\": \"USER\",\n    \"notes\": [],\n    \"authorities\": [\n        \"USER\"\n    ],\n    \"enabled\": true,\n    \"accountNonExpired\": true,\n    \"accountNonLocked\": true,\n    \"credentialsNonExpired\": true,\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/users/12\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Login",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"admin\"\n  \"password\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/users/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"login"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:37:55 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"jwt\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc0MjIxNTA3NSwiZXhwIjoxNzQyMjE4Njc1fQ.P0F91yqg0Ci6aqsbNbm92OaTD5CH6IfDNRnrobZbYdw\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/users\"\n        }\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Admin Role",
+					"item": [
+						{
+							"name": "Get All Users",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": 12\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/users/delete",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"delete"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:40:07 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"username\": \"admin\",\n        \"password\": \"$2a$10$z5z61kZxoWEyfMNX3Qmnw.MiLTcGyt3RRHSm.MRTZBwAxipr5hv2i\",\n        \"role\": \"ADMIN\",\n        \"notes\": [],\n        \"authorities\": [\n            \"ADMIN\"\n        ],\n        \"enabled\": true,\n        \"accountNonExpired\": true,\n        \"accountNonLocked\": true,\n        \"credentialsNonExpired\": true,\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/users/1\"\n            },\n            {\n                \"rel\": \"update\",\n                \"href\": \"http://localhost:9092/api/users/edit/1\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/users/delete/1\"\n            }\n        ]\n    },\n    {\n        \"id\": 2,\n        \"username\": \"James\",\n        \"password\": \"$2a$10$Xte17.4Od3aDIDI6ahIRre7j.bkMlY3Sj9Nqs4kbjcpXdIWiocFRW\",\n        \"role\": \"USER\",\n        \"notes\": [\n            {\n                \"id\": 1,\n                \"title\": \"Meeting\",\n                \"content\": \"\",\n                \"tag\": \"Work\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-13\"\n            },\n            {\n                \"id\": 2,\n                \"title\": \"Feedback\",\n                \"content\": \"Client provided feedback on our design proposals, need to adjust.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-10\"\n            },\n            {\n                \"id\": 3,\n                \"title\": \"Sprint Prog\",\n                \"content\": \"Evaluating sprint completion rate and planning next steps.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-11\"\n            },\n            {\n                \"id\": 4,\n                \"title\": \"Design\",\n                \"content\": \"Meeting to finalize design concepts for the new app.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-12\"\n            },\n            {\n                \"id\": 5,\n                \"title\": \"Testing\",\n                \"content\": \"Collected user feedback from testing and identified improvements.\",\n                \"tag\": \"personal\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-13\"\n            },\n            {\n                \"id\": 6,\n                \"title\": \"Bug Fixes\",\n                \"content\": \"Resolved critical bugs from the last release.\",\n                \"tag\": \"personal\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-14\"\n            },\n            {\n                \"id\": 7,\n                \"title\": \"Planning\",\n                \"content\": \"Created a detailed project plan for the next phase.2\",\n                \"tag\": \"personal\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-15\"\n            },\n            {\n                \"id\": 8,\n                \"title\": \"Internal\",\n                \"content\": \"Discussed team roles and responsibilities for upcoming tasks.\",\n                \"tag\": \"personal\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-16\"\n            },\n            {\n                \"id\": 9,\n                \"title\": \"Ideas\",\n                \"content\": \"Brainstormed potential new features to implement in the next version.\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-17\"\n            },\n            {\n                \"id\": 10,\n                \"title\": \"Training\",\n                \"content\": \"Created a training schedule for the team to improve skills.\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-18\"\n            },\n            {\n                \"id\": 11,\n                \"title\": \"Demo\",\n                \"content\": \"\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 12,\n                \"title\": \"Progress\",\n                \"content\": \"\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 55,\n                \"title\": \"aw\",\n                \"content\": \"\",\n                \"tag\": \"aw\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-13\"\n            },\n            {\n                \"id\": 56,\n                \"title\": \"awd\",\n                \"content\": \"\",\n                \"tag\": \"awd\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 57,\n                \"title\": \"awd\",\n                \"content\": \"\",\n                \"tag\": \"wdaf\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 58,\n                \"title\": \"awf\",\n                \"content\": \"\",\n                \"tag\": \"afwf\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 59,\n                \"title\": \"awdawd\",\n                \"content\": \"\",\n                \"tag\": \"fwf\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-27\"\n            },\n            {\n                \"id\": 60,\n                \"title\": \"ffwaf\",\n                \"content\": \"\",\n                \"tag\": \"afwfw\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-12\"\n            },\n            {\n                \"id\": 61,\n                \"title\": \"awd\",\n                \"content\": \"\",\n                \"tag\": \"rfrfe\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 62,\n                \"title\": \"eff\",\n                \"content\": \"\",\n                \"tag\": \"sef\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-12\"\n            },\n            {\n                \"id\": 63,\n                \"title\": \"sef\",\n                \"content\": \"w\",\n                \"tag\": \"sfefes\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 64,\n                \"title\": \"fsefs\",\n                \"content\": \"a\",\n                \"tag\": \"sefsefs\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-28\"\n            },\n            {\n                \"id\": 72,\n                \"title\": \"joom\",\n                \"content\": \"\",\n                \"tag\": \"joom\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-21\"\n            },\n            {\n                \"id\": 73,\n                \"title\": \"test\",\n                \"content\": \"\",\n                \"tag\": \"test\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            }\n        ],\n        \"authorities\": [\n            \"USER\"\n        ],\n        \"enabled\": true,\n        \"accountNonExpired\": true,\n        \"accountNonLocked\": true,\n        \"credentialsNonExpired\": true,\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/users/2\"\n            },\n            {\n                \"rel\": \"update\",\n                \"href\": \"http://localhost:9092/api/users/edit/2\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/users/delete/2\"\n            }\n        ]\n    },\n    {\n        \"id\": 3,\n        \"username\": \"Jim\",\n        \"password\": \"$2a$10$NoDrmDpz0HZ1tj0.kODzU.Hnur4Da7tTyrpM23DI7BI6pMi2ifazu\",\n        \"role\": \"USER\",\n        \"notes\": [\n            {\n                \"id\": 13,\n                \"title\": \"Strategy\",\n                \"content\": \"tactics and how to approach high-value clients.\",\n                \"tag\": \"war\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-09\"\n            },\n            {\n                \"id\": 14,\n                \"title\": \"Goals\",\n                \"content\": \"Set goals for the next quarter and assigned responsibilities.\",\n                \"tag\": \"war\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-10\"\n            },\n            {\n                \"id\": 15,\n                \"title\": \"Survey\",\n                \"content\": \"Analyzed customer feedback and suggested improvements.\",\n                \"tag\": \"land\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-11\"\n            },\n            {\n                \"id\": 16,\n                \"title\": \"Performance\",\n                \"content\": \"Reviewed team performance and identified areas for improvement.\",\n                \"tag\": \"war\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-12\"\n            },\n            {\n                \"id\": 17,\n                \"title\": \"Onboarding\",\n                \"content\": \"Refined the client onboarding process based on feedback.\",\n                \"tag\": \"war\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-13\"\n            },\n            {\n                \"id\": 18,\n                \"title\": \"Launch\",\n                \"content\": \"Mapped out the timeline and strategy for the upcoming product launch.\",\n                \"tag\": \"war\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-14\"\n            },\n            {\n                \"id\": 19,\n                \"title\": \"Research\",\n                \"content\": \"Conducted a market analysis to understand competitors and customer needs.\",\n                \"tag\": \"lab\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-15\"\n            },\n            {\n                \"id\": 20,\n                \"title\": \"Workflow\",\n                \"content\": \"Optimized the workflow for handling customer service requests.\",\n                \"tag\": \"lab\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-16\"\n            },\n            {\n                \"id\": 21,\n                \"title\": \"Activities\",\n                \"content\": \"\",\n                \"tag\": \"lab\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-17\"\n            },\n            {\n                \"id\": 22,\n                \"title\": \"Campaign\",\n                \"content\": \"Brainstormed ideas for the upcoming marketing campaigns.\",\n                \"tag\": \"land\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-18\"\n            },\n            {\n                \"id\": 23,\n                \"title\": \"Feedback\",\n                \"content\": \"aawawaa\",\n                \"tag\": \"land\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-19\"\n            },\n            {\n                \"id\": 24,\n                \"title\": \"Year-End\",\n                \"content\": \"awdaw\",\n                \"tag\": \"land\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 71,\n                \"title\": \"JimsPriv\",\n                \"content\": \"\",\n                \"tag\": \"worldly\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            }\n        ],\n        \"authorities\": [\n            \"USER\"\n        ],\n        \"enabled\": true,\n        \"accountNonExpired\": true,\n        \"accountNonLocked\": true,\n        \"credentialsNonExpired\": true,\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/users/3\"\n            },\n            {\n                \"rel\": \"update\",\n                \"href\": \"http://localhost:9092/api/users/edit/3\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/users/delete/3\"\n            }\n        ]\n    },\n    {\n        \"id\": 4,\n        \"username\": \"Mod\",\n        \"password\": \"$2a$10$ClMygACB2JzakcX5l8kjNu0bjAB79rjuAqdrCNevDtrXfFeO7cuAK\",\n        \"role\": \"MODERATOR\",\n        \"notes\": [],\n        \"authorities\": [\n            \"MODERATOR\"\n        ],\n        \"enabled\": true,\n        \"accountNonExpired\": true,\n        \"accountNonLocked\": true,\n        \"credentialsNonExpired\": true,\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/users/4\"\n            },\n            {\n                \"rel\": \"update\",\n                \"href\": \"http://localhost:9092/api/users/edit/4\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/users/delete/4\"\n            }\n        ]\n    },\n    {\n        \"id\": 12,\n        \"username\": \"testuser\",\n        \"password\": \"$2a$10$2eQamnboXrbsERyPmiiGpOxIWBBPOdTwHcqRjbv/XV.RGPpHNqq56\",\n        \"role\": \"USER\",\n        \"notes\": [],\n        \"authorities\": [\n            \"USER\"\n        ],\n        \"enabled\": true,\n        \"accountNonExpired\": true,\n        \"accountNonLocked\": true,\n        \"credentialsNonExpired\": true,\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/users/12\"\n            },\n            {\n                \"rel\": \"update\",\n                \"href\": \"http://localhost:9092/api/users/edit/12\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/users/delete/12\"\n            }\n        ]\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9092/api/users/delete/10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"users",
+										"delete",
+										"10"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit User",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"updatedUser\",\n  \"password\": \"Abc123*8\",\n  \"role\": \"MODERATOR\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/users/edit",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"users",
+										"edit"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"username\": \"updatedUser\",\n  \"password\": \"Abc123*8\",\n  \"role\": \"MODERATOR\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/users/edit/14",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"edit",
+												"14"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:49:27 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 14,\n    \"username\": \"updatedUser\",\n    \"password\": \"$2a$10$v98u9MVO2O6aa3w4csVbJOZq4B9YIKr.XFGLivH0Pp0EbZI4oHgGm\",\n    \"role\": \"MODERATOR\",\n    \"notes\": [],\n    \"authorities\": [\n        \"MODERATOR\"\n    ],\n    \"enabled\": true,\n    \"accountNonExpired\": true,\n    \"accountNonLocked\": true,\n    \"credentialsNonExpired\": true,\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/users/14\"\n        },\n        \"update\": {\n            \"href\": \"http://localhost:9092/api/users/edit/14\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/users/delete/14\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get User",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/users/14",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"14"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:50:51 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 14,\n    \"username\": \"updatedUser\",\n    \"password\": \"$2a$10$v98u9MVO2O6aa3w4csVbJOZq4B9YIKr.XFGLivH0Pp0EbZI4oHgGm\",\n    \"role\": \"MODERATOR\",\n    \"notes\": [],\n    \"authorities\": [\n        \"MODERATOR\"\n    ],\n    \"enabled\": true,\n    \"accountNonExpired\": true,\n    \"accountNonLocked\": true,\n    \"credentialsNonExpired\": true,\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/users/14\"\n        },\n        \"update\": {\n            \"href\": \"http://localhost:9092/api/users/edit/14\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/users/delete/14\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Id by Username",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/users/username/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"users",
+												"username",
+												"admin"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:52:29 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "1"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Note API",
+			"item": [
+				{
+					"name": "User Role",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"My First Note\",\n  \"content\": \"This is the content of my note.\",\n  \"priority\": \"HIGH\",\n  \"deadline\": \"2025-04-01T12:00:00\",\n  \"tag\": \"Work\",\n  \"access\": \"PRIVATE\"\n}\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"create"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:57:02 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 74,\n    \"title\": \"My First Note\",\n    \"content\": \"This is the content of my note.\",\n    \"tag\": \"Work\",\n    \"access\": \"PRIVATE\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-04-01\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/notes/74\"\n        },\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/74/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/74/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/74/delete\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Logged Users Notes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9092/api/notes/getAll/loggedUser/1/null",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"notes",
+										"getAll",
+										"loggedUser",
+										"1",
+										"null"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getAll/loggedUser/1/null",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getAll",
+												"loggedUser",
+												"1",
+												"null"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:58:08 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Meeting\",\n        \"content\": \"\",\n        \"tag\": \"Work\",\n        \"access\": \"PUBLIC\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-03-13\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/1\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/1/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/1/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/1/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 4,\n        \"title\": \"Design\",\n        \"content\": \"Meeting to finalize design concepts for the new app.\",\n        \"tag\": \"work\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-03-12\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/4\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/4/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/4/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/4/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 7,\n        \"title\": \"Planning\",\n        \"content\": \"Created a detailed project plan for the next phase.2\",\n        \"tag\": \"personal\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-03-15\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/7\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/7/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/7/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/7/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 10,\n        \"title\": \"Training\",\n        \"content\": \"Created a training schedule for the team to improve skills.\",\n        \"tag\": \"School\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-03-18\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/10\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/10/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/10/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/10/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 74,\n        \"title\": \"My First Note\",\n        \"content\": \"This is the content of my note.\",\n        \"tag\": \"Work\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-04-01\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/74\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/74/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/74/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/74/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 3,\n        \"title\": \"Sprint Prog\",\n        \"content\": \"Evaluating sprint completion rate and planning next steps.\",\n        \"tag\": \"work\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-11\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/3\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/3/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/3/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/3/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 6,\n        \"title\": \"Bug Fixes\",\n        \"content\": \"Resolved critical bugs from the last release.\",\n        \"tag\": \"personal\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-14\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/6\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/6/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/6/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/6/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 9,\n        \"title\": \"Ideas\",\n        \"content\": \"Brainstormed potential new features to implement in the next version.\",\n        \"tag\": \"School\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-17\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/9\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/9/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/9/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/9/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 55,\n        \"title\": \"aw\",\n        \"content\": \"\",\n        \"tag\": \"aw\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-13\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/55\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/55/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/55/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/55/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 56,\n        \"title\": \"awd\",\n        \"content\": \"\",\n        \"tag\": \"awd\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/56\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/56/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/56/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/56/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 57,\n        \"title\": \"awd\",\n        \"content\": \"\",\n        \"tag\": \"wdaf\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/57\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/57/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/57/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/57/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 58,\n        \"title\": \"awf\",\n        \"content\": \"\",\n        \"tag\": \"afwf\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/58\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/58/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/58/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/58/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 59,\n        \"title\": \"awdawd\",\n        \"content\": \"\",\n        \"tag\": \"fwf\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-27\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/59\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/59/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/59/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/59/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 60,\n        \"title\": \"ffwaf\",\n        \"content\": \"\",\n        \"tag\": \"afwfw\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-12\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/60\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/60/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/60/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/60/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 61,\n        \"title\": \"awd\",\n        \"content\": \"\",\n        \"tag\": \"rfrfe\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/61\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/61/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/61/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/61/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 62,\n        \"title\": \"eff\",\n        \"content\": \"\",\n        \"tag\": \"sef\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-12\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/62\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/62/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/62/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/62/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 63,\n        \"title\": \"sef\",\n        \"content\": \"w\",\n        \"tag\": \"sfefes\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/63\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/63/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/63/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/63/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 72,\n        \"title\": \"joom\",\n        \"content\": \"\",\n        \"tag\": \"joom\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-21\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/72\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/72/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/72/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/72/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 73,\n        \"title\": \"test\",\n        \"content\": \"\",\n        \"tag\": \"test\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/73\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/73/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/73/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/73/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 2,\n        \"title\": \"Feedback\",\n        \"content\": \"Client provided feedback on our design proposals, need to adjust.\",\n        \"tag\": \"work\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-10\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/2\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/2/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/2/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/2/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 5,\n        \"title\": \"Testing\",\n        \"content\": \"Collected user feedback from testing and identified improvements.\",\n        \"tag\": \"personal\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-13\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/5\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/5/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/5/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/5/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 8,\n        \"title\": \"Internal\",\n        \"content\": \"Discussed team roles and responsibilities for upcoming tasks.\",\n        \"tag\": \"personal\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-16\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/8\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/8/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/8/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/8/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 11,\n        \"title\": \"Demo\",\n        \"content\": \"\",\n        \"tag\": \"School\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/11\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/11/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/11/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/11/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 12,\n        \"title\": \"Progress\",\n        \"content\": \"\",\n        \"tag\": \"School\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/12\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/12/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/12/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/12/delete\"\n            }\n        ]\n    },\n    {\n        \"id\": 64,\n        \"title\": \"fsefs\",\n        \"content\": \"a\",\n        \"tag\": \"sefsefs\",\n        \"access\": \"PRIVATE\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-28\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/64\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/64/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/64/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/64/delete\"\n            }\n        ]\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Users Public Notes",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getAll/loggedUser/1/James",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getAll",
+												"loggedUser",
+												"1",
+												"James"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 12:58:50 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Meeting\",\n        \"content\": \"\",\n        \"tag\": \"Work\",\n        \"access\": \"PUBLIC\",\n        \"priority\": \"HIGH\",\n        \"deadline\": \"2025-03-13\",\n        \"username\": \"James\",\n        \"links\": [\n            {\n                \"rel\": \"self\",\n                \"href\": \"http://localhost:9092/api/notes/1\"\n            },\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/1/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/1/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/1/delete\"\n            }\n        ]\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Note By Id",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/1",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"1"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 13:00:03 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"title\": \"Meeting\",\n    \"content\": \"\",\n    \"tag\": \"Work\",\n    \"access\": \"PUBLIC\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-03-13\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/notes/1\"\n        },\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/1/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/1/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/1/delete\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Note Meta",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"Title\",\n  \"content\": \"Updated content for the note.\",\n  \"priority\": \"HIGH\",\n  \"deadline\": \"2025-04-01T12:00:00\",\n  \"tag\": \"Work\",\n  \"access\": \"PRIVATE\"\n}\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/1/meta",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"1",
+												"meta"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 13:01:27 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"title\": \"Title\",\n    \"content\": \"Updated content for the note.\",\n    \"tag\": \"Work\",\n    \"access\": \"PRIVATE\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-04-01\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/notes/1\"\n        },\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/1/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/1/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/1/delete\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Note",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userConfirmation\" : \"confirmed\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/notes/73/delete",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"notes",
+										"73",
+										"delete"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"userConfirmation\" : \"confirmed\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/73/delete",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"73",
+												"delete"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "text/plain;charset=UTF-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "25"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:38:43 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "Note deleted successfully"
+								}
+							]
+						},
+						{
+							"name": "Update Note Content",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"content\" :  \"This is the content of my note\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/notes/1/content",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"notes",
+										"1",
+										"content"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\"content\" :  \"This is the content of my note\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/1/content",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"1",
+												"content"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:40:07 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"title\": \"Title\",\n    \"content\": \"This is the content of my note\",\n    \"tag\": \"Work\",\n    \"access\": \"PRIVATE\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-04-01\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://localhost:9092/api/notes/1\"\n        },\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/1/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/1/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/1/delete\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Ged Logged Users Tags",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getTags/loggedUser",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getTags",
+												"loggedUser"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:43:27 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    \"Work\",\n    \"personal\",\n    \"School\",\n    \"aw\",\n    \"awd\",\n    \"wdaf\",\n    \"afwf\",\n    \"fwf\",\n    \"afwfw\",\n    \"rfrfe\",\n    \"sef\",\n    \"sfefes\",\n    \"sefsefs\",\n    \"joom\"\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Logged Users Notes By Tags",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getTags/loggedUser/work,school",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getTags",
+												"loggedUser",
+												"work,school"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:48:34 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_embedded\": {\n        \"noteList\": [\n            {\n                \"id\": 12,\n                \"title\": \"Progress\",\n                \"content\": \"\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 11,\n                \"title\": \"Demo\",\n                \"content\": \"\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-20\"\n            },\n            {\n                \"id\": 10,\n                \"title\": \"Training\",\n                \"content\": \"Created a training schedule for the team to improve skills.\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-18\"\n            },\n            {\n                \"id\": 9,\n                \"title\": \"Ideas\",\n                \"content\": \"Brainstormed potential new features to implement in the next version.\",\n                \"tag\": \"School\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-17\"\n            },\n            {\n                \"id\": 74,\n                \"title\": \"My First Note\",\n                \"content\": \"This is the content of my note.a\",\n                \"tag\": \"Work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-04-01\"\n            },\n            {\n                \"id\": 4,\n                \"title\": \"Design\",\n                \"content\": \"Meeting to finalize design concepts for the new app.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-03-12\"\n            },\n            {\n                \"id\": 3,\n                \"title\": \"Sprint Prog\",\n                \"content\": \"Evaluating sprint completion rate and planning next steps.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-11\"\n            },\n            {\n                \"id\": 2,\n                \"title\": \"Feedback\",\n                \"content\": \"Client provided feedback on our design proposals, need to adjust.\",\n                \"tag\": \"work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-10\"\n            },\n            {\n                \"id\": 1,\n                \"title\": \"Title\",\n                \"content\": \"This is the content of my note\",\n                \"tag\": \"Work\",\n                \"access\": \"PRIVATE\",\n                \"priority\": \"HIGH\",\n                \"deadline\": \"2025-04-01\"\n            }\n        ]\n    },\n    \"_links\": {\n        \"self\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/12\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/11\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/10\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/9\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/74\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/4\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/3\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/2\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/1\"\n            }\n        ],\n        \"update meta\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/12/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/11/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/10/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/9/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/74/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/4/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/3/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/2/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/1/meta\"\n            }\n        ],\n        \"delete\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/12/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/11/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/10/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/9/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/74/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/4/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/3/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/2/delete\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/1/delete\"\n            }\n        ],\n        \"update content\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/12/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/11/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/10/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/9/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/74/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/4/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/3/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/2/content\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/1/content\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Moderator Role",
+					"item": [
+						{
+							"name": "Get All Public Notes",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getPublic/mod/0/null",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getPublic",
+												"mod",
+												"0",
+												"null"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:52:27 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 24,\n        \"title\": \"Year-End\",\n        \"content\": \"awdaw\",\n        \"tag\": \"land\",\n        \"access\": \"PUBLIC\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-20\",\n        \"username\": \"Jim\",\n        \"links\": [\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/24/mod/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/24/mod/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/24/delete/mod\"\n            }\n        ]\n    },\n    {\n        \"id\": 23,\n        \"title\": \"Feedback\",\n        \"content\": \"aawawaa\",\n        \"tag\": \"land\",\n        \"access\": \"PUBLIC\",\n        \"priority\": \"MEDIUM\",\n        \"deadline\": \"2025-03-19\",\n        \"username\": \"Jim\",\n        \"links\": [\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/23/mod/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/23/mod/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/23/delete/mod\"\n            }\n        ]\n    },\n    {\n        \"id\": 21,\n        \"title\": \"Activities\",\n        \"content\": \"\",\n        \"tag\": \"lab\",\n        \"access\": \"PUBLIC\",\n        \"priority\": \"LOW\",\n        \"deadline\": \"2025-03-17\",\n        \"username\": \"Jim\",\n        \"links\": [\n            {\n                \"rel\": \"updateMeta\",\n                \"href\": \"http://localhost:9092/api/notes/21/mod/meta\"\n            },\n            {\n                \"rel\": \"updateContent\",\n                \"href\": \"http://localhost:9092/api/notes/21/mod/content\"\n            },\n            {\n                \"rel\": \"delete\",\n                \"href\": \"http://localhost:9092/api/notes/21/delete/mod\"\n            }\n        ]\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Delete Public Note",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"userConfirmation\" : \"confirmed\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/76/delete/mod",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"76",
+												"delete",
+												"mod"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "text/plain;charset=UTF-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "25"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:54:50 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "Note deleted successfully"
+								}
+							]
+						},
+						{
+							"name": "Get Public Tags",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getTags/publicTags",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getTags",
+												"publicTags"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:55:22 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    \"lab\",\n    \"land\"\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Public Notes By Tags",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:9092/api/notes/getTags/public/lab,land",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"getTags",
+												"public",
+												"lab,land"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:56:23 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_embedded\": {\n        \"noteList\": [\n            {\n                \"id\": 21,\n                \"title\": \"Activities\",\n                \"content\": \"\",\n                \"tag\": \"lab\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-17\"\n            },\n            {\n                \"id\": 23,\n                \"title\": \"Feedback\",\n                \"content\": \"aawawaa\",\n                \"tag\": \"land\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"MEDIUM\",\n                \"deadline\": \"2025-03-19\"\n            },\n            {\n                \"id\": 24,\n                \"title\": \"Year-End\",\n                \"content\": \"awdaw\",\n                \"tag\": \"land\",\n                \"access\": \"PUBLIC\",\n                \"priority\": \"LOW\",\n                \"deadline\": \"2025-03-20\"\n            }\n        ]\n    },\n    \"_links\": {\n        \"self\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/21\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/23\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/24\"\n            }\n        ],\n        \"update\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/21/mod/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/23/mod/meta\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/24/mod/meta\"\n            }\n        ],\n        \"delete\": [\n            {\n                \"href\": \"http://localhost:9092/api/notes/21/delete/mod\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/23/delete/mod\"\n            },\n            {\n                \"href\": \"http://localhost:9092/api/notes/24/delete/mod\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Public Note Meta",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Title\",\n  \"content\": \"Updated content for the note.\",\n  \"priority\": \"HIGH\",\n  \"deadline\": \"2025-04-01T12:00:00\",\n  \"tag\": \"Work\",\n  \"access\": \"PUBLIC\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9092/api/notes/21/mod/meta",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9092",
+									"path": [
+										"api",
+										"notes",
+										"21",
+										"mod",
+										"meta"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"Title\",\n  \"content\": \"Updated content for the note.\",\n  \"priority\": \"HIGH\",\n  \"deadline\": \"2025-04-01T12:00:00\",\n  \"tag\": \"Work\",\n  \"access\": \"PUBLIC\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/21/mod/meta",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"21",
+												"mod",
+												"meta"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:57:58 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 21,\n    \"title\": \"Title\",\n    \"content\": \"Updated content for the note.\",\n    \"tag\": \"Work\",\n    \"access\": \"PUBLIC\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-04-01\",\n    \"_links\": {\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/21/mod/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/21/mod/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/21/delete/mod\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Public Note Content",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "Request",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\"content\" :  \"This is the content of my note\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:9092/api/notes/21/mod/content",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "9092",
+											"path": [
+												"api",
+												"notes",
+												"21",
+												"mod",
+												"content"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/hal+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 17 Mar 2025 15:59:11 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 21,\n    \"title\": \"Title\",\n    \"content\": \"This is the content of my note\",\n    \"tag\": \"Work\",\n    \"access\": \"PUBLIC\",\n    \"priority\": \"HIGH\",\n    \"deadline\": \"2025-04-01\",\n    \"_links\": {\n        \"updateMeta\": {\n            \"href\": \"http://localhost:9092/api/notes/21/mod/meta\"\n        },\n        \"updateContent\": {\n            \"href\": \"http://localhost:9092/api/notes/21/mod/content\"\n        },\n        \"delete\": {\n            \"href\": \"http://localhost:9092/api/notes/21/delete/mod\"\n        }\n    }\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNb2QiLCJyb2xlIjoiTW9kZXJhdG9yIiwiaWF0IjoxNzQyMjI2NjgzLCJleHAiOjE3NDIyMzAyODN9.nzBiOq7WFhFPNaD923GUYlp8nhSl75zPgFLjlylv6e4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
