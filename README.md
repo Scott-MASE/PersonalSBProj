@@ -10,14 +10,14 @@ A collaborative note-taking web app with a bee theme, built with Maven and Sprin
 - [API Documentation](#api-documentation)
 
 ## ✨ Features
-There are three account types, User, Admin, and Moderator.
+Below is a short video demo to walk you through all the features of HiveNotes
 
-### User Guide
-When you first access the webapp, you will be directed to the login page:
+### 🎥 Watch the Demo
+[![Watch the video](https://img.youtube.com/vi/jEKoQhoWZrc/0.jpg)](https://www.youtube.com/watch?v=jEKoQhoWZrc)
 
-![Login Screen](https://raw.githubusercontent.com/Scott-MASE/PersonalSBProj/More-fixed/docs/LoginScreen.png)
+## Installation
+The project was built using maven and springboot. Simply clone the "Proj" file into your IDE of choice, and run the project. Once launched, it can be accessed via localHost:9092
 
-Click the 
 
 
 
