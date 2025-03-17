@@ -224,17 +224,18 @@ $(document).ready(() => {
 		$("#publicUsername").text("");
 		localStorage.setItem("publicUsername", "");
 		}
+		let sortOption = localStorage.getItem('sortNotes') || 0;
 
 	    const url = role === "User" ? 
-	        `/api/notes/getTags/loggedUser/${checkedValues.join(',')}` :
-	        `/api/notes/getTags/public/${checkedValues.join(',')}`;
+	        `/api/notes/getTags/loggedUser/${checkedValues.join(',')}/${sortOption}` :
+	        `/api/notes/getTags/public/${checkedValues.join(',')}/${sortOption}`;
 
 	    $.ajax({
 	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
 	        url: url,
 	        method: 'GET',
 	        success: function(response) {
-	            const notes = response._embedded?.noteList || [];
+				const notes = response._embedded?.noteDTOList || [];
 	            if (!notes.length) {
 	                showAlert("No notes found for selected tags.", "warning");
 	                $('.scrollview').empty();
@@ -252,8 +253,10 @@ $(document).ready(() => {
 	function renderNotes(data) {
 	    console.log("Populating notes");
 	    const container = $('.scrollview').empty();
+		console.log(username);
 
 	    data.forEach(note => {
+			console.log(note.username);
 	        const htmlStr = `<div class="note-tile-container">
 	            <button class="note-tile-btn" 
 	                data-note-id="${note.id}" 
@@ -271,7 +274,7 @@ $(document).ready(() => {
 	                    <p class="note-deadline">Deadline:<br><span>${note.deadline}</span></p>
 	                </div>
 	            </button>
-	            ${username === note.username || role === "Moderator" ? `
+	            ${username == note.username || role == "Moderator" ? `
 	                <i id="cog-btn-${note.id}" class="bi bi-gear-fill cog-icon"></i>
 	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>` : ''
 	            }

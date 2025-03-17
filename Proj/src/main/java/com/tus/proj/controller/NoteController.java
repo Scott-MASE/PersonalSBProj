@@ -311,8 +311,8 @@ public class NoteController {
     }
 
     @PreAuthorize("hasRole('User')")
-    @GetMapping("/getTags/loggedUser/{tags}")
-    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags) {
+    @GetMapping("/getTags/loggedUser/{tags}/{order}")
+    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags, @PathVariable int order) {
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -322,22 +322,46 @@ public class NoteController {
         if (notes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
         }
-        Collections.reverse(notes);
-        CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
-        for (Note note : notes) {
+
+        
+        
+        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
+        switch (order) {
+            case 0:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
+                break;
+            case 1:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+                break;
+            case 2:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+                break;
+            case 3:
+                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
+                break;
+            case 4:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
+                break;
+            default:
+                break;
+        }
+        
+        CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
+        
+        for (NoteDTO noteDTO : noteDTOs) {
             Link selfLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId()))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(noteDTO.getId()))
                     .withSelfRel();
             Link updateLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(noteDTO.getId(), null))
                     .withRel("update meta");
             Link deleteLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(noteDTO.getId(), null))
                     .withRel("delete");
             Link contentLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(note.getId(), null))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(noteDTO.getId(), null))
                     .withRel("update content");
-            notesModel.add(selfLink, updateLink, deleteLink,contentLink);
+            notesModel.add(selfLink, updateLink, deleteLink, contentLink);
         }
         return ResponseEntity.status(HttpStatus.OK).body(notesModel);
     }
@@ -439,22 +463,45 @@ public class NoteController {
     }
 
     @PreAuthorize("hasRole('Moderator')")
-    @GetMapping("/getTags/public/{tags}")
-    public ResponseEntity<?> getPublicNotesByTags(@PathVariable List<String> tags) {
+    @GetMapping("/getTags/public/{tags}/{order}")
+    public ResponseEntity<?> getPublicNotesByTags(@PathVariable List<String> tags, @PathVariable int order ) {
         List<Note> notes = noteService.getPublicNotesByTags(tags);
         if (notes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
         }
-        CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
-        for (Note note : notes) {
+        
+        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
+        switch (order) {
+            case 0:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
+                break;
+            case 1:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority));
+                break;
+            case 2:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getPriority).reversed());
+                break;
+            case 3:
+                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
+                break;
+            case 4:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
+                break;
+            default:
+                break;
+        }
+        
+        CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
+        
+        for (NoteDTO noteDTO : noteDTOs) {
             Link selfLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId()))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(noteDTO.getId()))
                     .withSelfRel();
             Link updateLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(note.getId(), null))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(noteDTO.getId(), null))
                     .withRel("update");
             Link deleteLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(note.getId(), null))
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
                     .withRel("delete");
             notesModel.add(selfLink, updateLink, deleteLink);
         }
