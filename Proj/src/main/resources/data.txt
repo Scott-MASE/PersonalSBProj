@@ -1,10 +1,10 @@
 -- Step 1: Insert User into 'users' table
 -- Insert a user
 INSERT INTO users (username, password, role) 
-VALUES ('Scott', 'admin', 'ADMIN');
+VALUES ('admin', 'admin', 'ADMIN');
 
 INSERT INTO users (username, password, role) 
-VALUES ('James', '123', 'USER');
+VALUES ('user', 'user', 'USER');
 
 
 -- Insert notes for the user (assuming user_id is generated automatically)
