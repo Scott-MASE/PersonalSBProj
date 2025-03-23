@@ -41,11 +41,11 @@ public class SecurityConfig {
     	            // Allow all requests to the H2 console
     	            .requestMatchers("/h2-console/**").permitAll()
     	            .requestMatchers("/api/users/login").permitAll()
+                    .requestMatchers("/api/notes/**").authenticated()
+
     	            .requestMatchers("/api/users/register").permitAll()
     	            .requestMatchers("/api/users/username/{username}").permitAll()
     	            .requestMatchers("/api/users/delete/**").hasRole("Admin") 
-
-    	            .requestMatchers("/api/notes/{id}/getTags", "/api/notes/getAll/loggedUser/{order}/{username}").hasRole("User")  
 
     	            .requestMatchers("/sonarqube/**").permitAll() 
     	            .requestMatchers("/actuator/**").permitAll()   
@@ -63,6 +63,8 @@ public class SecurityConfig {
     	            .anyRequest().authenticated()
     	        ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
     	    }
+    
+    
 }
 
 
