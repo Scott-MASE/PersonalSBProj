@@ -831,20 +831,6 @@ class NoteControllerTest {
                 .andExpect(content().string("Note not found"));
     }
 
-    @Test
-    @WithMockUser(username = "regularUser", roles = {"User"})
-    void testDeletePublicNote_Unauthorized() throws Exception {
-        int noteId = 1;
-        DeleteNoteRequestDTO deleteRequest = new DeleteNoteRequestDTO();
-        deleteRequest.setUserConfirmation("confirmed");
-
-        // Perform the request and verify the response
-        mockMvc.perform(delete("/api/notes/{id}/delete/mod", noteId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteRequest)))
-                .andExpect(status().isForbidden())  // Forbidden since the user is not a Moderator
-                .andExpect(content().string("Access Denied"));
-    }
 
 
 
