@@ -4,6 +4,9 @@ import java.time.LocalDate;
 
 import com.tus.proj.note_managment.Note;
 
+import lombok.Data;
+
+@Data
 public class NoteDTO {
     private int id;
     private String title;
@@ -12,7 +15,7 @@ public class NoteDTO {
     private String access;
     private String priority;
     private LocalDate deadline;
-    private String username; // Send only user ID
+    private String username; 
 
     public NoteDTO(Note note) {
         this.id = note.getId();
@@ -25,69 +28,6 @@ public class NoteDTO {
         this.username = note.getUser().getUsername();
     }
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
-
-	public String getAccess() {
-		return access;
-	}
-
-	public void setAccess(String access) {
-		this.access = access;
-	}
-
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
-
-	public LocalDate getDeadline() {
-		return deadline;
-	}
-
-	public void setDeadline(LocalDate deadline) {
-		this.deadline = deadline;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
     
     
     
