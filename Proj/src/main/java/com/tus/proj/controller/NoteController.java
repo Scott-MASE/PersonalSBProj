@@ -86,6 +86,60 @@ public class NoteController {
 
         return noteModel;
     }
+    
+    private List<NoteDTO> getSortedNotes(List<Note> notes, int order) {
+        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
+        
+        switch (order) {
+            case 0:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
+                break;
+            case 1:
+                noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+                break;
+            case 2:
+                noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+                Collections.reverse(noteDTOs);
+                break;
+            case 3:
+                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
+                break;
+            case 4:
+                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
+                break;
+            default:
+                break;
+        }
+        
+        return noteDTOs;
+    }
+    
+    private List<EntityModel<NoteDTO>> getNoteModels(List<NoteDTO> noteDTOs) {
+        return noteDTOs.stream().map(noteDTO -> {
+            EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
+
+            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
+                    .getNoteById(noteDTO.getId()))
+                    .withSelfRel());
+
+            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
+                    .updateNoteMeta(noteDTO.getId(), null))
+                    .withRel("updateMeta"));
+
+            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
+                    .updateNoteContent(noteDTO.getId(), null))
+                    .withRel("updateContent"));
+
+            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
+                    .deleteNote(noteDTO.getId(), null))
+                    .withRel("delete"));
+
+            return noteModel;
+        }).toList();
+    }
+    
+    
+
 
     @PreAuthorize("hasRole('User')")
     @PostMapping("/create")
@@ -163,44 +217,8 @@ public class NoteController {
         if (notes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(List.of());
         }
-        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
-        switch (order) {
-            case 0:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
-                break;
-            case 1:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-                break;
-            case 2:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-            	Collections.reverse(noteDTOs);
-                break;
-            case 3:
-                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
-                break;
-            case 4:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
-                break;
-            default:
-                break;
-        }
-        List<EntityModel<NoteDTO>> noteModels = noteDTOs.stream().map(noteDTO -> {
-            EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .getNoteById(noteDTO.getId()))
-                    .withSelfRel());
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteMeta(noteDTO.getId(), null))
-                    .withRel("updateMeta"));
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteContent(noteDTO.getId(), null))
-                    .withRel("updateContent"));
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .deleteNote(noteDTO.getId(), null))
-                    .withRel("delete"));
-
-            return noteModel;
-        }).toList();
+        List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
+        List<EntityModel<NoteDTO>> noteModels = getNoteModels(noteDTOs);
 
         return ResponseEntity.ok(noteModels);
     }
@@ -335,27 +353,8 @@ public class NoteController {
 
         
         
-        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
-        switch (order) {
-            case 0:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
-                break;
-            case 1:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-                break;
-            case 2:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-            	Collections.reverse(noteDTOs);
-                break;
-            case 3:
-                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
-                break;
-            case 4:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
-                break;
-            default:
-                break;
-        }
+        List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
+
         
         CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
         
@@ -409,43 +408,23 @@ public class NoteController {
         if (notes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(List.of());
         }
-        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
-        switch (order) {
-            case 0:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
-                break;
-            case 1:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-                break;
-            case 2:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-            	Collections.reverse(noteDTOs);
-                break;
-            case 3:
-                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
-                break;
-            case 4:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
-                break;
-            default:
-                break;
-        }
+        List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
 
         
-        List<EntityModel<NoteDTO>> noteModels = noteDTOs.stream().map(noteDTO -> {
-            EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteMetaMod(noteDTO.getId(), null))
-                    .withRel("updateMeta"));
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteContentMod(noteDTO.getId(), null))
-                    .withRel("updateContent"));
-            noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .deletePublicNote(noteDTO.getId(), null))
-                    .withRel("delete"));
+		List<EntityModel<NoteDTO>> noteModels = noteDTOs.stream().map(noteDTO -> {
+			EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
+			noteModel.add(WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(noteDTO.getId(), null))
+					.withRel("updateMeta"));
+			noteModel.add(WebMvcLinkBuilder.linkTo(
+					WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContentMod(noteDTO.getId(), null))
+					.withRel("updateContent"));
+			noteModel.add(WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
+					.withRel("delete"));
 
-            return noteModel;
-        }).toList();
+			return noteModel;
+		}).toList();
 
         return ResponseEntity.ok(noteModels);
     }
