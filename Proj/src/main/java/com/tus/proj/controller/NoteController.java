@@ -445,27 +445,7 @@ public class NoteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
         }
         
-        List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
-        switch (order) {
-            case 0:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
-                break;
-            case 1:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-                break;
-            case 2:
-            	noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
-            	Collections.reverse(noteDTOs);
-                break;
-            case 3:
-                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
-                break;
-            case 4:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
-                break;
-            default:
-                break;
-        }
+        List<NoteDTO> noteDTOs = getSortedNotes(notes,order);
         
         CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
         
