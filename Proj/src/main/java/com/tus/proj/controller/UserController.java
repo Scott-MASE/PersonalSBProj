@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tus.proj.service.JwtService;
-import com.tus.proj.service.NoteService;
 import com.tus.proj.service.UserService;
 import com.tus.proj.user_managment.User;
 import com.tus.proj.user_managment.UserRole;
@@ -36,7 +35,7 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
-    public UserController(UserService userService, NoteService noteService,JwtService jwtService) {
+    public UserController(UserService userService,JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }
