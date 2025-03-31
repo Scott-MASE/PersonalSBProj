@@ -58,12 +58,11 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testCreateUser() {
+	 void testCreateUser() {
 		when(passwordEncoder.encode("rawPassword1")).thenReturn("encodedPassword1");
 
 		when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-			User savedUser = invocation.getArgument(0);
-			return savedUser;
+			return invocation.getArgument(0);
 		});
 
 		// Act
@@ -75,7 +74,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testGetAllUsers() {
+	 void testGetAllUsers() {
 		List<User> users = Arrays.asList(user1, user2);
 		when(userRepository.findAll()).thenReturn(users);
 
@@ -85,7 +84,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testGetUserById_Found() {
+	 void testGetUserById_Found() {
 		when(userRepository.findById(2L)).thenReturn(Optional.of(user1));
 
 		Optional<User> result = userService.getUserById(2L);
@@ -95,7 +94,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testGetUserById_NotFound() {
+	 void testGetUserById_NotFound() {
 		when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
 		Optional<User> result = userService.getUserById(999L);
@@ -104,7 +103,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testDeleteUser_Success() {
+	 void testDeleteUser_Success() {
 		when(userRepository.findById(2L)).thenReturn(Optional.of(user1));
 		doNothing().when(noteRepository).deleteByUserId(2L);
 		doNothing().when(userRepository).deleteById(2L);
@@ -117,7 +116,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testDeleteUser_NotFound() {
+	 void testDeleteUser_NotFound() {
 		when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
 		boolean deleted = userService.deleteUser(999L);
@@ -127,7 +126,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testDeleteUser_SystemAdminDeletion() {
+	 void testDeleteUser_SystemAdminDeletion() {
 
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
 			userService.deleteUser(1L);
@@ -136,7 +135,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testAuthenticate_Success() {
+	 void testAuthenticate_Success() {
 
 		when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user1));
 		when(passwordEncoder.matches("rawPassword1", user1.getPassword())).thenReturn(true);
@@ -147,7 +146,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testAuthenticate_Failure() {
+	 void testAuthenticate_Failure() {
 
 		when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user1));
 
@@ -160,7 +159,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testEditUser_Success() {
+	 void testEditUser_Success() {
 
 		when(userRepository.findById(2L)).thenReturn(Optional.of(user1));
 
@@ -185,7 +184,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testEditUser_NotFound() {
+	 void testEditUser_NotFound() {
 
 		when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
@@ -196,7 +195,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testFindByUsername_Found() {
+	 void testFindByUsername_Found() {
 		when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user1));
 
 		Optional<User> result = userService.findByUsername("user1");
@@ -206,7 +205,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testFindByUsername_NotFound() {
+	 void testFindByUsername_NotFound() {
 		when(userRepository.findByUsername("unknown")).thenReturn(Optional.empty());
 
 		Optional<User> result = userService.findByUsername("unknown");
@@ -215,7 +214,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testExistsById_True() {
+	 void testExistsById_True() {
 		when(userRepository.existsById(2L)).thenReturn(true);
 
 		boolean exists = userService.existsById(2L);
@@ -224,7 +223,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void testExistsById_False() {
+	 void testExistsById_False() {
 		when(userRepository.existsById(999L)).thenReturn(false);
 
 		boolean exists = userService.existsById(999L);

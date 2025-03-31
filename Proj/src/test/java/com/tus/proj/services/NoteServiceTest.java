@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class NoteServiceTest {
+ class NoteServiceTest {
 
     @Mock
     private NoteRepository noteRepository;
@@ -40,7 +40,7 @@ public class NoteServiceTest {
     private User user2;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         // Create dummy users
         user1 = new User();
         user1.setId(1L);
@@ -71,7 +71,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetNotesByTagListAndUserId() {
+     void testGetNotesByTagListAndUserId() {
         // Arrange: return one note for each tag
         when(noteRepository.findByTag("tag1")).thenReturn(Collections.singletonList(note1));
         when(noteRepository.findByTag("tag2")).thenReturn(Collections.singletonList(note2));
@@ -85,7 +85,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetAllUniqueTagsByUserId() {
+     void testGetAllUniqueTagsByUserId() {
         List<String> tags = Arrays.asList("tag1", "tag2");
         when(noteRepository.findDistinctTagsByUserId(1L)).thenReturn(tags);
 
@@ -94,7 +94,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testSaveNote() {
+     void testSaveNote() {
         when(noteRepository.save(note1)).thenReturn(note1);
 
         Note saved = noteService.saveNote(note1);
@@ -102,7 +102,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetAllNotes() {
+     void testGetAllNotes() {
         List<Note> notes = Arrays.asList(note1, note2);
         when(noteRepository.findAll()).thenReturn(notes);
 
@@ -111,7 +111,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetAllNotesByUserId() {
+     void testGetAllNotesByUserId() {
         List<Note> notes = Collections.singletonList(note1);
         when(noteRepository.findByUserId(1L)).thenReturn(notes);
 
@@ -120,7 +120,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetNoteById() {
+     void testGetNoteById() {
         when(noteRepository.findById(1)).thenReturn(Optional.of(note1));
 
         Optional<Note> result = noteService.getNoteById(1);
@@ -129,7 +129,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testDeleteNote() {
+     void testDeleteNote() {
         // Act
         noteService.deleteNote(1);
 
@@ -138,7 +138,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testDeleteNotesByUserId() {
+     void testDeleteNotesByUserId() {
         // Act
         noteService.deleteNotesByUserId(1L);
 
@@ -147,7 +147,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testUpdateNoteSuccess() {
+     void testUpdateNoteSuccess() {
         // Arrange: Prepare an updated note with new values
         Note updatedNote = new Note();
         updatedNote.setTitle("Updated Title");
@@ -172,7 +172,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testUpdateNoteNotFound() {
+     void testUpdateNoteNotFound() {
         // Arrange: repository returns empty
         when(noteRepository.findById(1)).thenReturn(Optional.empty());
         Note updatedNote = new Note();
@@ -185,10 +185,9 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetPublicNotesByUserId() {
+     void testGetPublicNotesByUserId() {
         // Arrange: for a given user, return both a public and a private note
         Note publicNote = note1; // note1 is PUBLIC
-        Note privateNote = note2; // note2 is PRIVATE
         // Simulate repository call for user with id 1 returns only publicNote
         when(noteRepository.findByUserId(1L)).thenReturn(Collections.singletonList(publicNote));
 
@@ -201,7 +200,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetPublicNotesByUsername() {
+     void testGetPublicNotesByUsername() {
         List<Note> notes = Arrays.asList(note1);
         when(noteRepository.findPublicNotesByUsername("john")).thenReturn(notes);
 
@@ -210,7 +209,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetAllPublicNotes() {
+     void testGetAllPublicNotes() {
         List<Note> notes = Arrays.asList(note1);
         when(noteRepository.findAllPublicNotes()).thenReturn(notes);
 
@@ -219,7 +218,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetAllUniquePublicTags() {
+     void testGetAllUniquePublicTags() {
         List<String> tags = Arrays.asList("tag1");
         when(noteRepository.findDistinctPublicTags()).thenReturn(tags);
 
@@ -228,7 +227,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    public void testGetPublicNotesByTags() {
+     void testGetPublicNotesByTags() {
         List<Note> notes = Arrays.asList(note1);
         List<String> tags = Arrays.asList("tag1");
         when(noteRepository.findPublicNotesByTags(tags)).thenReturn(notes);

@@ -34,13 +34,11 @@ import com.tus.proj.user_managment.dto.LoginResponseDTO;
 public class UserController {
 
     private final UserService userService;
-    private final NoteService noteService;
     private final JwtService jwtService;
 
     public UserController(UserService userService, NoteService noteService,JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
-        this.noteService = noteService;
     }
 
     @PostMapping("/register")
@@ -122,7 +120,7 @@ public class UserController {
         try {
             // Authenticate the user
             User user = userService.authenticate(request.getUsername(), request.getPassword());
-            Long userId = user.getId();
+            user.getId();
             String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
 
             // Create the LoginResponseDTO object
