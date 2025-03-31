@@ -38,7 +38,7 @@ public class DataInitializer implements ApplicationRunner {
          
          User user3 = new User("mod", "mod", UserRole.MODERATOR);
          userService.createUser(user3);
-
+         
      }
  }
 }

@@ -109,6 +109,8 @@ class NoteControllerTest {
             new Note("C", "Content C", Priority.HIGH, LocalDate.parse("2025-08-15"), user, "tag3", Access.PRIVATE)
         );
     }
+    
+    
 
     @Test
     @WithMockUser(username = "testUser", roles = {"User"})
@@ -830,6 +832,173 @@ class NoteControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Note not found"));
     }
+    
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testGetPublicNotesByTags_Success() throws Exception {
+    	User user = getMockUser();
+        // Arrange: Create a sample note and stub the noteService call
+    	Note note = new Note("C", "Content C", Priority.HIGH, LocalDate.parse("2025-08-15"), user, "tag3", Access.PUBLIC);
+        // Set other properties as needed
+        
+        // When service is called with the given tag list, return a non-empty list
+        when(noteService.getPublicNotesByTags(Collections.singletonList("tag3")))
+                .thenReturn(Collections.singletonList(note));
+        
+
+        mockMvc.perform(get("/api/notes/getTags/public/tag3/0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.noteDTOList[0].id").value(0))
+                .andExpect(jsonPath("$._links.update.href").exists())
+                .andExpect(jsonPath("$._links.self.href").exists())
+                .andExpect(jsonPath("$._links.delete.href").exists());
+    }
+
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testGetPublicNotesByTags_NoNotesFound() throws Exception {
+        // Arrange: When service returns an empty list, simulate no notes found for given tags.
+        when(noteService.getPublicNotesByTags(Collections.singletonList("tag1")))
+                .thenReturn(Collections.emptyList());
+        
+        // Act & Assert: Expect a 404 Not Found response with the expected message.
+        mockMvc.perform(get("/api/notes/getTags/public/tag1/0"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No notes found for the given tags."));
+    }
+    
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testUpdateNoteMetaMod_Success() throws Exception {
+        int noteId = 1;
+
+        // Arrange: Create an existing note before the update.
+        Note existingNote = new Note();
+        existingNote.setId(noteId);
+        existingNote.setTitle("Old Title");
+        existingNote.setContent("Old Content");
+        existingNote.setPriority(Priority.LOW);
+        existingNote.setDeadline(LocalDate.parse("2025-01-01"));
+        existingNote.setTag("oldTag");
+        existingNote.setAccess(Access.PRIVATE);
+
+        // Create request DTO with new metadata
+        UpdateNoteMetaRequestDTO updateRequest = new UpdateNoteMetaRequestDTO();
+        updateRequest.setTitle("New Title");
+        updateRequest.setContent("New Content");
+        updateRequest.setPriority(Priority.HIGH);
+        updateRequest.setDeadline(LocalDate.parse("2025-12-31"));
+        updateRequest.setTag("newTag");
+        updateRequest.setAccess(Access.PUBLIC);
+
+        // Arrange: Stub the service calls.
+        when(noteService.getNoteById(noteId)).thenReturn(Optional.of(existingNote));
+
+        // Simulate the updated note.
+        Note updatedNote = new Note();
+        updatedNote.setId(noteId);
+        updatedNote.setTitle(updateRequest.getTitle());
+        updatedNote.setContent(updateRequest.getContent());
+        updatedNote.setPriority(updateRequest.getPriority());
+        updatedNote.setDeadline(updateRequest.getDeadline());
+        updatedNote.setTag(updateRequest.getTag());
+        updatedNote.setAccess(updateRequest.getAccess());
+
+        // Use matcher for both parameters
+        when(noteService.updateNote(eq(noteId), any(Note.class))).thenReturn(updatedNote);
+
+        // Act & Assert: Perform the PUT request and check that the response contains HATEOAS links.
+        mockMvc.perform(put("/api/notes/{id}/mod/meta", noteId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+            .andExpect(status().isOk())
+            // Assert that the HATEOAS links are present in the response.
+            .andExpect(jsonPath("$._links.updateMeta.href").exists())
+            .andExpect(jsonPath("$._links.updateContent.href").exists())
+            .andExpect(jsonPath("$._links.delete.href").exists());
+    }
+
+
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testUpdateNoteMetaMod_NotFound() throws Exception {
+        int noteId = 1;
+
+        UpdateNoteMetaRequestDTO updateRequest = new UpdateNoteMetaRequestDTO();
+        updateRequest.setTitle("New Title");
+        updateRequest.setContent("New Content");
+        updateRequest.setPriority(Priority.HIGH);
+        updateRequest.setDeadline(LocalDate.parse("2025-12-31"));
+        updateRequest.setTag("newTag");
+        updateRequest.setAccess(Access.PUBLIC);
+
+        // Arrange: Stub the service to return empty, simulating note not found.
+        when(noteService.getNoteById(noteId)).thenReturn(Optional.empty());
+
+        // Act & Assert: perform the PUT request and expect a 404 Not Found with message "Note not found".
+        mockMvc.perform(put("/api/notes/{id}/mod/meta", noteId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Note not found"));
+    }
+    
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testUpdateNoteContentMod_Success() throws Exception {
+        int noteId = 1;
+
+        // Arrange: Create an existing note before the update.
+        Note existingNote = new Note();
+        existingNote.setId(noteId);
+        existingNote.setContent("Old Content");
+
+        // Create request DTO with new content
+        UpdateNoteContentRequestDTO updateRequest = new UpdateNoteContentRequestDTO();
+        updateRequest.setContent("\"New Content\""); // Encapsulated in quotes, should be trimmed
+
+        // Arrange: Stub the service calls.
+        when(noteService.getNoteById(noteId)).thenReturn(Optional.of(existingNote));
+
+        // Simulate the updated note.
+        Note updatedNote = new Note();
+        updatedNote.setId(noteId);
+        updatedNote.setContent("New Content"); // Expected trimmed content
+
+        // Use matcher for both parameters
+        when(noteService.updateNote(eq(noteId), any(Note.class))).thenReturn(updatedNote);
+
+        // Act & Assert: Perform the PUT request and check that the response contains HATEOAS links.
+        mockMvc.perform(put("/api/notes/{id}/mod/content", noteId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+            .andExpect(status().isOk())
+            // Assert that the HATEOAS links are present in the response.
+            .andExpect(jsonPath("$._links.updateMeta.href").exists())
+            .andExpect(jsonPath("$._links.updateContent.href").exists())
+            .andExpect(jsonPath("$._links.delete.href").exists());
+    }
+
+    @Test
+    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
+    void testUpdateNoteContentMod_NotFound() throws Exception {
+        int noteId = 1;
+
+        UpdateNoteContentRequestDTO updateRequest = new UpdateNoteContentRequestDTO();
+        updateRequest.setContent("New Content");
+
+        // Stub the service to simulate note not found.
+        when(noteService.getNoteById(noteId)).thenReturn(Optional.empty());
+
+        // Act & Assert: Perform the PUT request and expect a 404 Not Found response.
+        mockMvc.perform(put("/api/notes/{id}/mod/content", noteId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Note not found"));
+    }
+    
+    
 
 
 

@@ -89,7 +89,7 @@ public class UITests {
 	@Test
 	@Order(3)
 	void testAdminEditUser() {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
 	    // Locate the "Edit" button for user 'newUser' in the table and click it.
 	    WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -128,7 +128,7 @@ public class UITests {
 	@Test
 	@Order(4)
 	void testAdminDeleteUser() {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1));
 
 	    // Locate and click the "Delete" button for the renamed user.
 	    WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -328,6 +328,32 @@ public class UITests {
 
 	    // Wait until the modal is no longer visible to ensure it's properly closed.
 	    wait.until(ExpectedConditions.invisibilityOf(deleteNoteModal));
+	    
+	    WebElement logout = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout-button")));
+	    logout.click();
+	    
+	}
+	
+	@Test
+	@Order(9)
+	void testModeratorLogin() throws InterruptedException {
+		WebElement username = driver.findElement(By.id("username"));
+		WebElement password = driver.findElement(By.id("password"));
+		WebElement loginButton = driver.findElement(By.id("login-btn"));
+
+		
+		username.sendKeys("mod");
+		password.sendKeys("mod");
+		loginButton.click();
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout-button")));
+		
+        boolean isCreateNoteInvisible = wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("create-note")));
+        assertTrue(isCreateNoteInvisible,"The element with id 'create-note' should not be visible");
+		
+
+
 	}
 
 	
