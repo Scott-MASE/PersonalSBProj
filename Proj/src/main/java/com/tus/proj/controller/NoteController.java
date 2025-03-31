@@ -34,6 +34,10 @@ public class NoteController {
 
     private final NoteService noteService;
     private final UserService userService;
+    
+    private static final String UPDATE_M = "updateMeta";
+    private static final String UPDATE_C = "updateContent";
+    private static final String DELETE = "delete";
 
     public NoteController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
@@ -62,13 +66,13 @@ public class NoteController {
                 .withSelfRel();
         Link updateMetaLink = WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(savedNote.getId(), null))
-                .withRel("updateMeta");
+                .withRel(UPDATE_M);
         Link updateContentLink = WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(savedNote.getId(), null))
-                .withRel("updateContent");
+                .withRel(UPDATE_C);
         Link deleteLink = WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(savedNote.getId(), null))
-                .withRel("delete");
+                .withRel(DELETE);
         noteModel.add(selfLink, updateMetaLink, updateContentLink, deleteLink);
         return noteModel;
     }
@@ -78,11 +82,11 @@ public class NoteController {
 
 
         noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(note.getId(), null))
-                .withRel("updateMeta"));
+                .withRel(UPDATE_M));
         noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContentMod(note.getId(), null))
-                .withRel("updateContent"));
+                .withRel(UPDATE_C));
         noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(note.getId(), null))
-                .withRel("delete"));
+                .withRel(DELETE));
 
         return noteModel;
     }
@@ -124,15 +128,15 @@ public class NoteController {
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
                     .updateNoteMeta(noteDTO.getId(), null))
-                    .withRel("updateMeta"));
+                    .withRel(UPDATE_M));
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
                     .updateNoteContent(noteDTO.getId(), null))
-                    .withRel("updateContent"));
+                    .withRel(UPDATE_C));
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
                     .deleteNote(noteDTO.getId(), null))
-                    .withRel("delete"));
+                    .withRel(DELETE));
 
             return noteModel;
         }).toList();
@@ -168,27 +172,7 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(noteModel);
     }
 
-    // Unused; 
-//    @PreAuthorize("hasRole('Admin')")
-//    @GetMapping("/getAll")
-//    public ResponseEntity<CollectionModel<EntityModel<Note>>> getAllNotes() {
-//        List<Note> notes = noteService.getAllNotes();
-//        Collections.reverse(notes);
-//        CollectionModel<EntityModel<Note>> notesModel = CollectionModel.wrap(notes);
-//        for (Note note : notes) {
-//            Link selfLink = WebMvcLinkBuilder
-//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(note.getId()))
-//                    .withSelfRel();
-//            Link updateLink = WebMvcLinkBuilder
-//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMeta(note.getId(), null))
-//                    .withRel("update");
-//            Link deleteLink = WebMvcLinkBuilder
-//                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(note.getId(), null))
-//                    .withRel("delete");
-//            notesModel.add(selfLink, updateLink, deleteLink);
-//        }
-//        return ResponseEntity.ok(notesModel);
-//    }
+
 
     // Retrieves all notes of the logged in user with a custom order. can also return other users public notes
     @PreAuthorize("hasRole('User')")
@@ -367,7 +351,7 @@ public class NoteController {
                     .withRel("update meta");
             Link deleteLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deleteNote(noteDTO.getId(), null))
-                    .withRel("delete");
+                    .withRel(DELETE);
             Link contentLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContent(noteDTO.getId(), null))
                     .withRel("update content");
@@ -415,13 +399,13 @@ public class NoteController {
 			EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
 			noteModel.add(WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(noteDTO.getId(), null))
-					.withRel("updateMeta"));
+					.withRel(UPDATE_M));
 			noteModel.add(WebMvcLinkBuilder.linkTo(
 					WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContentMod(noteDTO.getId(), null))
-					.withRel("updateContent"));
+					.withRel(UPDATE_C));
 			noteModel.add(WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
-					.withRel("delete"));
+					.withRel(DELETE));
 
 			return noteModel;
 		}).toList();
@@ -494,7 +478,7 @@ public class NoteController {
                     .withRel("update");
             Link deleteLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
-                    .withRel("delete");
+                    .withRel(DELETE);
             notesModel.add(selfLink, updateLink, deleteLink);
         }
         return ResponseEntity.status(HttpStatus.OK).body(notesModel);
