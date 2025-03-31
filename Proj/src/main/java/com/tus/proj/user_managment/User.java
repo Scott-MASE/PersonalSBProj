@@ -42,12 +42,6 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public User(String username, String password, UserRole role, List<Note> notes) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.notes = notes;
-    }
     
     public User() {
 	}
