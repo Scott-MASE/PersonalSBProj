@@ -14,8 +14,8 @@ public class DataInitializer implements ApplicationRunner {
 
  private final UserRepository userRepository;
  private final UserService userService;
- private static final String username = "admin";
- private static final String password = "admin";
+ private static final String USERNAME = "admin";
+ private static final String PASSWORD = "admin";
 
  public DataInitializer(UserRepository userRepository, UserService userService) {
      this.userRepository = userRepository;
@@ -25,9 +25,9 @@ public class DataInitializer implements ApplicationRunner {
  @Override
  public void run(ApplicationArguments args) {
      // Check if an admin user exists (using username "admin")
-     if (userRepository.findByUsername(username).isEmpty()) {
+     if (userRepository.findByUsername(USERNAME).isEmpty()) {
          // Create a new admin user. The password will be encrypted by the UserService.
-         User admin = new User(username, password, UserRole.ADMIN);
+         User admin = new User(USERNAME, PASSWORD, UserRole.ADMIN);
          userService.createUser(admin);
          
          User user = new User("user", "user", UserRole.USER);

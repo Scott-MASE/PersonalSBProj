@@ -58,6 +58,7 @@ class UITests {
         username.sendKeys("newUser");
         password.sendKeys("Abc123*8");
         passwordConf.sendKeys("Abc123*8");
+        assertNotNull(registerButton, "Register button is null");
         registerButton.click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-form")));
@@ -76,6 +77,7 @@ class UITests {
 
         username.sendKeys("admin");
         password.sendKeys("admin");
+        assertNotNull(loginButton, "Login button is null");
         loginButton.click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));

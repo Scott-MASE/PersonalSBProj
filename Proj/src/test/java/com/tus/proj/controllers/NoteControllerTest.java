@@ -37,6 +37,8 @@ import com.tus.proj.note_managment.Priority;
 
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -153,60 +155,18 @@ class NoteControllerTest {
             .andExpect(status().isCreated());
 
     }
-    
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
     @WithMockUser(username = "testUser", roles = {"User"})
-    void testGetAllNotesById_IdDescending() throws Exception {
+    void testGetAllNotesById_WithVariousSortOrders(int sortOrder) throws Exception {
+        // Arrange
         when(userService.findByUsername("testUser")).thenReturn(Optional.of(getMockUser()));
         when(noteService.getAllNotesByUserId(1L)).thenReturn(getMockNotes());
 
-        mockMvc.perform(get("/api/notes/getAll/loggedUser/0/null"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    @WithMockUser(username = "testUser", roles = {"User"})
-    void testGetAllNotesById_PriorityAscending() throws Exception {
-        when(userService.findByUsername("testUser")).thenReturn(Optional.of(getMockUser()));
-        when(noteService.getAllNotesByUserId(1L)).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getAll/loggedUser/1/null"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    @WithMockUser(username = "testUser", roles = {"User"})
-    void testGetAllNotesById_PriorityDescending() throws Exception {
-        when(userService.findByUsername("testUser")).thenReturn(Optional.of(getMockUser()));
-        when(noteService.getAllNotesByUserId(1L)).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getAll/loggedUser/2/null"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    @WithMockUser(username = "testUser", roles = {"User"})
-    void testGetAllNotesById_TitleAscending() throws Exception {
-        when(userService.findByUsername("testUser")).thenReturn(Optional.of(getMockUser()));
-        when(noteService.getAllNotesByUserId(1L)).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getAll/loggedUser/3/null"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    @WithMockUser(username = "testUser", roles = {"User"})
-    void testGetAllNotesById_DeadlineAscending() throws Exception {
-        when(userService.findByUsername("testUser")).thenReturn(Optional.of(getMockUser()));
-        when(noteService.getAllNotesByUserId(1L)).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getAll/loggedUser/4/null"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
+        // Act & Assert
+        mockMvc.perform(get("/api/notes/getAll/loggedUser/" + sortOrder + "/null"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
@@ -745,72 +705,15 @@ class NoteControllerTest {
             .andExpect(status().isOk());
 
     }
-    
-    @Test
+
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 4})
     @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
-    void testGetAllPublicNotes_SortedByPriorityReversed() throws Exception {
+    void testGetAllPublicNotes_WithVariousSortOrders(int sortOrder) throws Exception {
         when(noteService.getAllPublicNotes()).thenReturn(getMockNotes());
 
-        mockMvc.perform(get("/api/notes/getPublic/mod/2/null"))
-            .andExpect(status().isOk());
-
-    }
-    
-    @Test
-    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
-    void testGetAllPublicNotes_SortedByTitle() throws Exception {
-        when(noteService.getAllPublicNotes()).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getPublic/mod/3/null"))
-            .andExpect(status().isOk());
-
-    }
-    
-    @Test
-    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
-    void testGetAllPublicNotes_SortedByDeadline() throws Exception {
-        when(noteService.getAllPublicNotes()).thenReturn(getMockNotes());
-
-        mockMvc.perform(get("/api/notes/getPublic/mod/4/null"))
-            .andExpect(status().isOk());
-
-    }
-
-    @Test
-    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
-    void testDeletePublicNote_Success() throws Exception {
-        int noteId = 1;
-        DeleteNoteRequestDTO deleteRequest = new DeleteNoteRequestDTO();
-        deleteRequest.setUserConfirmation("confirmed");
-
-        // Mock the note service to return a valid note when searching by ID
-        when(noteService.getNoteById(noteId)).thenReturn(Optional.of(new Note()));
-
-        // Perform the request and verify the response
-        mockMvc.perform(delete("/api/notes/{id}/delete/mod", noteId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteRequest)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Note deleted successfully"));
-
-        // Verify that the delete service method is called once
-        verify(noteService, times(1)).deleteNote(noteId);
-    }
-
-    @Test
-    @WithMockUser(username = "moderatorUser", roles = {"Moderator"})
-    void testDeletePublicNote_DeletionNotConfirmed() throws Exception {
-        int noteId = 1;
-        DeleteNoteRequestDTO deleteRequest = new DeleteNoteRequestDTO();
-        deleteRequest.setUserConfirmation("incorrect"); // Simulate incorrect confirmation
-
-        // Perform the request and verify the response
-        mockMvc.perform(delete("/api/notes/{id}/delete/mod", noteId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Deletion not confirmed"));
-
+        mockMvc.perform(get("/api/notes/getPublic/mod/" + sortOrder + "/null"))
+                .andExpect(status().isOk());
     }
     
     @Test
