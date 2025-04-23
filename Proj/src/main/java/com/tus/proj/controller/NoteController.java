@@ -52,6 +52,31 @@ public class NoteController {
             "LOW", 3
     );
 
+    private ResponseEntity<Object> findAuthorizedNoteById(int id) {
+        // Retrieve the note by id
+        Optional<Note> existingNote = noteService.getNoteById(id);
+        if (existingNote.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
+        }
+
+        // Retrieve the authenticated user
+        Optional<User> opUser = getAuthenticatedUser();
+        if (opUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        User user = opUser.get();
+
+        // Get the note and check if it belongs to the authenticated user
+        Note note = existingNote.get();
+        if (!note.getUser().getId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(UNAUTHORIZED);
+        }
+
+        // All checks passed; return the note
+        return ResponseEntity.ok(note);
+    }
+
+
 
     // Helper method to retrieve the authenticated user.
     private Optional<User> getAuthenticatedUser() {
@@ -230,20 +255,7 @@ public class NoteController {
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/meta")
     public ResponseEntity<Object> updateNoteMeta(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
-        Optional<Note> existingNote = noteService.getNoteById(id);
-        if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
-        }
-        Optional<User> opUser = getAuthenticatedUser();
-        if (opUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        User user = opUser.get();
-        Note note = existingNote.get();
-        if (note.getUser().getId() != user.getId()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(UNAUTHORIZED);
-        }
+        Note note = (Note) findAuthorizedNoteById(id).getBody();
         note.setDeadline(noteRequest.getDeadline());
         note.setPriority(noteRequest.getPriority());
         note.setTag(noteRequest.getTag());
@@ -282,20 +294,7 @@ public class NoteController {
     @PutMapping("/{id}/content")
     public ResponseEntity<Object> updateNoteContent(@PathVariable int id,
                                                     @RequestBody UpdateNoteContentRequestDTO updateRequest) {
-        Optional<Note> existingNote = noteService.getNoteById(id);
-        if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
-        }
-        Optional<User> opUser = getAuthenticatedUser();
-        if (opUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        User user = opUser.get();
-        Note note = existingNote.get();
-        if (note.getUser().getId() != user.getId()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(UNAUTHORIZED);
-        }
+        Note note = (Note) findAuthorizedNoteById(id).getBody();
         String newContent = updateRequest.getContent();
         if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
             newContent = newContent.substring(1, newContent.length() - 1);
