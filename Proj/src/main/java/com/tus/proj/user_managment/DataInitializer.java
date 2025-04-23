@@ -14,8 +14,8 @@ public class DataInitializer implements ApplicationRunner {
 
  private final UserRepository userRepository;
  private final UserService userService;
- private final String username = "admin";
- private final String password = "admin";
+ private static final String username = "admin";
+ private static final String password = "admin";
 
  public DataInitializer(UserRepository userRepository, UserService userService) {
      this.userRepository = userRepository;

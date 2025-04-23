@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private UserRole role;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Note> notes = new ArrayList<>();
+    private transient List<Note> notes = new ArrayList<>();
     
 
     public User(String username, String password, UserRole role) {

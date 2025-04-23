@@ -91,7 +91,7 @@ public class NoteService {
 	    List<Note> allNotes = noteRepository.findByUserId(userId);
 	    return allNotes.stream()
 	                   .filter(note -> note.getAccess() == Access.PUBLIC)
-	                   .collect(Collectors.toList());
+	                   .toList();
 	}
 	
     public List<Note> getPublicNotesByUsername(String username) {

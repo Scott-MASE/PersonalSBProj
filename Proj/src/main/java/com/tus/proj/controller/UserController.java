@@ -35,6 +35,10 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    private static final String UPDATE = "update";
+    private static final String DELETE = "delete";
+
+
     public UserController(UserService userService,JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
@@ -68,7 +72,9 @@ public class UserController {
     }
 
     private boolean isValidPassword(String password) {
-        boolean containsUpperCase = false, containsLowerCase = false, containsNumber = false;
+        boolean containsUpperCase = false;
+        boolean containsLowerCase = false;
+        boolean containsNumber = false;
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) {
                 containsUpperCase = true;
@@ -90,8 +96,8 @@ public class UserController {
             .map(user -> {
                 EntityModel<User> userModel = EntityModel.of(user);
                 Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(user.getId())).withSelfRel();
-                Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel("update");
-                Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel("delete");
+                Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel(UPDATE);
+                Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel(DELETE);
                 userModel.add(selfLink, editLink, deleteLink);
                 return userModel;
             })
@@ -115,7 +121,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginValidation(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<Object> loginValidation(@RequestBody LoginRequestDTO request) {
         try {
             // Authenticate the user
             User user = userService.authenticate(request.getUsername(), request.getPassword());
@@ -184,8 +190,8 @@ public class UserController {
         	User user = updatedUser.get();
             EntityModel<User> userModel = EntityModel.of(updatedUser.get());
             Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(user.getId())).withSelfRel();
-            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel("update");
-            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel("delete");
+            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(user.getId(), null)).withRel(UPDATE);
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(user.getId())).withRel(DELETE);
             userModel.add(selfLink, editLink, deleteLink);
 
             return ResponseEntity.ok(userModel);
@@ -202,8 +208,8 @@ public class UserController {
         return user.map(existingUser -> {
             EntityModel<User> userModel = EntityModel.of(existingUser);
             Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserById(existingUser.getId())).withSelfRel();
-            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(existingUser.getId(), null)).withRel("update");
-            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(existingUser.getId())).withRel("delete");
+            Link editLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).editUser(existingUser.getId(), null)).withRel(UPDATE);
+            Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(existingUser.getId())).withRel(DELETE);
             userModel.add(selfLink, editLink, deleteLink);
             return ResponseEntity.ok(userModel);
         }).orElseGet(() -> ResponseEntity.notFound().build());
