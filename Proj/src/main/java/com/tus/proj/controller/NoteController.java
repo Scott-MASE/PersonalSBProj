@@ -255,7 +255,13 @@ public class NoteController {
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/meta")
     public ResponseEntity<Object> updateNoteMeta(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
-        Note note = (Note) findAuthorizedNoteById(id).getBody();
+        ResponseEntity<?> response = findAuthorizedNoteById(id);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return (ResponseEntity<Object>) response; // Return the error response directly
+        }
+
+        Note note = (Note) response.getBody(); // Safe now, we know it's OK
         note.setDeadline(noteRequest.getDeadline());
         note.setPriority(noteRequest.getPriority());
         note.setTag(noteRequest.getTag());
@@ -294,7 +300,13 @@ public class NoteController {
     @PutMapping("/{id}/content")
     public ResponseEntity<Object> updateNoteContent(@PathVariable int id,
                                                     @RequestBody UpdateNoteContentRequestDTO updateRequest) {
-        Note note = (Note) findAuthorizedNoteById(id).getBody();
+        ResponseEntity<?> response = findAuthorizedNoteById(id);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return (ResponseEntity<Object>) response; // Return the error response directly
+        }
+
+        Note note = (Note) response.getBody(); // Safe now, we know it's OK
         String newContent = updateRequest.getContent();
         if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
             newContent = newContent.substring(1, newContent.length() - 1);
