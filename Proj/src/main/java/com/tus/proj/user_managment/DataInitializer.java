@@ -23,7 +23,7 @@ public class DataInitializer implements ApplicationRunner {
  }
 
  @Override
- public void run(ApplicationArguments args) throws Exception {
+ public void run(ApplicationArguments args) {
      // Check if an admin user exists (using username "admin")
      if (userRepository.findByUsername(username).isEmpty()) {
          // Create a new admin user. The password will be encrypted by the UserService.

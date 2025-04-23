@@ -34,22 +34,23 @@ public class NoteController {
 
     private final NoteService noteService;
     private final UserService userService;
-    
+
     private static final String UPDATE_M = "updateMeta";
     private static final String UPDATE_C = "updateContent";
     private static final String DELETE = "delete";
+    private static final String UNAUTHORIZED = "You are not authorized to access or modify this note.";
+    private static final String NOT_FOUND = "Note not found";
 
     public NoteController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
         this.userService = userService;
     }
-    
-    private static final Map<String, Integer> PRIORITY_ORDER = Map.of(
-    	    "HIGH", 1,
-    	    "MEDIUM", 2,
-    	    "LOW", 3
-    	);
 
+    private static final Map<String, Integer> PRIORITY_ORDER = Map.of(
+            "HIGH", 1,
+            "MEDIUM", 2,
+            "LOW", 3
+    );
 
 
     // Helper method to retrieve the authenticated user.
@@ -76,7 +77,7 @@ public class NoteController {
         noteModel.add(selfLink, updateMetaLink, updateContentLink, deleteLink);
         return noteModel;
     }
-    
+
     private EntityModel<Note> generateModHATEOASLinks(Note note) {
         EntityModel<Note> noteModel = EntityModel.of(note);
 
@@ -90,10 +91,10 @@ public class NoteController {
 
         return noteModel;
     }
-    
+
     private List<NoteDTO> getSortedNotes(List<Note> notes, int order) {
         List<NoteDTO> noteDTOs = new ArrayList<>(notes.stream().map(NoteDTO::new).toList());
-        
+
         switch (order) {
             case 0:
                 noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
@@ -114,40 +115,38 @@ public class NoteController {
             default:
                 break;
         }
-        
+
         return noteDTOs;
     }
-    
+
     private List<EntityModel<NoteDTO>> getNoteModels(List<NoteDTO> noteDTOs) {
         return noteDTOs.stream().map(noteDTO -> {
             EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .getNoteById(noteDTO.getId()))
+                            .getNoteById(noteDTO.getId()))
                     .withSelfRel());
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteMeta(noteDTO.getId(), null))
+                            .updateNoteMeta(noteDTO.getId(), null))
                     .withRel(UPDATE_M));
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .updateNoteContent(noteDTO.getId(), null))
+                            .updateNoteContent(noteDTO.getId(), null))
                     .withRel(UPDATE_C));
 
             noteModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class)
-                    .deleteNote(noteDTO.getId(), null))
+                            .deleteNote(noteDTO.getId(), null))
                     .withRel(DELETE));
 
             return noteModel;
         }).toList();
     }
-    
-    
 
 
     @PreAuthorize("hasRole('User')")
     @PostMapping("/create")
-    public ResponseEntity<?> createNote(@RequestBody CreateNoteRequestDTO noteRequest) {
+    public ResponseEntity<Object> createNote(@RequestBody CreateNoteRequestDTO noteRequest) {
         if (noteRequest.getTitle() == null || noteRequest.getTitle().isEmpty()) {
             return ResponseEntity.badRequest().body("Title is required");
         }
@@ -159,19 +158,18 @@ public class NoteController {
         User user = opUser.get();
 
         Note note = new Note(
-            noteRequest.getTitle(), 
-            noteRequest.getContent(), 
-            noteRequest.getPriority(),
-            noteRequest.getDeadline(), 
-            user, 
-            noteRequest.getTag(), 
-            noteRequest.getAccess()
+                noteRequest.getTitle(),
+                noteRequest.getContent(),
+                noteRequest.getPriority(),
+                noteRequest.getDeadline(),
+                user,
+                noteRequest.getTag(),
+                noteRequest.getAccess()
         );
         Note savedNote = noteService.saveNote(note);
         EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
         return ResponseEntity.status(HttpStatus.CREATED).body(noteModel);
     }
-
 
 
     // Retrieves all notes of the logged in user with a custom order. can also return other users public notes
@@ -209,7 +207,7 @@ public class NoteController {
 
     @PreAuthorize("hasRole('User')")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getNoteById(@PathVariable int id) {
+    public ResponseEntity<Object> getNoteById(@PathVariable int id) {
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -220,21 +218,21 @@ public class NoteController {
             Note note = oPnote.get();
             if (note.getUser().getId() != user.getId()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("You are not authorized to access or modify this note.");
+                        .body(UNAUTHORIZED);
             }
             EntityModel<Note> noteModel = generateHATEOASLinks(note);
             return ResponseEntity.ok(noteModel);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
     }
 
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/meta")
-    public ResponseEntity<?> updateNoteMeta(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
+    public ResponseEntity<Object> updateNoteMeta(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
@@ -244,7 +242,7 @@ public class NoteController {
         Note note = existingNote.get();
         if (note.getUser().getId() != user.getId()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not authorized to access or modify this note.");
+                    .body(UNAUTHORIZED);
         }
         note.setDeadline(noteRequest.getDeadline());
         note.setPriority(noteRequest.getPriority());
@@ -269,12 +267,12 @@ public class NoteController {
         User user = opUser.get();
         Optional<Note> oPnote = noteService.getNoteById(id);
         if (oPnote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         Note note = oPnote.get();
         if (note.getUser().getId() != user.getId()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not authorized to access or modify this note.");
+                    .body(UNAUTHORIZED);
         }
         noteService.deleteNote(id);
         return ResponseEntity.ok("Note deleted successfully");
@@ -282,11 +280,11 @@ public class NoteController {
 
     @PreAuthorize("hasRole('User')")
     @PutMapping("/{id}/content")
-    public ResponseEntity<?> updateNoteContent(@PathVariable int id,
-            @RequestBody UpdateNoteContentRequestDTO updateRequest) {
+    public ResponseEntity<Object> updateNoteContent(@PathVariable int id,
+                                                    @RequestBody UpdateNoteContentRequestDTO updateRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
@@ -296,7 +294,7 @@ public class NoteController {
         Note note = existingNote.get();
         if (note.getUser().getId() != user.getId()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not authorized to access or modify this note.");
+                    .body(UNAUTHORIZED);
         }
         String newContent = updateRequest.getContent();
         if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
@@ -309,7 +307,7 @@ public class NoteController {
 
     @PreAuthorize("hasRole('User')")
     @GetMapping("/getTags/loggedUser")
-    public ResponseEntity<?> getAllTags() {
+    public ResponseEntity<Object> getAllTags() {
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -324,7 +322,7 @@ public class NoteController {
 
     @PreAuthorize("hasRole('User')")
     @GetMapping("/getTags/loggedUser/{tags}/{order}")
-    public ResponseEntity<?> getNotesByTags(@PathVariable List<String> tags, @PathVariable int order) {
+    public ResponseEntity<Object> getNotesByTags(@PathVariable List<String> tags, @PathVariable int order) {
         Optional<User> opUser = getAuthenticatedUser();
         if (opUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -335,13 +333,12 @@ public class NoteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
         }
 
-        
-        
+
         List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
 
-        
+
         CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
-        
+
         for (NoteDTO noteDTO : noteDTOs) {
             Link selfLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(noteDTO.getId()))
@@ -360,24 +357,10 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.OK).body(notesModel);
     }
 
-//    @PreAuthorize("hasRole('User')")
-//    @GetMapping("/getPublic/{username}")
-//    public ResponseEntity<List<Note>> getPublicNotesByUsername(@PathVariable String username) {
-//        Optional<User> opUser = userService.findByUsername(username);
-//        if (opUser.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        User user = opUser.get();
-//        List<Note> publicNotes = noteService.getPublicNotesByUserId(user.getId());
-//        if (publicNotes.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(publicNotes);
-//        }
-//        return ResponseEntity.ok(publicNotes);
-//    }
 
     @PreAuthorize("hasRole('Moderator')")
     @GetMapping("/getPublic/mod/{order}/{pUsername}")
-    public ResponseEntity<List<EntityModel<NoteDTO>>>  getAllPublicNotes(@PathVariable int order, @PathVariable String pUsername) {
+    public ResponseEntity<List<EntityModel<NoteDTO>>> getAllPublicNotes(@PathVariable int order, @PathVariable String pUsername) {
         List<Note> notes;
         if ("null".equals(pUsername)) {
             notes = noteService.getAllPublicNotes();
@@ -394,21 +377,21 @@ public class NoteController {
         }
         List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
 
-        
-		List<EntityModel<NoteDTO>> noteModels = noteDTOs.stream().map(noteDTO -> {
-			EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
-			noteModel.add(WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(noteDTO.getId(), null))
-					.withRel(UPDATE_M));
-			noteModel.add(WebMvcLinkBuilder.linkTo(
-					WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContentMod(noteDTO.getId(), null))
-					.withRel(UPDATE_C));
-			noteModel.add(WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
-					.withRel(DELETE));
 
-			return noteModel;
-		}).toList();
+        List<EntityModel<NoteDTO>> noteModels = noteDTOs.stream().map(noteDTO -> {
+            EntityModel<NoteDTO> noteModel = EntityModel.of(noteDTO);
+            noteModel.add(WebMvcLinkBuilder
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteMetaMod(noteDTO.getId(), null))
+                    .withRel(UPDATE_M));
+            noteModel.add(WebMvcLinkBuilder.linkTo(
+                            WebMvcLinkBuilder.methodOn(NoteController.class).updateNoteContentMod(noteDTO.getId(), null))
+                    .withRel(UPDATE_C));
+            noteModel.add(WebMvcLinkBuilder
+                    .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).deletePublicNote(noteDTO.getId(), null))
+                    .withRel(DELETE));
+
+            return noteModel;
+        }).toList();
 
         return ResponseEntity.ok(noteModels);
     }
@@ -421,7 +404,7 @@ public class NoteController {
         }
         Optional<Note> oPnote = noteService.getNoteById(id);
         if (oPnote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         noteService.deleteNote(id);
         return ResponseEntity.ok("Note deleted successfully");
@@ -429,7 +412,7 @@ public class NoteController {
 
     @PreAuthorize("hasRole('Moderator')")
     @GetMapping("/getTags/publicTags")
-    public ResponseEntity<?> getAllPublicTags() {
+    public ResponseEntity<Object> getAllPublicTags() {
         List<String> tags = noteService.getAllUniquePublicTags();
         if (tags.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tags found");
@@ -439,16 +422,16 @@ public class NoteController {
 
     @PreAuthorize("hasRole('Moderator')")
     @GetMapping("/getTags/public/{tags}/{order}")
-    public ResponseEntity<?> getPublicNotesByTags(@PathVariable List<String> tags, @PathVariable int order ) {
+    public ResponseEntity<Object> getPublicNotesByTags(@PathVariable List<String> tags, @PathVariable int order) {
         List<Note> notes = noteService.getPublicNotesByTags(tags);
         if (notes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No notes found for the given tags.");
         }
-        
-        List<NoteDTO> noteDTOs = getSortedNotes(notes,order);
-        
+
+        List<NoteDTO> noteDTOs = getSortedNotes(notes, order);
+
         CollectionModel<EntityModel<NoteDTO>> notesModel = CollectionModel.wrap(noteDTOs);
-        
+
         for (NoteDTO noteDTO : noteDTOs) {
             Link selfLink = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder.methodOn(NoteController.class).getNoteById(noteDTO.getId()))
@@ -466,10 +449,10 @@ public class NoteController {
 
     @PreAuthorize("hasRole('Moderator')")
     @PutMapping("/{id}/mod/meta")
-    public ResponseEntity<?> updateNoteMetaMod(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
+    public ResponseEntity<Object> updateNoteMetaMod(@PathVariable int id, @RequestBody UpdateNoteMetaRequestDTO noteRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         Note note = existingNote.get();
         note.setDeadline(noteRequest.getDeadline());
@@ -484,11 +467,11 @@ public class NoteController {
 
     @PreAuthorize("hasRole('Moderator')")
     @PutMapping("/{id}/mod/content")
-    public ResponseEntity<?> updateNoteContentMod(@PathVariable int id,
-            @RequestBody UpdateNoteContentRequestDTO updateRequest) {
+    public ResponseEntity<Object> updateNoteContentMod(@PathVariable int id,
+                                                       @RequestBody UpdateNoteContentRequestDTO updateRequest) {
         Optional<Note> existingNote = noteService.getNoteById(id);
         if (existingNote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Note not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND);
         }
         Note note = existingNote.get();
         String newContent = updateRequest.getContent();
