@@ -231,10 +231,13 @@ button:hover {
     height: 90vh;
     right: 0;
     background-color: var(--darkestGrey);
-    
+
     display: flex;
     flex-wrap: wrap; /* Allows wrapping to next row */
-    gap: 25px; /* Spacing between tiles */
+    row-gap: 25px; /* Spacing between tiles */
+    column-gap: max(20px, calc((80vw - (250px * 3) - 200px) / 2));
+
+
     padding: 15px;
     overflow-y: auto; /* Enables vertical scrolling if needed */
     align-content: flex-start; /* Ensures rows are filled from the top */
@@ -367,7 +370,7 @@ h4 {
     align-items: center; /* Centers text horizontally */
     text-align: center;
 	position: relative;
-    
+
     width: 250px;
     height: 250px;
     background-image: url('/images/hex.png'); /* Background image */
