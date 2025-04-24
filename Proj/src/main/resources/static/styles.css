@@ -241,7 +241,8 @@ button:hover {
     padding: 15px;
     overflow-y: auto; /* Enables vertical scrolling if needed */
     align-content: flex-start; /* Ensures rows are filled from the top */
-    justify-content: flex-start; /* Aligns items to the left */
+    justify-content: center;
+    /* Aligns items to the left */
 }
 
 .top-scroll{
