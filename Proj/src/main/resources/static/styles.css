@@ -269,7 +269,7 @@ button:hover {
 }
 
 .custom-modal {
-	width: 550px; /* Adjust width for better spacing */
+	width: 600px; /* Adjust width for better spacing */
 	max-width: 90%; /* Ensure responsiveness */
     display: flex;
     flex-direction: column;
@@ -279,6 +279,15 @@ button:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
     padding: 20px;
 }
+
+
+
+
+
+
+
+
+
 
 #noteForm {
     display: flex;
@@ -584,7 +593,6 @@ h4 {
 	width: 100vw; 
 	height: 10vh;
 	left: 0;
-	top: 0;
 	background-color: var(--black);
 }
 

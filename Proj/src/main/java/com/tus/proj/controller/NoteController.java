@@ -303,14 +303,17 @@ public class NoteController {
         ResponseEntity<?> response = findAuthorizedNoteById(id);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            return (ResponseEntity<Object>) response; // Return the error response directly
+            return (ResponseEntity<Object>) response;
         }
 
-        Note note = (Note) response.getBody(); // Safe now, we know it's OK
+        Note note = (Note) response.getBody();
         String newContent = updateRequest.getContent();
-        if (newContent.startsWith("\"") && newContent.endsWith("\"")) {
-            newContent = newContent.substring(1, newContent.length() - 1);
-        }
+
+        // Remove any extra HTML escaping
+        newContent = newContent.replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&");
+
         note.setContent(newContent);
         Note savedNote = noteService.updateNote(id, note);
         return ResponseEntity.ok(generateHATEOASLinks(savedNote));

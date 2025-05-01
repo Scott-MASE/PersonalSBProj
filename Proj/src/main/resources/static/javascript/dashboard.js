@@ -1,8 +1,37 @@
 $(document).ready(() => {
-    const rootURL = "http://localhost:9092";
     const username = localStorage.getItem("username");
     const role = localStorage.getItem("role");
-	
+
+
+	document.getElementById('editNoteModal').addEventListener('shown.bs.modal', function () {
+		if (tinymce.get('editNoteContent') === null) {
+			tinymce.init({
+				selector: '#editNoteContent',
+				plugins: 'advlist autolink lists link charmap preview anchor pagebreak',
+				toolbar: 'undo redo | formatselect | ' +
+					'bold italic backcolor forecolor | alignleft aligncenter ' +
+					'alignright alignjustify | bullist numlist outdent indent | ' +
+					'removeformat',
+				height: 400,
+				menubar: false,
+				toolbar_mode: 'sliding',
+				convert_urls: false,
+				entity_encoding: 'raw',
+				verify_html: false,
+				content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px }'
+			});
+		}
+	});
+
+// Clean up TinyMCE when the modal is hidden
+	document.getElementById('editNoteModal').addEventListener('hidden.bs.modal', function () {
+		if (tinymce.get('editNoteContent')) {
+			tinymce.get('editNoteContent').destroy();
+		}
+	});
+
+
+
 	const createNoteButton = document.getElementById('create-note');
 	if (role === 'Moderator') {
 	    createNoteButton.style.display = 'none';
@@ -257,6 +286,9 @@ $(document).ready(() => {
 
 	    data.forEach(note => {
 			console.log(note.username);
+
+			let deadline = Array.isArray(note.deadline) ? note.deadline.join('/') : 'No deadline';
+
 	        const htmlStr = `<div class="note-tile-container">
 	            <button class="note-tile-btn" 
 	                data-note-id="${note.id}" 
@@ -271,10 +303,10 @@ $(document).ready(() => {
 	                    <p class="note-tags">Tag: <span>${note.tag}</span></p>
 	                    <p class="note-priority">Priority: <span>${note.priority}</span></p>
 	                    <p class="note-priority">Access: <span>${note.access}</span></p>
-	                    <p class="note-deadline">Deadline:<br><span>${note.deadline}</span></p>
+	                    <p class="note-deadline">Deadline:<br><span>${deadline}</span></p>
 	                </div>
 	            </button>
-	            ${username == note.username || role == "Moderator" ? `
+	            ${username === note.username || role === "Moderator" ? `
 	                <i id="cog-btn-${note.id}" class="bi bi-gear-fill cog-icon"></i>
 	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>` : ''
 	            }
@@ -285,39 +317,56 @@ $(document).ready(() => {
 
 
 	$(document).on("click", ".note-tile-btn", function() {
-	    $("#editNoteTitle").text($(this).data("note-title"));
-	    $("#editNoteContent").val($(this).data("note-content"));
-	    $("#editNoteForm").data("note-id", $(this).data("note-id"));
-	    $("#editNoteModal").modal("show");
+		$("#editNoteTitle").text($(this).data("note-title"));
+		let content = $(this).data("note-content");
+
+		// Wait for TinyMCE to be ready
+		setTimeout(() => {
+			const editor = tinymce.get('editNoteContent');
+			if (editor) {
+				// Set raw HTML content
+				editor.setContent(content || '', {format: 'html'});
+			}
+		}, 100);
+
+		$("#editNoteForm").data("note-id", $(this).data("note-id"));
+		$("#editNoteModal").modal("show");
 	});
+
+
 
 	$("#editNoteForm").on("submit", function(event) {
-	    event.preventDefault();
-	    const noteId = $(this).data("note-id");
-	    const updatedContent = $("#editNoteContent").val();
-	    updateNoteContent(noteId, updatedContent);
+		event.preventDefault();
+		const noteId = $(this).data("note-id");
+		const editor = tinymce.get('editNoteContent');
+		const updatedContent = editor ? editor.getContent({format: 'html'}) : '';
+		updateNoteContent(noteId, updatedContent);
 	});
 
-	function updateNoteContent(noteId, content) {
-	    const url = role === "User" ? 
-	        `/api/notes/${noteId}/content` : 
-	        `/api/notes/${noteId}/mod/content`;
 
-	    $.ajax({
-	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-	        url: url,
-	        type: "PUT",
-	        contentType: "application/json",
-	        data: JSON.stringify({ content }),
-	        success: function() {
-	            showAlert("Note updated successfully!", "success");
-	            $("#editNoteModal").modal("hide");
-	            fetchNotes();
-	        },
-	        error: function(xhr) {
-	            showAlert("Failed to update note: " + xhr.responseText, "warning");
-	        }
-	    });
+	function updateNoteContent(noteId, content) {
+		const url = role === "User" ?
+			`/api/notes/${noteId}/content` :
+			`/api/notes/${noteId}/mod/content`;
+
+		// Get the HTML content and encode it properly
+		const editorContent = content.trim();
+
+		$.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+			url: url,
+			type: "PUT",
+			contentType: "application/json",
+			data: JSON.stringify({ content: editorContent }),
+			success: function() {
+				showAlert("Note updated successfully!", "success");
+				$("#editNoteModal").modal("hide");
+				fetchNotes();
+			},
+			error: function(xhr) {
+				showAlert("Failed to update note: " + xhr.responseText, "warning");
+			}
+		});
 	}
 
 	// limits title and tag length to ensure they dont spill off the hexagon
