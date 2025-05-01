@@ -18,10 +18,16 @@ $(document).ready(() => {
 				convert_urls: false,
 				entity_encoding: 'raw',
 				verify_html: false,
-				content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px }'
+				content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px }',
+				init_instance_callback: function(editor) {
+					editor.on('BeforeSetContent', function(e) {
+						console.log('Setting content:', e.content);
+					});
+				}
 			});
 		}
 	});
+
 
 // Clean up TinyMCE when the modal is hidden
 	document.getElementById('editNoteModal').addEventListener('hidden.bs.modal', function () {
@@ -202,24 +208,27 @@ $(document).ready(() => {
 
 	// retrieves notes, the users by default with variable order, or another users public notes if a valid name is provided
 	function fetchNotes() {
-	    console.log("Fetching notes");
-	    let sortOption = localStorage.getItem('sortNotes') || 0;
-	    let username = localStorage.getItem('publicUsername') || "null";
-	    let url = role !== "Moderator" ? 
-	        `api/notes/getAll/loggedUser/${sortOption}/${username}` : 
-	        `api/notes/getPublic/mod/${sortOption}/${username}`;
+		console.log("Fetching notes");
+		let sortOption = localStorage.getItem('sortNotes') || 0;
+		let username = localStorage.getItem('publicUsername') || "null";
+		let url = role !== "Moderator" ?
+			`api/notes/getAll/loggedUser/${sortOption}/${username}` :
+			`api/notes/getPublic/mod/${sortOption}/${username}`;
 
-	    $.ajax({
-	        headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
-	        type: 'GET',
-	        url: url,
-	        dataType: 'json',
-	        success: renderNotes,
-	        error: function(xhr, status, error) {
-	            $(".details").remove();
-	            console.log("Failed to fetch notes:", error);
-	        }
-	    });
+		$.ajax({
+			headers: { Authorization: `Bearer ${TokenStorage.getToken()}` },
+			type: 'GET',
+			url: url,
+			dataType: 'json',
+			success: function(data) {
+				console.log("Received notes:", data); // Add this line to debug
+				renderNotes(data);
+			},
+			error: function(xhr, status, error) {
+				$(".details").remove();
+				console.error("Failed to fetch notes:", error);
+			}
+		});
 	}
 	
 	//add tags to the filter scrollview
@@ -285,19 +294,21 @@ $(document).ready(() => {
 		console.log(username);
 
 	    data.forEach(note => {
-			console.log(note.username);
 
 			let deadline = Array.isArray(note.deadline) ? note.deadline.join('/') : 'No deadline';
 
-	        const htmlStr = `<div class="note-tile-container">
-	            <button class="note-tile-btn" 
-	                data-note-id="${note.id}" 
-	                data-note-access="${note.access}" 
-	                data-note-title="${note.title}" 
-	                data-note-content="${note.content}" 
-	                data-note-tag="${note.tag}" 
-	                data-note-priority="${note.priority}" 
-	                data-note-deadline="${note.deadline}">
+			const htmlStr = `<div class="note-tile-container">
+            <button class="note-tile-btn" 	
+                data-note-id="${note.id}" 
+                data-note-access="${note.access}" 
+                data-note-title="${note.title}" 
+                data-note-content="${encodeURIComponent(note.content || '')}" 
+               
+                data-note-tag="${note.tag}" 
+                data-note-priority="${note.priority}" 
+                data-note-deadline="${note.deadline}">
+
+
 	                <div class="note-tile">
 	                    <p class="note-title">${note.title}</p>
 	                    <p class="note-tags">Tag: <span>${note.tag}</span></p>
@@ -311,6 +322,10 @@ $(document).ready(() => {
 	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>` : ''
 	            }
 	        </div>`;
+
+/*			console.log(note.content);
+			console.log(encodeURIComponent(note.content));
+			console.log(decodeURIComponent(note.content));*/
 	        container.append(htmlStr);
 	    });
 	}
@@ -318,20 +333,42 @@ $(document).ready(() => {
 
 	$(document).on("click", ".note-tile-btn", function() {
 		$("#editNoteTitle").text($(this).data("note-title"));
-		let content = $(this).data("note-content");
+		const content = decodeURIComponent($(this).data("note-content") || '');
+		console.log("Content to set:", content);
 
-		// Wait for TinyMCE to be ready
-		setTimeout(() => {
-			const editor = tinymce.get('editNoteContent');
-			if (editor) {
-				// Set raw HTML content
-				editor.setContent(content || '', {format: 'html'});
+		// Store content in a data attribute on the modal
+		$("#editNoteModal").data("pendingContent", content);
+
+		// Remove any existing editor instance
+		if (tinymce.get('editNoteContent')) {
+			tinymce.get('editNoteContent').remove();
+		}
+
+		// Initialize TinyMCE
+		tinymce.init({
+			selector: '#editNoteContent',
+			plugins: 'advlist autolink lists link charmap preview anchor pagebreak',
+			toolbar: 'undo redo | formatselect | ' +
+				'bold italic backcolor forecolor | alignleft aligncenter ' +
+				'alignright alignjustify | bullist numlist outdent indent | ' +
+				'removeformat',
+			height: 400,
+			menubar: false,
+			toolbar_mode: 'sliding',
+			setup: function(editor) {
+				editor.on('init', function() {
+					console.log("Editor initialized");
+					const pendingContent = $("#editNoteModal").data("pendingContent");
+					console.log("Setting content:", pendingContent);
+					editor.setContent(pendingContent || '');
+				});
 			}
-		}, 100);
+		});
 
 		$("#editNoteForm").data("note-id", $(this).data("note-id"));
 		$("#editNoteModal").modal("show");
 	});
+
 
 
 
