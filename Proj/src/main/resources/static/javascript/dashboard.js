@@ -326,7 +326,13 @@ $(document).ready(() => {
 	            </button>
 	            ${username === note.username || role === "Moderator" ? `
 	                <i id="cog-btn-${note.id}" class="bi bi-gear-fill cog-icon"></i>
-	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>` : ''
+	                <i id="trash-btn-${note.id}" class="bi bi-trash-fill trash-icon"></i>
+            <div class="form-group">
+                <input type="checkbox" id="notePinned-${note.id}" class="notePinned" ${note.pinned ? 'checked' : ''} hidden>
+                <label for="notePinned-${note.id}" class="pin-icon tile-pinned">
+                    <i class="bi bi-pin-angle-fill ${note.pinned ? 'pinned' : ''}"></i>
+                </label>
+            </div>` : ''
 	            }
 	        </div>`;
 

@@ -742,7 +742,20 @@ td {
 }
 
 #notePinned:checked + .pin-icon i {
-    color: orange;
+    color: var(--orange);
+}
+
+.tile-pinned i {
+    color: grey; /* Default color */
+    font-size: 1.5rem;
+
+    top: 25vh;
+    right: 0.5vw;
+
+}
+
+.tile-pinned i.pinned {
+    color: var(--orange); /* Orange when pinned */
 }
 
 

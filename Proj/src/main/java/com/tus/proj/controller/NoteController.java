@@ -122,24 +122,35 @@ public class NoteController {
 
         switch (order) {
             case 0:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getId).reversed());
+                // Sort by ID (reversed), then by pinned (pinned notes first)
+                noteDTOs.sort(Comparator.comparing(NoteDTO::isPinned).reversed()
+                        .thenComparing(Comparator.comparing(NoteDTO::getId).reversed()));
                 break;
             case 1:
-                noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+                // Sort by priority, then by pinned (pinned notes first)
+                noteDTOs.sort(Comparator.comparing(NoteDTO::isPinned).reversed()
+                        .thenComparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 break;
             case 2:
-                noteDTOs.sort(Comparator.comparing(note -> PRIORITY_ORDER.get(note.getPriority())));
+                // Sort by priority (reverse order), then by pinned (pinned notes first)
+                noteDTOs.sort(Comparator.comparing(NoteDTO::isPinned).reversed()
+                        .thenComparing(note -> PRIORITY_ORDER.get(note.getPriority())));
                 Collections.reverse(noteDTOs);
                 break;
             case 3:
-                noteDTOs.sort(Comparator.comparing(note -> note.getTitle().toLowerCase()));
+                // Sort by title (alphabetically), then by pinned (pinned notes first)
+                noteDTOs.sort(Comparator.comparing(NoteDTO::isPinned).reversed()
+                        .thenComparing(note -> note.getTitle().toLowerCase()));
                 break;
             case 4:
-                noteDTOs.sort(Comparator.comparing(NoteDTO::getDeadline));
+                // Sort by deadline, then by pinned (pinned notes first)
+                noteDTOs.sort(Comparator.comparing(NoteDTO::isPinned).reversed()
+                        .thenComparing(NoteDTO::getDeadline));
                 break;
             default:
                 break;
         }
+
 
         return noteDTOs;
     }
