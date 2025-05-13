@@ -37,17 +37,28 @@ public class Note {
 	@JsonBackReference
 	private User user;
 
+	private boolean pinned;
+
 	public Note() {
 	}
 
-	public Note(String title, String content, Priority priority, LocalDate deadline, User user, String tag, Access access) {
+	public Note(String title, String content, Priority priority, LocalDate deadline, User user, String tag, Access access, boolean pinned) {
 		this.title = title;
 		this.content = content;
 		this.priority = priority;
 		this.deadline = deadline;
 		this.user = user;
 		this.tag = tag;
+		this.pinned = pinned;
 		this.setAccess(access);
+	}
+
+	public boolean isPinned() {
+		return pinned;
+	}
+
+	public void setPinned(boolean pinned) {
+		this.pinned = pinned;
 	}
 
 	public int getId() {

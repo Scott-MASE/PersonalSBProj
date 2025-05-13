@@ -15,7 +15,8 @@ public class NoteDTO {
     private String access;
     private String priority;
     private LocalDate deadline;
-    private String username; 
+    private String username;
+    private boolean pinned;
 
     public NoteDTO(Note note) {
         this.id = note.getId();
@@ -26,6 +27,7 @@ public class NoteDTO {
         this.priority = note.getPriority().name();
         this.deadline = note.getDeadline();
         this.username = note.getUser().getUsername();
+        this.pinned = note.isPinned();
     }
 
     

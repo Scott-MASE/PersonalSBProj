@@ -15,6 +15,7 @@ public class UpdateNoteMetaRequestDTO {
     private LocalDate deadline;
     private String tag;
     private Access access;
+    private boolean pinned;
 
 }
 

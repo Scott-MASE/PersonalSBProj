@@ -189,7 +189,8 @@ public class NoteController {
                 noteRequest.getDeadline(),
                 user,
                 noteRequest.getTag(),
-                noteRequest.getAccess()
+                noteRequest.getAccess(),
+                noteRequest.isPinned()
         );
         Note savedNote = noteService.saveNote(note);
         EntityModel<Note> noteModel = generateHATEOASLinks(savedNote);
@@ -268,6 +269,7 @@ public class NoteController {
         note.setTitle(noteRequest.getTitle());
         note.setContent(noteRequest.getContent());
         note.setAccess(noteRequest.getAccess());
+        note.setPinned(noteRequest.isPinned());
         Note savedNote = noteService.updateNote(id, note);
         return ResponseEntity.ok(generateHATEOASLinks(savedNote));
     }
@@ -475,6 +477,7 @@ public class NoteController {
         note.setTitle(noteRequest.getTitle());
         note.setContent(noteRequest.getContent());
         note.setAccess(noteRequest.getAccess());
+        note.setPinned(noteRequest.isPinned());
         Note savedNote = noteService.updateNote(id, note);
         return ResponseEntity.ok(generateModHATEOASLinks(savedNote));
     }

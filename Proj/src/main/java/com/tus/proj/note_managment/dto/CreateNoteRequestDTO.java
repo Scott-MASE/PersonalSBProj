@@ -17,6 +17,7 @@ public class CreateNoteRequestDTO {
     private Priority priority;
     private LocalDate deadline;
     private Access access;
+    private boolean pinned;
 
 
 }

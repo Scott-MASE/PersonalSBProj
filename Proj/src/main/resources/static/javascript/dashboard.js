@@ -117,7 +117,8 @@ $(document).ready(() => {
             tag: $("#noteTag").val().trim(),
             priority: $("#notePriority").val(),
             deadline: $("#noteDeadline").val() ? new Date($("#noteDeadline").val()).toISOString() : null,
-            access: $("#noteAccess").val()
+            access: $("#noteAccess").val(),
+			pinned: $("#notePinned").is(":checked")
         };
 
         if ($("#createNoteModalLabel").text() === "Create Note") {
@@ -176,10 +177,15 @@ $(document).ready(() => {
 	    $("#noteTitle").val($noteTileBtn.data("note-title"));
 	    $("#noteTag").val($noteTileBtn.data("note-tag"));
 	    $("#notePriority").val($noteTileBtn.data("note-priority"));
-	    $("#noteDeadline").val($noteTileBtn.data("note-deadline"));
+		let formatted = $noteTileBtn.data("note-deadline").split(",").map((v, i) => i === 0 ? v : v.padStart(2, '0')).join("-");
+
+		console.log(formatted);
+		$("#noteDeadline").val(formatted);
 	    $("#createNoteModalLabel").text("Edit Note");
 	    $("#save-or-create").text("Save");
 	    $("#noteForm").data("note-id", $noteTileBtn.data("note-id"));
+		const isPinned = $noteTileBtn.data("note-pinned") === true || $noteTileBtn.data("note-pinned") === "true";
+		$("#notePinned").prop("checked", isPinned);
 	    $("#createNoteModal").modal("show");
 	}
 
@@ -306,7 +312,8 @@ $(document).ready(() => {
                
                 data-note-tag="${note.tag}" 
                 data-note-priority="${note.priority}" 
-                data-note-deadline="${note.deadline}">
+                data-note-deadline="${note.deadline}"
+                data-note-pinned="${note.pinned}">
 
 
 	                <div class="note-tile">
@@ -421,6 +428,12 @@ $(document).ready(() => {
 
 	$("#closeModalBtn").on("click", function() {
 	    $("#noteModal").fadeOut();
+	});
+
+	$('#pin').on('click', function() {
+		let noteId = $("#noteForm").data("note-id");
+		// Your code here
+		alert('Pin button clicked!: id' + noteId);
 	});
 
 	fetchNotes();
