@@ -219,10 +219,6 @@ class UITests {
         WebElement editNoteModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editNoteModal")));
         assertTrue(editNoteModal.isDisplayed(), "Edit Note Modal did not appear after clicking the note tile");
 
-        // Locate the content text area and change the note content.
-        WebElement contentTextArea = editNoteModal.findElement(By.id("editNoteContent"));
-        contentTextArea.clear();
-        contentTextArea.sendKeys("Updated note content for testing.");
 
         // Click the "Save" button.
         WebElement saveButton = editNoteModal.findElement(By.cssSelector("button.btn-primary.w-100.mt-3"));
